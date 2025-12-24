@@ -323,7 +323,7 @@ export default {
     },
     avgAltitude() {
       const total = this.flights.reduce((sum, f) => {
-        const alt = parseInt(f.altitude.replace(/[^\d]/g, ''));
+        const alt = parseInt(f.altitude.replace(/[^\d]/g, ''), 10);
         return sum + alt;
       }, 0);
       return Math.round(total / this.flights.length);

@@ -299,7 +299,15 @@ export default {
             const hash = f.name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
             impact = hash % 2 === 0 ? 'medium' : 'low';
           }
-          const delay = impact === 'high' ? '45-60 min' : impact === 'medium' ? '20-30 min' : '10-15 min';
+
+          let delay;
+          if (impact === 'high') {
+            delay = '45-60 min';
+          } else if (impact === 'medium') {
+            delay = '20-30 min';
+          } else {
+            delay = '10-15 min';
+          }
 
           return {
             flight: f,

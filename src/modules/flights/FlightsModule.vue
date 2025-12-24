@@ -302,6 +302,7 @@ export default {
       this.expandedFlight = this.expandedFlight === flightName ? null : flightName;
     },
     getSystemsList(systems) {
+      // eslint-disable-next-line no-unused-vars
       const { overall, ...systemsList } = systems;
       return systemsList;
     },
@@ -326,7 +327,7 @@ export default {
         if (value.includes('OFFLINE') || value.includes('HIGH')) return 'critical';
         const numMatch = value.match(/(\d+)/);
         if (numMatch && value.includes('%')) {
-          const num = parseInt(numMatch[1]);
+          const num = parseInt(numMatch[1], 10);
           if (num < 70) return 'critical';
           if (num < 85) return 'warning';
         }

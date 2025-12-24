@@ -13,7 +13,7 @@
             width="20"
             height="20"
           >
-            <path v-html="system.icon" />
+            <path :d="system.icon" />
           </svg>
           {{ system.name }}
         </div>
@@ -53,7 +53,7 @@ export default {
       if (typeof value === 'string') {
         if (value.includes('ONLINE') || value === 'ON') return 'normal';
         if (value.includes('OFFLINE') || value.includes('HIGH')) return 'critical';
-        if (value.includes('%') && parseInt(value) > 80) return 'critical';
+        if (value.includes('%') && parseInt(value, 10) > 80) return 'critical';
       }
       return '';
     }

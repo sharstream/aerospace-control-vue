@@ -38,6 +38,7 @@ class UsageTracker {
         this.setupAutoSave();
     }
 
+    // eslint-disable-next-line class-methods-use-this
     generateSessionId() {
         return `session_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
     }
@@ -302,6 +303,7 @@ class UsageTracker {
         return lines.join('\n');
     }
 
+    // eslint-disable-next-line class-methods-use-this
     downloadFile(content, filename, mimeType) {
         const blob = new Blob([content], { type: mimeType });
         const url = URL.createObjectURL(blob);
