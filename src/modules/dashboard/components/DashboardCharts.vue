@@ -27,23 +27,38 @@
         <div class="chart-title">On-Time Performance Trend (24h)</div>
         <div class="chart-legend">
           <div class="chart-legend-item">
-            <div class="chart-legend-dot" style="background: #4ade80;"></div>
+            <div
+              class="chart-legend-dot"
+              style="background: #4ade80;"
+            ></div>
             On-Time
           </div>
           <div class="chart-legend-item">
-            <div class="chart-legend-dot" style="background: #f59e0b;"></div>
+            <div
+              class="chart-legend-dot"
+              style="background: #f59e0b;"
+            ></div>
             Delayed
           </div>
           <div class="chart-legend-item">
-            <div class="chart-legend-dot" style="background: #ef4444;"></div>
+            <div
+              class="chart-legend-dot"
+              style="background: #ef4444;"
+            ></div>
             Critical
           </div>
         </div>
       </div>
       <div class="chart-canvas">
         <div style="padding: 60px; text-align: center; color: #666;">
-          <svg width="48" height="48" fill="currentColor" viewBox="0 0 24 24" style="opacity: 0.5;">
-            <path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/>
+          <svg
+            width="48"
+            height="48"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            style="opacity: 0.5;"
+          >
+            <path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z" />
           </svg>
           <div style="margin-top: 12px; font-size: 13px;">Real-time performance monitoring</div>
         </div>
@@ -55,7 +70,7 @@
 <script>
 export default {
   name: 'DashboardCharts'
-}
+};
 </script>
 
 <style scoped>

@@ -28,7 +28,10 @@
       </div>
     </div>
 
-    <div v-if="affectedFlights.length > 0" class="affected-flights">
+    <div
+      v-if="affectedFlights.length > 0"
+      class="affected-flights"
+    >
       <div class="affected-flights-label">AFFECTED FLIGHTS:</div>
       <div class="affected-flights-list">
         <div
@@ -61,7 +64,7 @@ export default {
       required: true
     }
   }
-}
+};
 </script>
 
 <style scoped>

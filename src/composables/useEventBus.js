@@ -1,7 +1,7 @@
-import mitt from 'mitt'
+import mitt from 'mitt';
 
 // Create a single event bus instance
-const eventBus = mitt()
+const eventBus = mitt();
 
 /**
  * Event Bus composable using mitt
@@ -17,36 +17,36 @@ const eventBus = mitt()
  * - 'notification:show' - When a notification should be shown
  */
 export function useEventBus() {
-  return {
+    return {
     // Emit an event
-    emit: eventBus.emit,
+        emit: eventBus.emit,
 
     // Listen to an event
-    on: eventBus.on,
+        on: eventBus.on,
 
     // Remove event listener
-    off: eventBus.off,
+        off: eventBus.off,
 
     // Listen to an event once
-    once: (type, handler) => {
-      const fn = (...args) => {
-        eventBus.off(type, fn)
-        handler(...args)
-      }
-      eventBus.on(type, fn)
-    },
+        once: (type, handler) => {
+            const fn = (...args) => {
+                eventBus.off(type, fn);
+                handler(...args);
+            };
+            eventBus.on(type, fn);
+        },
 
     // Clear all listeners for a specific event type
-    clearEvent: (type) => {
-      eventBus.all.delete(type)
-    },
+        clearEvent: (type) => {
+            eventBus.all.delete(type);
+        },
 
     // Clear all event listeners
-    clearAll: () => {
-      eventBus.all.clear()
-    }
-  }
+        clearAll: () => {
+            eventBus.all.clear();
+        }
+    };
 }
 
 // Export the raw event bus for direct access if needed
-export { eventBus }
+export { eventBus };

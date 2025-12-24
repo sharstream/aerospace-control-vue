@@ -1,25 +1,50 @@
 <template>
   <transition name="slide-up">
-    <div v-if="!collapsed" class="flights-data-table">
+    <div
+      v-if="!collapsed"
+      class="flights-data-table"
+    >
       <div class="table-header">
         <div class="table-header-content">
           <div class="table-title">
-            <svg fill="currentColor" viewBox="0 0 24 24" width="20" height="20">
-              <path d="M21,16v-2l-8-5V3.5c0-0.83-0.67-1.5-1.5-1.5S10,2.67,10,3.5V9l-8,5v2l8-2.5V19l-2,1.5V22l3.5-1l3.5,1v-1.5L13,19v-5.5 L21,16z"/>
+            <svg
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              width="20"
+              height="20"
+            >
+              <path d="M21,16v-2l-8-5V3.5c0-0.83-0.67-1.5-1.5-1.5S10,2.67,10,3.5V9l-8,5v2l8-2.5V19l-2,1.5V22l3.5-1l3.5,1v-1.5L13,19v-5.5 L21,16z" />
             </svg>
             <span>Active Flights</span>
             <span class="flight-count">{{ flights.length }}</span>
           </div>
-          <button class="view-all-btn" @click="$emit('view-all')">
+          <button
+            class="view-all-btn"
+            @click="$emit('view-all')"
+          >
             View All
-            <svg fill="currentColor" viewBox="0 0 24 24" width="16" height="16">
-              <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+            <svg
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              width="16"
+              height="16"
+            >
+              <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
             </svg>
           </button>
         </div>
-        <button class="collapse-btn" @click="collapsed = true" title="Hide Flights Table">
-          <svg fill="currentColor" viewBox="0 0 24 24" width="20" height="20">
-            <path d="M7 14l5-5 5 5z"/>
+        <button
+          class="collapse-btn"
+          title="Hide Flights Table"
+          @click="collapsed = true"
+        >
+          <svg
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            width="20"
+            height="20"
+          >
+            <path d="M7 14l5-5 5 5z" />
           </svg>
         </button>
       </div>
@@ -46,7 +71,10 @@
             >
               <td class="flight-cell">
                 <div class="flight-cell-content">
-                  <div class="airline-logo" :style="{ background: airlines[flight.airline].color }">
+                  <div
+                    class="airline-logo"
+                    :style="{ background: airlines[flight.airline].color }"
+                  >
                     {{ airlines[flight.airline].logo }}
                   </div>
                   <div class="flight-info">
@@ -58,8 +86,13 @@
               <td class="route-cell">
                 <div class="route-content">
                   <span class="airport">{{ flight.from }}</span>
-                  <svg fill="currentColor" viewBox="0 0 24 24" width="14" height="14">
-                    <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+                  <svg
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    width="14"
+                    height="14"
+                  >
+                    <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" />
                   </svg>
                   <span class="airport">{{ flight.to }}</span>
                 </div>
@@ -72,15 +105,29 @@
               </td>
               <td class="altitude-cell">{{ flight.altitude }}</td>
               <td>
-                <span v-if="flight.systems" :class="['systems-badge', flight.systems.overall.statusClass]">
+                <span
+                  v-if="flight.systems"
+                  :class="['systems-badge', flight.systems.overall.statusClass]"
+                >
                   {{ flight.systems.overall.health }}%
                 </span>
-                <span v-else class="systems-badge operational">N/A</span>
+                <span
+                  v-else
+                  class="systems-badge operational"
+                >N/A</span>
               </td>
               <td class="action-cell">
-                <button class="action-btn" @click.stop="$emit('flight-details', flight)">
-                  <svg fill="currentColor" viewBox="0 0 24 24" width="18" height="18">
-                    <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                <button
+                  class="action-btn"
+                  @click.stop="$emit('flight-details', flight)"
+                >
+                  <svg
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    width="18"
+                    height="18"
+                  >
+                    <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
                   </svg>
                 </button>
               </td>
@@ -93,13 +140,27 @@
 
   <!-- Collapsed Toggle Button -->
   <transition name="fade">
-    <button v-if="collapsed" class="expand-btn" @click="collapsed = false">
-      <svg fill="currentColor" viewBox="0 0 24 24" width="20" height="20">
-        <path d="M21,16v-2l-8-5V3.5c0-0.83-0.67-1.5-1.5-1.5S10,2.67,10,3.5V9l-8,5v2l8-2.5V19l-2,1.5V22l3.5-1l3.5,1v-1.5L13,19v-5.5 L21,16z"/>
+    <button
+      v-if="collapsed"
+      class="expand-btn"
+      @click="collapsed = false"
+    >
+      <svg
+        fill="currentColor"
+        viewBox="0 0 24 24"
+        width="20"
+        height="20"
+      >
+        <path d="M21,16v-2l-8-5V3.5c0-0.83-0.67-1.5-1.5-1.5S10,2.67,10,3.5V9l-8,5v2l8-2.5V19l-2,1.5V22l3.5-1l3.5,1v-1.5L13,19v-5.5 L21,16z" />
       </svg>
       <span>Show Flights ({{ flights.length }})</span>
-      <svg fill="currentColor" viewBox="0 0 24 24" width="20" height="20">
-        <path d="M7 10l5 5 5-5z"/>
+      <svg
+        fill="currentColor"
+        viewBox="0 0 24 24"
+        width="20"
+        height="20"
+      >
+        <path d="M7 10l5 5 5-5z" />
       </svg>
     </button>
   </transition>
@@ -126,27 +187,27 @@ export default {
   data() {
     return {
       collapsed: true
+    };
+  },
+  computed: {
+    bottomPosition() {
+      return this.bottomNavCollapsed ? '10px' : '80px';
+    },
+    expandButtonBottom() {
+      return this.bottomNavCollapsed ? '20px' : '90px';
     }
   },
   watch: {
     collapsed(newVal) {
-      this.$emit('collapse-state-change', newVal)
-    }
-  },
-  computed: {
-    bottomPosition() {
-      return this.bottomNavCollapsed ? '10px' : '80px'
-    },
-    expandButtonBottom() {
-      return this.bottomNavCollapsed ? '20px' : '90px'
+      this.$emit('collapse-state-change', newVal);
     }
   },
   methods: {
     handleFlightClick(flight) {
-      this.$emit('flight-click', flight)
+      this.$emit('flight-click', flight);
     }
   }
-}
+};
 </script>
 
 <style scoped>

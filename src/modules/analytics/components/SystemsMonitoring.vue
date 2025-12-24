@@ -1,22 +1,38 @@
 <template>
   <div class="systems-monitoring">
-    <div v-for="system in systems" :key="system.name" :class="['system-panel', system.statusClass]">
+    <div
+      v-for="system in systems"
+      :key="system.name"
+      :class="['system-panel', system.statusClass]"
+    >
       <div class="system-panel-header">
         <div class="system-panel-title">
-          <svg fill="currentColor" viewBox="0 0 24 24" width="20" height="20">
-            <path v-html="system.icon"></path>
+          <svg
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            width="20"
+            height="20"
+          >
+            <path v-html="system.icon" />
           </svg>
           {{ system.name }}
         </div>
         <div :class="['system-status-badge', system.statusClass]">{{ system.status }}</div>
       </div>
       <div class="system-panel-body">
-        <div v-for="(value, key) in system.metrics" :key="key" class="system-metric-row">
+        <div
+          v-for="(value, key) in system.metrics"
+          :key="key"
+          class="system-metric-row"
+        >
           <span class="system-metric-label">{{ key }}</span>
           <span :class="['system-metric-value', getMetricClass(value)]">{{ value }}</span>
         </div>
         <div class="system-progress-bar">
-          <div :class="['system-progress-fill', system.statusClass]" :style="{ width: system.health + '%' }"></div>
+          <div
+            :class="['system-progress-fill', system.statusClass]"
+            :style="{ width: system.health + '%' }"
+          ></div>
         </div>
       </div>
     </div>
@@ -35,14 +51,14 @@ export default {
   methods: {
     getMetricClass(value) {
       if (typeof value === 'string') {
-        if (value.includes('ONLINE') || value === 'ON') return 'normal'
-        if (value.includes('OFFLINE') || value.includes('HIGH')) return 'critical'
-        if (value.includes('%') && parseInt(value) > 80) return 'critical'
+        if (value.includes('ONLINE') || value === 'ON') return 'normal';
+        if (value.includes('OFFLINE') || value.includes('HIGH')) return 'critical';
+        if (value.includes('%') && parseInt(value) > 80) return 'critical';
       }
-      return ''
+      return '';
     }
   }
-}
+};
 </script>
 
 <style scoped>

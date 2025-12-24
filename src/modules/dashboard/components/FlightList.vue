@@ -16,7 +16,10 @@
             <span style="font-size: 12px; opacity: 0.7; font-weight: normal;">{{ airlines[flight.airline]?.name }}</span>
           </div>
         </div>
-        <span class="flight-status" :class="flight.statusClass">
+        <span
+          class="flight-status"
+          :class="flight.statusClass"
+        >
           {{ flight.status }}
         </span>
       </div>
@@ -49,7 +52,10 @@
       </div>
 
       <div class="flight-progress-bar">
-        <div class="flight-progress-fill" :style="{ width: (flight.progress * 100) + '%' }"></div>
+        <div
+          class="flight-progress-fill"
+          :style="{ width: (flight.progress * 100) + '%' }"
+        ></div>
       </div>
     </div>
   </div>
@@ -73,7 +79,7 @@ export default {
     }
   },
   emits: ['select-flight']
-}
+};
 </script>
 
 <style scoped>

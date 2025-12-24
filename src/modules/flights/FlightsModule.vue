@@ -6,9 +6,19 @@
     </div>
 
     <div class="flights-list-container">
-      <div v-for="flight in flights" :key="flight.name" class="flight-list-item">
-        <div class="flight-item-header" @click="toggleFlightDetails(flight.name)">
-          <div class="flight-item-logo" :style="{ background: airlines[flight.airline].color }">
+      <div
+        v-for="flight in flights"
+        :key="flight.name"
+        class="flight-list-item"
+      >
+        <div
+          class="flight-item-header"
+          @click="toggleFlightDetails(flight.name)"
+        >
+          <div
+            class="flight-item-logo"
+            :style="{ background: airlines[flight.airline].color }"
+          >
             {{ airlines[flight.airline].logo }}
           </div>
           <div class="flight-item-info">
@@ -17,7 +27,10 @@
               {{ airlines[flight.airline].name }} • {{ flight.aircraft }}
             </div>
           </div>
-          <div v-if="flight.systems" :class="['systems-health-badge', flight.systems.overall.statusClass]">
+          <div
+            v-if="flight.systems"
+            :class="['systems-health-badge', flight.systems.overall.statusClass]"
+          >
             {{ flight.systems.overall.label }}
           </div>
           <div :class="['flight-item-status', flight.statusClass]">
@@ -30,8 +43,13 @@
             <span class="detail-label">Route:</span>
             <span class="detail-value route-value">
               <span class="route-airport">{{ flight.from }}</span>
-              <svg fill="currentColor" viewBox="0 0 24 24" width="16" height="16">
-                <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+              <svg
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+              >
+                <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" />
               </svg>
               <span class="route-airport">{{ flight.to }}</span>
             </span>
@@ -52,10 +70,15 @@
             <span class="detail-value">{{ flight.departure }}</span>
           </div>
 
-          <div v-if="flight.systems" class="flight-health-section">
+          <div
+            v-if="flight.systems"
+            class="flight-health-section"
+          >
             <div class="health-bar-container">
-              <div :class="['health-bar-fill', flight.systems.overall.statusClass]"
-                   :style="{ width: flight.systems.overall.health + '%' }">
+              <div
+                :class="['health-bar-fill', flight.systems.overall.statusClass]"
+                :style="{ width: flight.systems.overall.health + '%' }"
+              >
               </div>
             </div>
             <div class="health-text">
@@ -63,9 +86,17 @@
             </div>
           </div>
 
-          <div v-if="flight.bottleneck" class="bottleneck-alert">
-            <svg fill="currentColor" viewBox="0 0 24 24" width="16" height="16">
-              <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+          <div
+            v-if="flight.bottleneck"
+            class="bottleneck-alert"
+          >
+            <svg
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              width="16"
+              height="16"
+            >
+              <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
             </svg>
             Bottleneck Detected
           </div>
@@ -73,7 +104,10 @@
 
         <!-- Expanded Detail View -->
         <transition name="expand">
-          <div v-if="expandedFlight === flight.name" class="flight-expanded-view">
+          <div
+            v-if="expandedFlight === flight.name"
+            class="flight-expanded-view"
+          >
             <!-- Aircraft Visualization -->
             <div class="aircraft-visual-section">
               <div class="aircraft-info-badge">
@@ -113,7 +147,10 @@
             </div>
 
             <!-- Cabin Layout Section -->
-            <div v-if="flight.systems" class="cabin-section">
+            <div
+              v-if="flight.systems"
+              class="cabin-section"
+            >
               <div class="section-header">
                 <span class="section-title">CABIN LAYOUT & PASSENGER MANIFEST</span>
                 <span class="section-subtitle">
@@ -132,7 +169,11 @@
                 </div>
                 <div class="cabin-deck">
                   <div class="deck-label">FIRST CLASS</div>
-                  <div v-for="row in 2" :key="'fc-' + row" class="seat-row">
+                  <div
+                    v-for="row in 2"
+                    :key="'fc-' + row"
+                    class="seat-row"
+                  >
                     <div class="row-number">{{ row }}</div>
                     <div class="seat first-class occupied">👤</div>
                     <div class="seat first-class occupied">👤</div>
@@ -140,15 +181,25 @@
                 </div>
                 <div class="cabin-deck">
                   <div class="deck-label">ECONOMY CLASS</div>
-                  <div v-for="row in 8" :key="'ec-' + row" class="seat-row">
+                  <div
+                    v-for="row in 8"
+                    :key="'ec-' + row"
+                    class="seat-row"
+                  >
                     <div class="row-number">{{ row + 6 }}</div>
-                    <div v-for="col in 3" :key="'l-' + col"
-                         :class="['seat', getSeatStatus(row, col)]">
+                    <div
+                      v-for="col in 3"
+                      :key="'l-' + col"
+                      :class="['seat', getSeatStatus(row, col)]"
+                    >
                       <span v-if="getSeatStatus(row, col) === 'occupied'">👤</span>
                     </div>
                     <div class="aisle"></div>
-                    <div v-for="col in 3" :key="'r-' + col"
-                         :class="['seat', getSeatStatus(row, col + 3)]">
+                    <div
+                      v-for="col in 3"
+                      :key="'r-' + col"
+                      :class="['seat', getSeatStatus(row, col + 3)]"
+                    >
                       <span v-if="getSeatStatus(row, col + 3) === 'occupied'">👤</span>
                     </div>
                   </div>
@@ -175,15 +226,25 @@
             </div>
 
             <!-- Systems Monitoring Section -->
-            <div v-if="flight.systems" class="systems-section">
+            <div
+              v-if="flight.systems"
+              class="systems-section"
+            >
               <div class="systems-grid">
-                <div v-for="(system, key) in getSystemsList(flight.systems)"
-                     :key="key"
-                     :class="['system-card', system.statusClass]">
+                <div
+                  v-for="(system, key) in getSystemsList(flight.systems)"
+                  :key="key"
+                  :class="['system-card', system.statusClass]"
+                >
                   <div class="system-card-header">
                     <div class="system-card-title">
-                      <svg fill="currentColor" viewBox="0 0 24 24" width="18" height="18">
-                        <path :d="system.icon"></path>
+                      <svg
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        width="18"
+                        height="18"
+                      >
+                        <path :d="system.icon" />
                       </svg>
                       {{ system.name }}
                     </div>
@@ -192,15 +253,19 @@
                     </div>
                   </div>
                   <div class="system-card-body">
-                    <div v-for="(value, metric) in system.metrics"
-                         :key="metric"
-                         class="system-metric">
+                    <div
+                      v-for="(value, metric) in system.metrics"
+                      :key="metric"
+                      class="system-metric"
+                    >
                       <span class="metric-label">{{ metric }}</span>
                       <span :class="['metric-value', getMetricClass(value)]">{{ value }}</span>
                     </div>
                     <div class="system-health-bar">
-                      <div :class="['system-health-fill', system.statusClass]"
-                           :style="{ width: system.health + '%' }">
+                      <div
+                        :class="['system-health-fill', system.statusClass]"
+                        :style="{ width: system.health + '%' }"
+                      >
                       </div>
                     </div>
                   </div>
@@ -230,46 +295,46 @@ export default {
   data() {
     return {
       expandedFlight: null
-    }
+    };
   },
   methods: {
     toggleFlightDetails(flightName) {
-      this.expandedFlight = this.expandedFlight === flightName ? null : flightName
+      this.expandedFlight = this.expandedFlight === flightName ? null : flightName;
     },
     getSystemsList(systems) {
-      const { overall, ...systemsList } = systems
-      return systemsList
+      const { overall, ...systemsList } = systems;
+      return systemsList;
     },
     getTotalSeats(aircraft) {
       const seatMap = {
-        'A320neo': 180,
+        A320neo: 180,
         'B777-300ER': 332,
         'B787-9': 290,
         'A350-900': 325,
         'B737-800': 175,
         'A330-300': 277
-      }
-      return seatMap[aircraft] || 200
+      };
+      return seatMap[aircraft] || 200;
     },
     getSeatStatus(row, col) {
-      const seed = (row * 7 + col * 11) % 10
-      return seed < 7 ? 'occupied' : 'available'
+      const seed = (row * 7 + col * 11) % 10;
+      return seed < 7 ? 'occupied' : 'available';
     },
     getMetricClass(value) {
       if (typeof value === 'string') {
-        if (value.includes('ONLINE') || value === 'ON') return 'normal'
-        if (value.includes('OFFLINE') || value.includes('HIGH')) return 'critical'
-        const numMatch = value.match(/(\d+)/)
+        if (value.includes('ONLINE') || value === 'ON') return 'normal';
+        if (value.includes('OFFLINE') || value.includes('HIGH')) return 'critical';
+        const numMatch = value.match(/(\d+)/);
         if (numMatch && value.includes('%')) {
-          const num = parseInt(numMatch[1])
-          if (num < 70) return 'critical'
-          if (num < 85) return 'warning'
+          const num = parseInt(numMatch[1]);
+          if (num < 70) return 'critical';
+          if (num < 85) return 'warning';
         }
       }
-      return ''
+      return '';
     }
   }
-}
+};
 </script>
 
 <style scoped>

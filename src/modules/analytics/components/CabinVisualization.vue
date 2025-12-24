@@ -22,13 +22,25 @@
       <div class="cabin-section">
         <div class="cabin-section-label">BUSINESS CLASS</div>
         <div class="cabin-rows">
-          <div v-for="row in 3" :key="'business-' + row" class="cabin-row">
+          <div
+            v-for="row in 3"
+            :key="'business-' + row"
+            class="cabin-row"
+          >
             <div class="cabin-row-number">{{ row }}</div>
-            <div v-for="col in 2" :key="'b-l-' + col" :class="['seat', getSeatClass(row, col)]">
+            <div
+              v-for="col in 2"
+              :key="'b-l-' + col"
+              :class="['seat', getSeatClass(row, col)]"
+            >
               <span v-if="isSeatOccupied(row, col)">👤</span>
             </div>
             <div class="cabin-aisle"></div>
-            <div v-for="col in 2" :key="'b-r-' + col" :class="['seat', getSeatClass(row, col + 2)]">
+            <div
+              v-for="col in 2"
+              :key="'b-r-' + col"
+              :class="['seat', getSeatClass(row, col + 2)]"
+            >
               <span v-if="isSeatOccupied(row, col + 2)">👤</span>
             </div>
           </div>
@@ -39,13 +51,25 @@
       <div class="cabin-section">
         <div class="cabin-section-label">ECONOMY CLASS</div>
         <div class="cabin-rows">
-          <div v-for="row in 20" :key="'economy-' + row" class="cabin-row">
+          <div
+            v-for="row in 20"
+            :key="'economy-' + row"
+            class="cabin-row"
+          >
             <div class="cabin-row-number">{{ row + 3 }}</div>
-            <div v-for="col in 3" :key="'e-l-' + col" :class="['seat', getSeatClass(row + 3, col)]">
+            <div
+              v-for="col in 3"
+              :key="'e-l-' + col"
+              :class="['seat', getSeatClass(row + 3, col)]"
+            >
               <span v-if="isSeatOccupied(row + 3, col)">👤</span>
             </div>
             <div class="cabin-aisle"></div>
-            <div v-for="col in 3" :key="'e-r-' + col" :class="['seat', getSeatClass(row + 3, col + 3)]">
+            <div
+              v-for="col in 3"
+              :key="'e-r-' + col"
+              :class="['seat', getSeatClass(row + 3, col + 3)]"
+            >
               <span v-if="isSeatOccupied(row + 3, col + 3)">👤</span>
             </div>
           </div>
@@ -94,15 +118,15 @@ export default {
   methods: {
     getSeatClass(row, col) {
       // Deterministic seat generation based on row and column
-      const seed = (row * 7 + col * 13) % 10
-      return seed < 7 ? 'occupied' : 'empty'
+      const seed = (row * 7 + col * 13) % 10;
+      return seed < 7 ? 'occupied' : 'empty';
     },
     isSeatOccupied(row, col) {
-      const seed = (row * 7 + col * 13) % 10
-      return seed < 7
+      const seed = (row * 7 + col * 13) % 10;
+      return seed < 7;
     }
   }
-}
+};
 </script>
 
 <style scoped>

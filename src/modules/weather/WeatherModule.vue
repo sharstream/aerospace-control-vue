@@ -4,8 +4,11 @@
     <div class="weather-header">
       <div class="weather-title-section">
         <div class="weather-title">
-          <svg fill="currentColor" viewBox="0 0 24 24">
-            <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4s1.79-4 4-4h.71C7.37 7.69 9.48 6 12 6c3.04 0 5.5 2.46 5.5 5.5v.5H19c1.66 0 3 1.34 3 3s-1.34 3-3 3z"/>
+          <svg
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4s1.79-4 4-4h.71C7.37 7.69 9.48 6 12 6c3.04 0 5.5 2.46 5.5 5.5v.5H19c1.66 0 3 1.34 3 3s-1.34 3-3 3z" />
           </svg>
           Meteorological Operations Center
         </div>
@@ -26,15 +29,37 @@
       >
         <div class="alert-header">
           <div class="alert-type">
-            <div class="alert-icon" :class="alert.type">
-              <svg fill="currentColor" viewBox="0 0 24 24" width="20" height="20">
-                <path v-if="alert.type === 'severe'" d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
-                <path v-else-if="alert.type === 'warning'" d="M12 2l-5.5 9h11z M11 10h2v4h-2z M11 15h2v2h-2z"/>
-                <path v-else d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+            <div
+              class="alert-icon"
+              :class="alert.type"
+            >
+              <svg
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+              >
+                <path
+                  v-if="alert.type === 'severe'"
+                  d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"
+                />
+                <path
+                  v-else-if="alert.type === 'warning'"
+                  d="M12 2l-5.5 9h11z M11 10h2v4h-2z M11 15h2v2h-2z"
+                />
+                <path
+                  v-else
+                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
+                />
               </svg>
             </div>
           </div>
-          <div class="alert-badge" :class="alert.type">{{ alert.type.toUpperCase() }}</div>
+          <div
+            class="alert-badge"
+            :class="alert.type"
+          >
+            {{ alert.type.toUpperCase() }}
+          </div>
         </div>
         <div class="alert-title">{{ alert.title }}</div>
         <div class="alert-description">{{ alert.description }}</div>
@@ -63,8 +88,13 @@
     <div class="affected-flights-section">
       <div class="affected-flights-header">
         <div class="affected-flights-title">
-          <svg fill="currentColor" viewBox="0 0 24 24" width="24" height="24">
-            <path d="M21,16v-2l-8-5V3.5c0-0.83-0.67-1.5-1.5-1.5S10,2.67,10,3.5V9l-8,5v2l8-2.5V19l-2,1.5V22l3.5-1l3.5,1v-1.5L13,19v-5.5 L21,16z"/>
+          <svg
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            width="24"
+            height="24"
+          >
+            <path d="M21,16v-2l-8-5V3.5c0-0.83-0.67-1.5-1.5-1.5S10,2.67,10,3.5V9l-8,5v2l8-2.5V19l-2,1.5V22l3.5-1l3.5,1v-1.5L13,19v-5.5 L21,16z" />
           </svg>
           Weather-Affected Flights
         </div>
@@ -77,7 +107,10 @@
           class="affected-flight-item"
         >
           <div class="affected-flight-info">
-            <div class="flight-weather-icon" :style="{ background: item.airline.color, color: 'white' }">
+            <div
+              class="flight-weather-icon"
+              :style="{ background: item.airline.color, color: 'white' }"
+            >
               {{ item.airline.logo }}
             </div>
             <div class="affected-flight-details">
@@ -86,7 +119,12 @@
             </div>
           </div>
           <div class="weather-impact">
-            <div class="impact-badge" :class="item.impact">{{ item.impact }} IMPACT</div>
+            <div
+              class="impact-badge"
+              :class="item.impact"
+            >
+              {{ item.impact }} IMPACT
+            </div>
             <div class="delay-estimate">+{{ item.delay }}</div>
           </div>
         </div>
@@ -101,8 +139,13 @@
         class="forecast-card"
       >
         <div class="forecast-location">
-          <svg fill="currentColor" viewBox="0 0 24 24" width="16" height="16">
-            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+          <svg
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            width="16"
+            height="16"
+          >
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
           </svg>
           {{ forecast.code }} - {{ forecast.city }}
         </div>
@@ -115,26 +158,38 @@
         </div>
         <div class="forecast-details">
           <div class="forecast-detail-item">
-            <svg fill="currentColor" viewBox="0 0 24 24">
-              <path d="M14.5 17c0 1.65-1.35 3-3 3s-3-1.35-3-3h2c0 .55.45 1 1 1s1-.45 1-1-.45-1-1-1H2v-2h9.5c1.65 0 3 1.35 3 3zM19 6.5C19 4.57 17.43 3 15.5 3S12 4.57 12 6.5h2c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5S16.33 8 15.5 8H2v2h13.5c1.93 0 3.5-1.57 3.5-3.5zm-.5 4.5H2v2h16.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5v2c1.93 0 3.5-1.57 3.5-3.5S20.43 11 18.5 11z"/>
+            <svg
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M14.5 17c0 1.65-1.35 3-3 3s-3-1.35-3-3h2c0 .55.45 1 1 1s1-.45 1-1-.45-1-1-1H2v-2h9.5c1.65 0 3 1.35 3 3zM19 6.5C19 4.57 17.43 3 15.5 3S12 4.57 12 6.5h2c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5S16.33 8 15.5 8H2v2h13.5c1.93 0 3.5-1.57 3.5-3.5zm-.5 4.5H2v2h16.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5v2c1.93 0 3.5-1.57 3.5-3.5S20.43 11 18.5 11z" />
             </svg>
             <span class="forecast-detail-text">{{ forecast.wind }}</span>
           </div>
           <div class="forecast-detail-item">
-            <svg fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+            <svg
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
             </svg>
             <span class="forecast-detail-text">{{ forecast.visibility }}</span>
           </div>
           <div class="forecast-detail-item">
-            <svg fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+            <svg
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" />
             </svg>
             <span class="forecast-detail-text">{{ forecast.pressure }} inHg</span>
           </div>
           <div class="forecast-detail-item">
-            <svg fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H3V7h18v2z"/>
+            <svg
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H3V7h18v2z" />
             </svg>
             <span class="forecast-detail-text">Updated: {{ currentTime }}</span>
           </div>
@@ -145,7 +200,7 @@
 </template>
 
 <script>
-import { airlines } from '@shared/data'
+import { airlines } from '@shared/data';
 
 export default {
   name: 'WeatherModule',
@@ -191,26 +246,34 @@ export default {
         }
       ],
       airportForecasts: [
-        { code: 'JFK', city: 'New York', temp: 72, condition: 'Thunderstorms', icon: '⛈️', wind: '15 kt NE', visibility: '3 SM', pressure: '29.82' },
-        { code: 'LAX', city: 'Los Angeles', temp: 85, condition: 'Partly Cloudy', icon: '⛅', wind: '8 kt W', visibility: '10 SM', pressure: '30.12' },
-        { code: 'ORD', city: 'Chicago', temp: 68, condition: 'Severe Storms', icon: '🌩️', wind: '25 kt SW', visibility: '2 SM', pressure: '29.65' },
-        { code: 'DFW', city: 'Dallas', temp: 92, condition: 'Clear', icon: '☀️', wind: '12 kt S', visibility: '10 SM', pressure: '30.05' }
+        {
+          code: 'JFK', city: 'New York', temp: 72, condition: 'Thunderstorms', icon: '⛈️', wind: '15 kt NE', visibility: '3 SM', pressure: '29.82'
+        },
+        {
+          code: 'LAX', city: 'Los Angeles', temp: 85, condition: 'Partly Cloudy', icon: '⛅', wind: '8 kt W', visibility: '10 SM', pressure: '30.12'
+        },
+        {
+          code: 'ORD', city: 'Chicago', temp: 68, condition: 'Severe Storms', icon: '🌩️', wind: '25 kt SW', visibility: '2 SM', pressure: '29.65'
+        },
+        {
+          code: 'DFW', city: 'Dallas', temp: 92, condition: 'Clear', icon: '☀️', wind: '12 kt S', visibility: '10 SM', pressure: '30.05'
+        }
       ],
       affectedFlightsCache: []
-    }
+    };
   },
   computed: {
     affectedFlightsList() {
-      return this.affectedFlightsCache
+      return this.affectedFlightsCache;
     },
     currentTime() {
-      return new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+      return new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
     }
   },
   watch: {
     flights: {
       handler() {
-        this.updateAffectedFlights()
+        this.updateAffectedFlights();
       },
       immediate: true
     }
@@ -219,35 +282,35 @@ export default {
     updateAffectedFlights() {
       // Generate stable affected flights list based on flight properties
       this.affectedFlightsCache = this.flights
-        .filter(f => {
-          if (f.bottleneck) return true
+        .filter((f) => {
+          if (f.bottleneck) return true;
           // Use flight name hash as seed for consistent selection
-          const hash = f.name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
-          return hash % 10 > 4 // ~60% selection rate
+          const hash = f.name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+          return hash % 10 > 4; // ~60% selection rate
         })
         .slice(0, 5)
-        .map(f => {
-          const airline = airlines[f.airline]
-          let impact
+        .map((f) => {
+          const airline = airlines[f.airline];
+          let impact;
           if (f.bottleneck) {
-            impact = 'high'
+            impact = 'high';
           } else {
             // Use flight name hash for consistent impact
-            const hash = f.name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
-            impact = hash % 2 === 0 ? 'medium' : 'low'
+            const hash = f.name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+            impact = hash % 2 === 0 ? 'medium' : 'low';
           }
-          const delay = impact === 'high' ? '45-60 min' : impact === 'medium' ? '20-30 min' : '10-15 min'
+          const delay = impact === 'high' ? '45-60 min' : impact === 'medium' ? '20-30 min' : '10-15 min';
 
           return {
             flight: f,
-            airline: airline,
-            impact: impact,
-            delay: delay
-          }
-        })
+            airline,
+            impact,
+            delay
+          };
+        });
     }
   }
-}
+};
 </script>
 
 <style scoped>

@@ -5,7 +5,10 @@
       :style="{ borderLeftColor: airlines[flight.airline].color }"
       @click="$emit('toggle-detail')"
     >
-      <div class="flight-card-logo" :style="{ color: airlines[flight.airline].color }">
+      <div
+        class="flight-card-logo"
+        :style="{ color: airlines[flight.airline].color }"
+      >
         {{ airlines[flight.airline].logo }}
       </div>
       <div class="flight-card-info">
@@ -37,7 +40,10 @@
     </div>
 
     <div class="health-bar">
-      <div :class="['health-fill', systemHealth.statusClass]" :style="{ width: systemHealth.health + '%' }"></div>
+      <div
+        :class="['health-fill', systemHealth.statusClass]"
+        :style="{ width: systemHealth.health + '%' }"
+      ></div>
     </div>
     <div class="health-text">{{ systemHealth.health }}% Systems Health • Click for Details</div>
 
@@ -68,7 +74,7 @@ export default {
     }
   },
   emits: ['toggle-detail']
-}
+};
 </script>
 
 <style scoped>

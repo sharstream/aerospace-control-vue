@@ -6,12 +6,18 @@
       <div class="kpi-card">
         <div class="kpi-header">
           <div class="kpi-icon">
-            <svg fill="currentColor" viewBox="0 0 24 24">
-              <path d="M21,16v-2l-8-5V3.5c0-0.83-0.67-1.5-1.5-1.5S10,2.67,10,3.5V9l-8,5v2l8-2.5V19l-2,1.5V22l3.5-1l3.5,1v-1.5L13,19v-5.5 L21,16z"/>
+            <svg
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M21,16v-2l-8-5V3.5c0-0.83-0.67-1.5-1.5-1.5S10,2.67,10,3.5V9l-8,5v2l8-2.5V19l-2,1.5V22l3.5-1l3.5,1v-1.5L13,19v-5.5 L21,16z" />
             </svg>
           </div>
           <div class="kpi-trend up">
-            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>
+            <svg
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            ><path d="M7 14l5-5 5 5z" /></svg>
             +12%
           </div>
         </div>
@@ -19,20 +25,32 @@
         <div class="kpi-value">{{ systemContext.totalFlights }}</div>
         <div class="kpi-subtitle">Across {{ systemContext.activeAirlines }} carriers worldwide</div>
         <div class="kpi-progress-bar">
-          <div class="kpi-progress-fill" :style="{ width: (systemContext.totalFlights/80)*100 + '%' }"></div>
+          <div
+            class="kpi-progress-fill"
+            :style="{ width: (systemContext.totalFlights/80)*100 + '%' }"
+          ></div>
         </div>
       </div>
 
       <!-- On-Time Performance -->
       <div class="kpi-card success">
         <div class="kpi-header">
-          <div class="kpi-icon" style="background: rgba(74, 222, 128, 0.15); color: #4ade80;">
-            <svg fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+          <div
+            class="kpi-icon"
+            style="background: rgba(74, 222, 128, 0.15); color: #4ade80;"
+          >
+            <svg
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
             </svg>
           </div>
           <div class="kpi-trend up">
-            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>
+            <svg
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            ><path d="M7 14l5-5 5 5z" /></svg>
             +5.2%
           </div>
         </div>
@@ -40,20 +58,35 @@
         <div class="kpi-value">{{ systemContext.onTimePercentage }}%</div>
         <div class="kpi-subtitle">{{ systemContext.onTimeFlights }} flights on schedule</div>
         <div class="kpi-progress-bar">
-          <div class="kpi-progress-fill" :style="{ width: systemContext.onTimePercentage + '%', background: 'linear-gradient(90deg, #4ade80, #22c55e)' }"></div>
+          <div
+            class="kpi-progress-fill"
+            :style="{ width: systemContext.onTimePercentage + '%', background: 'linear-gradient(90deg, #4ade80, #22c55e)' }"
+          ></div>
         </div>
       </div>
 
       <!-- Delayed Flights -->
-      <div class="kpi-card" :class="{ warning: systemContext.delayedFlights > 5 }">
+      <div
+        class="kpi-card"
+        :class="{ warning: systemContext.delayedFlights > 5 }"
+      >
         <div class="kpi-header">
-          <div class="kpi-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">
-            <svg fill="currentColor" viewBox="0 0 24 24">
-              <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+          <div
+            class="kpi-icon"
+            style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;"
+          >
+            <svg
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" />
             </svg>
           </div>
           <div class="kpi-trend down">
-            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+            <svg
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            ><path d="M7 10l5 5 5-5z" /></svg>
             -2.1%
           </div>
         </div>
@@ -61,7 +94,10 @@
         <div class="kpi-value">{{ systemContext.delayedFlights }}</div>
         <div class="kpi-subtitle">Avg delay: 32 minutes</div>
         <div class="kpi-progress-bar">
-          <div class="kpi-progress-fill" :style="{ width: (systemContext.delayedFlights/systemContext.totalFlights)*100 + '%', background: 'linear-gradient(90deg, #f59e0b, #d97706)' }"></div>
+          <div
+            class="kpi-progress-fill"
+            :style="{ width: (systemContext.delayedFlights/systemContext.totalFlights)*100 + '%', background: 'linear-gradient(90deg, #f59e0b, #d97706)' }"
+          ></div>
         </div>
       </div>
 
@@ -69,12 +105,18 @@
       <div class="kpi-card">
         <div class="kpi-header">
           <div class="kpi-icon">
-            <svg fill="currentColor" viewBox="0 0 24 24">
-              <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+            <svg
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
             </svg>
           </div>
           <div class="kpi-trend up">
-            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>
+            <svg
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            ><path d="M7 14l5-5 5 5z" /></svg>
             +8.4%
           </div>
         </div>
@@ -82,7 +124,10 @@
         <div class="kpi-value">{{ systemContext.totalPassengers.toLocaleString() }}</div>
         <div class="kpi-subtitle">Average load factor: 84.2%</div>
         <div class="kpi-progress-bar">
-          <div class="kpi-progress-fill" style="width: 84%"></div>
+          <div
+            class="kpi-progress-fill"
+            style="width: 84%"
+          ></div>
         </div>
       </div>
     </div>
@@ -93,8 +138,14 @@
         <!-- Aerospace Industry Metrics -->
         <div class="aerospace-metrics-grid">
           <div class="metric-tile">
-            <div class="metric-icon-circle" style="background: rgba(74, 157, 215, 0.15); color: #4a9dd7;">
-              <svg fill="currentColor" viewBox="0 0 24 24"><path d="M23,11.01L18,11c-0.55,0-1,0.45-1,1v9c0,0.55,0.45,1,1,1h5c0.55,0,1-0.45,1-1v-9C24,11.46,23.55,11.01,23,11.01z M23,20h-5v-7h5V20z"/><path d="M20,2H2v20h15v-2H4V4h14v5h2V2z"/></svg>
+            <div
+              class="metric-icon-circle"
+              style="background: rgba(74, 157, 215, 0.15); color: #4a9dd7;"
+            >
+              <svg
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              ><path d="M23,11.01L18,11c-0.55,0-1,0.45-1,1v9c0,0.55,0.45,1,1,1h5c0.55,0,1-0.45,1-1v-9C24,11.46,23.55,11.01,23,11.01z M23,20h-5v-7h5V20z" /><path d="M20,2H2v20h15v-2H4V4h14v5h2V2z" /></svg>
             </div>
             <div class="metric-info">
               <div class="metric-title">Avg Altitude</div>
@@ -103,8 +154,14 @@
           </div>
 
           <div class="metric-tile">
-            <div class="metric-icon-circle" style="background: rgba(74, 222, 128, 0.15); color: #4ade80;">
-              <svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+            <div
+              class="metric-icon-circle"
+              style="background: rgba(74, 222, 128, 0.15); color: #4ade80;"
+            >
+              <svg
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              ><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14h-2v-2h2v2zm0-4h-2V7h2v6z" /></svg>
             </div>
             <div class="metric-info">
               <div class="metric-title">Fuel Efficiency</div>
@@ -113,8 +170,18 @@
           </div>
 
           <div class="metric-tile">
-            <div class="metric-icon-circle" style="background: rgba(139, 92, 246, 0.15); color: #8b5cf6;">
-              <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M12,20c-4.41,0-8-3.59-8-8s3.59-8,8-8s8,3.59,8,8 S16.41,20,12,20z"/><circle cx="12" cy="12" r="5"/></svg>
+            <div
+              class="metric-icon-circle"
+              style="background: rgba(139, 92, 246, 0.15); color: #8b5cf6;"
+            >
+              <svg
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              ><path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M12,20c-4.41,0-8-3.59-8-8s3.59-8,8-8s8,3.59,8,8 S16.41,20,12,20z" /><circle
+                cx="12"
+                cy="12"
+                r="5"
+              /></svg>
             </div>
             <div class="metric-info">
               <div class="metric-title">Airspace Density</div>
@@ -123,8 +190,14 @@
           </div>
 
           <div class="metric-tile">
-            <div class="metric-icon-circle" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">
-              <svg fill="currentColor" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+            <div
+              class="metric-icon-circle"
+              style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;"
+            >
+              <svg
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              ><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" /></svg>
             </div>
             <div class="metric-info">
               <div class="metric-title">Weather Alerts</div>
@@ -133,8 +206,14 @@
           </div>
 
           <div class="metric-tile">
-            <div class="metric-icon-circle" style="background: rgba(236, 72, 153, 0.15); color: #ec4899;">
-              <svg fill="currentColor" viewBox="0 0 24 24"><path d="M15,1H9v2h6V1z M11,14h2V8h-2V14z M19.03,7.39l1.42-1.42c-0.43-0.51-0.9-0.99-1.41-1.41l-1.42,1.42 C16.07,4.74,14.12,4,12,4c-4.97,0-9,4.03-9,9s4.02,9,9,9s9-4.03,9-9C21,10.88,20.26,8.93,19.03,7.39z M12,20c-3.87,0-7-3.13-7-7 s3.13-7,7-7s7,3.13,7,7S15.87,20,12,20z"/></svg>
+            <div
+              class="metric-icon-circle"
+              style="background: rgba(236, 72, 153, 0.15); color: #ec4899;"
+            >
+              <svg
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              ><path d="M15,1H9v2h6V1z M11,14h2V8h-2V14z M19.03,7.39l1.42-1.42c-0.43-0.51-0.9-0.99-1.41-1.41l-1.42,1.42 C16.07,4.74,14.12,4,12,4c-4.97,0-9,4.03-9,9s4.02,9,9,9s9-4.03,9-9C21,10.88,20.26,8.93,19.03,7.39z M12,20c-3.87,0-7-3.13-7-7 s3.13-7,7-7s7,3.13,7,7S15.87,20,12,20z" /></svg>
             </div>
             <div class="metric-info">
               <div class="metric-title">Avg Flight Time</div>
@@ -143,8 +222,14 @@
           </div>
 
           <div class="metric-tile">
-            <div class="metric-icon-circle" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;">
-              <svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+            <div
+              class="metric-icon-circle"
+              style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;"
+            >
+              <svg
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              ><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" /></svg>
             </div>
             <div class="metric-info">
               <div class="metric-title">Incidents (24h)</div>
@@ -180,23 +265,38 @@
             <div class="chart-title">On-Time Performance Trend (24h)</div>
             <div class="chart-legend">
               <div class="chart-legend-item">
-                <div class="chart-legend-dot" style="background: #4ade80;"></div>
+                <div
+                  class="chart-legend-dot"
+                  style="background: #4ade80;"
+                ></div>
                 On-Time
               </div>
               <div class="chart-legend-item">
-                <div class="chart-legend-dot" style="background: #f59e0b;"></div>
+                <div
+                  class="chart-legend-dot"
+                  style="background: #f59e0b;"
+                ></div>
                 Delayed
               </div>
               <div class="chart-legend-item">
-                <div class="chart-legend-dot" style="background: #ef4444;"></div>
+                <div
+                  class="chart-legend-dot"
+                  style="background: #ef4444;"
+                ></div>
                 Critical
               </div>
             </div>
           </div>
           <div class="chart-canvas">
             <div style="padding: 60px; text-align: center; color: #666;">
-              <svg width="48" height="48" fill="currentColor" viewBox="0 0 24 24" style="opacity: 0.5;">
-                <path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/>
+              <svg
+                width="48"
+                height="48"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                style="opacity: 0.5;"
+              >
+                <path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z" />
               </svg>
               <div style="margin-top: 12px; font-size: 13px;">Real-time performance monitoring</div>
             </div>
@@ -222,7 +322,10 @@
                 <span style="font-size: 12px; opacity: 0.7; font-weight: normal;">{{ airlines[flight.airline]?.name }}</span>
               </div>
             </div>
-            <span class="flight-status" :class="flight.statusClass">
+            <span
+              class="flight-status"
+              :class="flight.statusClass"
+            >
               {{ flight.status }}
             </span>
           </div>
@@ -255,23 +358,28 @@
           </div>
 
           <div class="flight-progress-bar">
-            <div class="flight-progress-fill" :style="{ width: (flight.progress * 100) + '%' }"></div>
+            <div
+              class="flight-progress-fill"
+              :style="{ width: (flight.progress * 100) + '%' }"
+            ></div>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Selected Flight Detail (if needed later) -->
-    <div v-if="selectedFlight" class="flight-detail-panel">
+    <div
+      v-if="selectedFlight"
+      class="flight-detail-panel"
+    >
       <!-- Detailed view can be added here -->
     </div>
   </div>
 </template>
 
 <script>
-import { airlines } from '@shared/data/airlines'
-import { airports } from '@shared/data/airports'
-import { getSystemContext } from '@shared/utils/calculations'
+import { airports } from '@shared/data/airports';
+import { getSystemContext } from '@shared/utils/calculations';
 
 export default {
   name: 'DashboardModule',
@@ -296,21 +404,20 @@ export default {
   data() {
     return {
       currentSelectedFlight: null,
-      airlines: airlines,
-      airports: airports
-    }
+      airports
+    };
   },
   computed: {
     systemContext() {
-      return getSystemContext(this.flights, this.airlines)
+      return getSystemContext(this.flights, this.airlines);
     }
   },
   methods: {
     selectFlight(flight) {
-      this.currentSelectedFlight = flight
+      this.currentSelectedFlight = flight;
     }
   }
-}
+};
 </script>
 
 <style scoped>

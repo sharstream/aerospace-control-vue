@@ -1,5 +1,8 @@
 <template>
-  <div id="app" class="app-container">
+  <div
+    id="app"
+    class="app-container"
+  >
     <!-- Map Module (always visible as base layer) -->
     <MapModule
       :flights="flights"
@@ -12,14 +15,14 @@
       <MapControls @control-action="handleMapControl" />
       <AirspaceLegend
         :airlines="airlines"
-        :flights-table-collapsed="flightsTableCollapsed"
-        :bottom-nav-collapsed="bottomNavCollapsed"
+        :flightsTableCollapsed="flightsTableCollapsed"
+        :bottomNavCollapsed="bottomNavCollapsed"
       />
       <FlightsDataTable
         ref="flightsDataTable"
         :flights="flights"
         :airlines="airlines"
-        :bottom-nav-collapsed="bottomNavCollapsed"
+        :bottomNavCollapsed="bottomNavCollapsed"
         @view-all="changeView('flights')"
         @flight-click="handleFlightClick"
         @flight-details="handleFlightClick"
@@ -68,8 +71,8 @@
       :flights="flights"
       :weatherHazards="weatherHazards"
       :airlines="airlines"
-      :flights-table-collapsed="flightsTableCollapsed"
-      :bottom-nav-collapsed="bottomNavCollapsed"
+      :flightsTableCollapsed="flightsTableCollapsed"
+      :bottomNavCollapsed="bottomNavCollapsed"
       @close="aiPanelVisible = false"
     />
 
@@ -78,19 +81,22 @@
       class="ai-fab-button"
       :class="{ active: aiPanelVisible }"
       :style="{ bottom: aiFabButtonBottom }"
-      @click="toggleAIPanel"
       title="AI Assistant"
+      @click="toggleAIPanel"
     >
-      <svg fill="currentColor" viewBox="0 0 24 24">
-        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-3 12H7c-.55 0-1-.45-1-1s.45-1 1-1h10c.55 0 1 .45 1 1s-.45 1-1 1zm0-3H7c-.55 0-1-.45-1-1s.45-1 1-1h10c.55 0 1 .45 1 1s-.45 1-1 1zm0-3H7c-.55 0-1-.45-1-1s.45-1 1-1h10c.55 0 1 .45 1 1s-.45 1-1 1z"/>
+      <svg
+        fill="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-3 12H7c-.55 0-1-.45-1-1s.45-1 1-1h10c.55 0 1 .45 1 1s-.45 1-1 1zm0-3H7c-.55 0-1-.45-1-1s.45-1 1-1h10c.55 0 1 .45 1 1s-.45 1-1 1zm0-3H7c-.55 0-1-.45-1-1s.45-1 1-1h10c.55 0 1 .45 1 1s-.45 1-1 1z" />
       </svg>
     </button>
 
     <!-- Bottom Navigation -->
     <BottomNavigation
       ref="bottomNavigation"
-      :active-view="activeView"
-      :flight-count="flights.length"
+      :activeView="activeView"
+      :flightCount="flights.length"
       @change-view="changeView"
       @collapse-state-change="handleBottomNavCollapseChange"
     />
@@ -98,19 +104,21 @@
 </template>
 
 <script>
-import MapModule from './modules/map/MapModule.vue'
-import MapControls from './modules/map/components/MapControls.vue'
-import AirspaceLegend from './modules/map/components/AirspaceLegend.vue'
-import DashboardModule from './modules/dashboard/DashboardModule.vue'
-import FlightsModule from './modules/flights/FlightsModule.vue'
-import WeatherModule from './modules/weather/WeatherModule.vue'
-import AnalyticsModule from './modules/analytics/AnalyticsModule.vue'
-import SettingsModule from './modules/settings/SettingsModule.vue'
-import AIChatModule from './modules/ai-chat/AIChatModule.vue'
-import BottomNavigation from './components/BottomNavigation.vue'
-import FlightsDataTable from './components/FlightsDataTable.vue'
-import { flightData, airlines, aircraftModels, weatherHazards } from '@shared/data'
-import { useUsageTracking } from './composables/useUsageTracking'
+import {
+  flightData, airlines, aircraftModels, weatherHazards
+} from '@shared/data';
+import MapModule from './modules/map/MapModule.vue';
+import MapControls from './modules/map/components/MapControls.vue';
+import AirspaceLegend from './modules/map/components/AirspaceLegend.vue';
+import DashboardModule from './modules/dashboard/DashboardModule.vue';
+import FlightsModule from './modules/flights/FlightsModule.vue';
+import WeatherModule from './modules/weather/WeatherModule.vue';
+import AnalyticsModule from './modules/analytics/AnalyticsModule.vue';
+import SettingsModule from './modules/settings/SettingsModule.vue';
+import AIChatModule from './modules/ai-chat/AIChatModule.vue';
+import BottomNavigation from './components/BottomNavigation.vue';
+import FlightsDataTable from './components/FlightsDataTable.vue';
+import { useUsageTracking } from './composables/useUsageTracking';
 
 export default {
   name: 'App',
@@ -130,97 +138,97 @@ export default {
   data() {
     return {
       flights: [...flightData],
-      airlines: airlines,
-      aircraftModels: aircraftModels,
-      weatherHazards: weatherHazards,
+      airlines,
+      aircraftModels,
+      weatherHazards,
       activeView: 'map',
       selectedFlight: null,
       aiPanelVisible: false,
       animationInterval: null,
       flightsTableCollapsed: true,
       bottomNavCollapsed: false
+    };
+  },
+  computed: {
+    aiFabButtonBottom() {
+      // Base position when bottom nav is shown
+      let base = 90;
+
+      // Adjust for bottom nav collapse
+      if (this.bottomNavCollapsed) {
+        base = 20;
+      }
+
+      // Move up when flights table is open
+      if (!this.flightsTableCollapsed) {
+        base += 360;
+      }
+
+      return `${base}px`;
     }
   },
   created() {
     // Initialize usage tracking
-    this.tracker = useUsageTracking()
+    this.tracker = useUsageTracking();
   },
   mounted() {
     // Track initial view
-    this.tracker.trackViewChange('map')
+    this.tracker.trackViewChange('map');
 
     // Start flight animation loop
     this.animationInterval = setInterval(() => {
-      this.flights = this.flights.map(flight => {
-        let newProgress = flight.progress + flight.speed
+      this.flights = this.flights.map((flight) => {
+        let newProgress = flight.progress + flight.speed;
 
         // Reset if completed
         if (newProgress >= 1) {
-          newProgress = 0
+          newProgress = 0;
         }
 
         return {
           ...flight,
           progress: newProgress
-        }
-      })
-    }, 50)
+        };
+      });
+    }, 50);
   },
   beforeUnmount() {
     // Clear animation interval
     if (this.animationInterval) {
-      clearInterval(this.animationInterval)
-    }
-  },
-  computed: {
-    aiFabButtonBottom() {
-      // Base position when bottom nav is shown
-      let base = 90
-
-      // Adjust for bottom nav collapse
-      if (this.bottomNavCollapsed) {
-        base = 20
-      }
-
-      // Move up when flights table is open
-      if (!this.flightsTableCollapsed) {
-        base += 360
-      }
-
-      return `${base}px`
+      clearInterval(this.animationInterval);
     }
   },
   methods: {
     changeView(view) {
-      this.activeView = view
-      this.tracker.trackViewChange(view)
+      this.activeView = view;
+      this.tracker.trackViewChange(view);
     },
     handleFlightClick(flight) {
-      this.selectedFlight = flight
-      this.activeView = 'dashboard'
-      this.tracker.trackFlightClick(flight.id)
-      this.tracker.trackViewChange('dashboard')
+      this.selectedFlight = flight;
+      this.activeView = 'dashboard';
+      this.tracker.trackFlightClick(flight.id);
+      this.tracker.trackViewChange('dashboard');
     },
     toggleAIPanel() {
-      const wasVisible = this.aiPanelVisible
-      this.aiPanelVisible = !this.aiPanelVisible
+      const wasVisible = this.aiPanelVisible;
+      this.aiPanelVisible = !this.aiPanelVisible;
       if (!wasVisible && this.aiPanelVisible) {
-        this.tracker.trackAIPanelOpen()
+        this.tracker.trackAIPanelOpen();
       }
     },
     handleMapControl(action) {
       // Handle map control actions
-      console.log('Map control action:', action)
+      console.log('Map control action:', action);
       // You can implement specific behaviors here (zoom, pan, etc.)
     },
     handleFlightsTableCollapseChange(collapsed) {
-      this.flightsTableCollapsed = collapsed
+      this.flightsTableCollapsed = collapsed;
     },
     handleBottomNavCollapseChange(collapsed) {
-      this.bottomNavCollapsed = collapsed
+      this.bottomNavCollapsed = collapsed;
     }
   }
-}
+};
 </script>
 
 <style>

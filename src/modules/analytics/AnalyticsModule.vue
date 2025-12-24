@@ -11,8 +11,12 @@
       <!-- Total Flights -->
       <div class="kpi-card">
         <div class="kpi-icon-wrapper">
-          <svg class="kpi-icon" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M21,16v-2l-8-5V3.5c0-0.83-0.67-1.5-1.5-1.5S10,2.67,10,3.5V9l-8,5v2l8-2.5V19l-2,1.5V22l3.5-1l3.5,1v-1.5L13,19v-5.5 L21,16z"/>
+          <svg
+            class="kpi-icon"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path d="M21,16v-2l-8-5V3.5c0-0.83-0.67-1.5-1.5-1.5S10,2.67,10,3.5V9l-8,5v2l8-2.5V19l-2,1.5V22l3.5-1l3.5,1v-1.5L13,19v-5.5 L21,16z" />
           </svg>
         </div>
         <div class="kpi-content">
@@ -24,8 +28,12 @@
       <!-- On Time -->
       <div class="kpi-card kpi-success">
         <div class="kpi-icon-wrapper success">
-          <svg class="kpi-icon" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+          <svg
+            class="kpi-icon"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
           </svg>
         </div>
         <div class="kpi-content">
@@ -37,8 +45,12 @@
       <!-- Delayed -->
       <div class="kpi-card kpi-warning">
         <div class="kpi-icon-wrapper warning">
-          <svg class="kpi-icon" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+          <svg
+            class="kpi-icon"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
           </svg>
         </div>
         <div class="kpi-content">
@@ -50,8 +62,12 @@
       <!-- Airlines -->
       <div class="kpi-card">
         <div class="kpi-icon-wrapper">
-          <svg class="kpi-icon" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+          <svg
+            class="kpi-icon"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
           </svg>
         </div>
         <div class="kpi-content">
@@ -63,8 +79,12 @@
       <!-- Total Passengers -->
       <div class="kpi-card">
         <div class="kpi-icon-wrapper">
-          <svg class="kpi-icon" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+          <svg
+            class="kpi-icon"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
           </svg>
         </div>
         <div class="kpi-content">
@@ -76,8 +96,12 @@
       <!-- Avg Altitude -->
       <div class="kpi-card">
         <div class="kpi-icon-wrapper">
-          <svg class="kpi-icon" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+          <svg
+            class="kpi-icon"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" />
           </svg>
         </div>
         <div class="kpi-content">
@@ -89,8 +113,12 @@
       <!-- On-Time Rate -->
       <div class="kpi-card kpi-success">
         <div class="kpi-icon-wrapper success">
-          <svg class="kpi-icon" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+          <svg
+            class="kpi-icon"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
           </svg>
         </div>
         <div class="kpi-content">
@@ -110,7 +138,10 @@
           class="airline-item"
         >
           <div class="airline-info">
-            <div class="airline-avatar" :style="{ background: airline.color }">
+            <div
+              class="airline-avatar"
+              :style="{ background: airline.color }"
+            >
               <span class="airline-logo">{{ airline.logo }}</span>
             </div>
             <div class="airline-details">
@@ -137,7 +168,10 @@
             </div>
             <div class="airline-metric-rate">
               <div class="rate-bar">
-                <div class="rate-fill" :style="{ width: airline.onTimeRate + '%', background: airline.onTimeRate >= 80 ? '#4ade80' : airline.onTimeRate >= 60 ? '#f59e0b' : '#ef4444' }"></div>
+                <div
+                  class="rate-fill"
+                  :style="{ width: airline.onTimeRate + '%', background: airline.onTimeRate >= 80 ? '#4ade80' : airline.onTimeRate >= 60 ? '#f59e0b' : '#ef4444' }"
+                ></div>
               </div>
               <span class="rate-text">{{ airline.onTimeRate }}% OTP</span>
             </div>
@@ -149,8 +183,13 @@
     <!-- Active Flights - Aircraft Systems Monitoring -->
     <div class="aircraft-monitoring-section">
       <h2 class="section-title">
-        <svg fill="currentColor" viewBox="0 0 24 24" width="24" height="24">
-          <path d="M21,16v-2l-8-5V3.5c0-0.83-0.67-1.5-1.5-1.5S10,2.67,10,3.5V9l-8,5v2l8-2.5V19l-2,1.5V22l3.5-1l3.5,1v-1.5L13,19v-5.5 L21,16z"/>
+        <svg
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          width="24"
+          height="24"
+        >
+          <path d="M21,16v-2l-8-5V3.5c0-0.83-0.67-1.5-1.5-1.5S10,2.67,10,3.5V9l-8,5v2l8-2.5V19l-2,1.5V22l3.5-1l3.5,1v-1.5L13,19v-5.5 L21,16z" />
         </svg>
         Active Flights - Aircraft Systems Monitoring
       </h2>
@@ -161,15 +200,18 @@
           :key="flight.name"
           :flight="flight"
           :airlines="airlines"
-          :system-health="systemsHealth[flight.name]"
+          :systemHealth="systemsHealth[flight.name]"
           @toggle-detail="toggleFlightDetail(flight.name)"
         >
           <!-- Expanded Detail Panel -->
-          <div v-if="expandedFlight === flight.name" class="flight-detail-panel">
+          <div
+            v-if="expandedFlight === flight.name"
+            class="flight-detail-panel"
+          >
             <CabinVisualization
               :flight="flight"
-              :total-seats="getCabinSeats(flight)"
-              :occupancy-rate="getCabinOccupancy(flight)"
+              :totalSeats="getCabinSeats(flight)"
+              :occupancyRate="getCabinOccupancy(flight)"
             />
             <SystemsMonitoring :systems="getFlightSystems(flight)" />
           </div>
@@ -180,15 +222,20 @@
     <!-- Weather Hazards & Outages Section -->
     <ReportSection title="Active Weather Hazards & Outages">
       <template #icon>
-        <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79 1.42-1.41zM4 10.5H1v2h3v-2zm9-9.95h-2V3.5h2V.55zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.7l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM20 10.5v2h3v-2h-3zm-8-5c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm-1 16.95h2V19.5h-2v2.95z"/>
+        <svg
+          width="24"
+          height="24"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79 1.42-1.41zM4 10.5H1v2h3v-2zm9-9.95h-2V3.5h2V.55zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.7l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM20 10.5v2h3v-2h-3zm-8-5c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm-1 16.95h2V19.5h-2v2.95z" />
         </svg>
       </template>
       <WeatherHazardCard
         v-for="(hazard, index) in weatherHazardsData"
         :key="index"
         :hazard="hazard"
-        :affected-flights="hazard.affectedFlights"
+        :affectedFlights="hazard.affectedFlights"
         :airlines="airlines"
       />
     </ReportSection>
@@ -196,31 +243,36 @@
     <!-- Delay Analysis Section -->
     <ReportSection title="Delay Analysis & Review">
       <template #icon>
-        <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+        <svg
+          width="24"
+          height="24"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" />
         </svg>
       </template>
       <DelayAnalysisTable
-        :delayed-flights="delayedFlights"
+        :delayedFlights="delayedFlights"
         :airlines="airlines"
         :airports="airportsData"
-        :aircraft-models="aircraftModelsData"
+        :aircraftModels="aircraftModelsData"
       />
     </ReportSection>
   </div>
 </template>
 
 <script>
-import ReportSection from '@/components/common/ReportSection.vue'
-import WeatherHazardCard from '@/components/common/WeatherHazardCard.vue'
-import DelayAnalysisTable from '@/components/common/DelayAnalysisTable.vue'
-import FlightMonitoringCard from './components/FlightMonitoringCard.vue'
-import CabinVisualization from './components/CabinVisualization.vue'
-import SystemsMonitoring from './components/SystemsMonitoring.vue'
-import { airports } from '@shared/data/airports'
-import { aircraftModels } from '@shared/data/aircraft-models'
-import { weatherHazards } from '@shared/data/weather-data'
-import { calculateDistance } from '@shared/utils/calculations'
+import { airports } from '@shared/data/airports';
+import { aircraftModels } from '@shared/data/aircraft-models';
+import { weatherHazards } from '@shared/data/weather-data';
+import { calculateDistance } from '@shared/utils/calculations';
+import ReportSection from '@/components/common/ReportSection.vue';
+import WeatherHazardCard from '@/components/common/WeatherHazardCard.vue';
+import DelayAnalysisTable from '@/components/common/DelayAnalysisTable.vue';
+import FlightMonitoringCard from './components/FlightMonitoringCard.vue';
+import CabinVisualization from './components/CabinVisualization.vue';
+import SystemsMonitoring from './components/SystemsMonitoring.vue';
 
 export default {
   name: 'AnalyticsModule',
@@ -251,40 +303,40 @@ export default {
       systemsHealthCache: {},
       cabinSeatsCache: {},
       flightSystemsCache: {}
-    }
+    };
   },
   computed: {
     systemsHealth() {
-      return this.systemsHealthCache
+      return this.systemsHealthCache;
     },
     onTimeFlights() {
-      return this.flights.filter(f => f.statusClass === 'on-time').length
+      return this.flights.filter(f => f.statusClass === 'on-time').length;
     },
     delayedFlightsCount() {
-      return this.flights.filter(f => f.statusClass === 'delayed').length
+      return this.flights.filter(f => f.statusClass === 'delayed').length;
     },
     delayedFlights() {
-      return this.flights.filter(f => f.statusClass === 'delayed')
+      return this.flights.filter(f => f.statusClass === 'delayed');
     },
     totalPassengers() {
-      return this.flights.reduce((sum, f) => sum + f.passengers, 0)
+      return this.flights.reduce((sum, f) => sum + f.passengers, 0);
     },
     avgAltitude() {
       const total = this.flights.reduce((sum, f) => {
-        const alt = parseInt(f.altitude.replace(/[^\d]/g, ''))
-        return sum + alt
-      }, 0)
-      return Math.round(total / this.flights.length)
+        const alt = parseInt(f.altitude.replace(/[^\d]/g, ''));
+        return sum + alt;
+      }, 0);
+      return Math.round(total / this.flights.length);
     },
     onTimePercentage() {
-      return Math.round((this.onTimeFlights / this.flights.length) * 100)
+      return Math.round((this.onTimeFlights / this.flights.length) * 100);
     },
     airlineBreakdown() {
       return Object.entries(this.airlines).map(([code, airline]) => {
-        const airlineFlights = this.flights.filter(f => f.airline === code)
-        const onTime = airlineFlights.filter(f => f.statusClass === 'on-time').length
-        const delayed = airlineFlights.filter(f => f.statusClass === 'delayed').length
-        const passengers = airlineFlights.reduce((sum, f) => sum + f.passengers, 0)
+        const airlineFlights = this.flights.filter(f => f.airline === code);
+        const onTime = airlineFlights.filter(f => f.statusClass === 'on-time').length;
+        const delayed = airlineFlights.filter(f => f.statusClass === 'delayed').length;
+        const passengers = airlineFlights.reduce((sum, f) => sum + f.passengers, 0);
 
         return {
           code,
@@ -294,119 +346,123 @@ export default {
           delayed,
           passengers,
           onTimeRate: airlineFlights.length > 0 ? Math.round((onTime / airlineFlights.length) * 100) : 0
-        }
-      }).filter(a => a.totalFlights > 0)
+        };
+      }).filter(a => a.totalFlights > 0);
     }
-  },
-  mounted() {
-    // Calculate affected flights for each weather hazard
-    this.weatherHazardsData = this.weatherHazardsData.map(hazard => {
-      const affected = this.flights.filter(flight => {
-        // Check if flight path intersects this hazard
-        const midLat = (flight.path[0][0] + flight.path[1][0]) / 2
-        const midLon = (flight.path[0][1] + flight.path[1][1]) / 2
-        const dist = calculateDistance(midLat, midLon, hazard.center[0], hazard.center[1])
-        return dist <= hazard.radius + 100
-      })
-
-      return {
-        ...hazard,
-        affectedFlights: affected
-      }
-    })
-
-    // Initialize stable systems health data
-    this.initializeSystemsHealth()
-    this.initializeCabinData()
-    this.initializeFlightSystems()
   },
   watch: {
     flights: {
       handler() {
-        this.initializeSystemsHealth()
-        this.initializeCabinData()
-        this.initializeFlightSystems()
+        this.initializeSystemsHealth();
+        this.initializeCabinData();
+        this.initializeFlightSystems();
       }
     }
   },
+  mounted() {
+    // Calculate affected flights for each weather hazard
+    this.weatherHazardsData = this.weatherHazardsData.map((hazard) => {
+      const affected = this.flights.filter((flight) => {
+        // Check if flight path intersects this hazard
+        const midLat = (flight.path[0][0] + flight.path[1][0]) / 2;
+        const midLon = (flight.path[0][1] + flight.path[1][1]) / 2;
+        const dist = calculateDistance(midLat, midLon, hazard.center[0], hazard.center[1]);
+        return dist <= hazard.radius + 100;
+      });
+
+      return {
+        ...hazard,
+        affectedFlights: affected
+      };
+    });
+
+    // Initialize stable systems health data
+    this.initializeSystemsHealth();
+    this.initializeCabinData();
+    this.initializeFlightSystems();
+  },
   methods: {
     initializeSystemsHealth() {
-      const health = {}
-      this.flights.forEach(flight => {
+      const health = {};
+      this.flights.forEach((flight) => {
         // Use flight name hash as seed for consistent health values
-        const hash = flight.name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
-        const healthValue = 80 + (hash % 20) // 80-100%
-        let statusClass, label
+        const hash = flight.name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        const healthValue = 80 + (hash % 20); // 80-100%
+        let statusClass; let
+          label;
         if (healthValue >= 95) {
-          statusClass = 'operational'
-          label = 'SYSTEMS OK'
+          statusClass = 'operational';
+          label = 'SYSTEMS OK';
         } else if (healthValue >= 85) {
-          statusClass = 'warning'
-          label = 'MONITOR'
+          statusClass = 'warning';
+          label = 'MONITOR';
         } else {
-          statusClass = 'critical'
-          label = 'ALERT'
+          statusClass = 'critical';
+          label = 'ALERT';
         }
-        health[flight.name] = { health: healthValue, statusClass, label }
-      })
-      this.systemsHealthCache = health
+        health[flight.name] = { health: healthValue, statusClass, label };
+      });
+      this.systemsHealthCache = health;
     },
     initializeCabinData() {
-      const cabinData = {}
-      this.flights.forEach(flight => {
-        const hash = flight.name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
-        cabinData[flight.name] = flight.passengers + (hash % 20) + 10
-      })
-      this.cabinSeatsCache = cabinData
+      const cabinData = {};
+      this.flights.forEach((flight) => {
+        const hash = flight.name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        cabinData[flight.name] = flight.passengers + (hash % 20) + 10;
+      });
+      this.cabinSeatsCache = cabinData;
     },
     initializeFlightSystems() {
-      const systems = {}
-      this.flights.forEach(flight => {
-        systems[flight.name] = this.generateFlightSystems(flight)
-      })
-      this.flightSystemsCache = systems
+      const systems = {};
+      this.flights.forEach((flight) => {
+        systems[flight.name] = this.generateFlightSystems(flight);
+      });
+      this.flightSystemsCache = systems;
     },
     toggleFlightDetail(flightName) {
-      this.expandedFlight = this.expandedFlight === flightName ? null : flightName
+      this.expandedFlight = this.expandedFlight === flightName ? null : flightName;
     },
     getCabinSeats(flight) {
-      return this.cabinSeatsCache[flight.name] || flight.passengers + 15
+      return this.cabinSeatsCache[flight.name] || flight.passengers + 15;
     },
     getCabinOccupancy(flight) {
-      const totalSeats = this.getCabinSeats(flight)
-      return ((flight.passengers / totalSeats) * 100).toFixed(1)
+      const totalSeats = this.getCabinSeats(flight);
+      return ((flight.passengers / totalSeats) * 100).toFixed(1);
     },
     getFlightSystems(flight) {
       // Return cached systems for this flight
-      return this.flightSystemsCache[flight.name] || []
+      return this.flightSystemsCache[flight.name] || [];
     },
     generateFlightSystems(flight) {
       // Generate consistent system data using flight name as seed
-      const hash = flight.name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
+      const hash = flight.name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
 
       const generateSystemData = (name, icon, seedOffset) => {
-        const seed = (hash + seedOffset) % 100
-        const health = 70 + (seed % 30) // 70-100%
-        let status, statusClass
+        const seed = (hash + seedOffset) % 100;
+        const health = 70 + (seed % 30); // 70-100%
+        let status; let
+          statusClass;
         if (health >= 90) {
-          status = 'OPERATIONAL'
-          statusClass = 'operational'
+          status = 'OPERATIONAL';
+          statusClass = 'operational';
         } else if (health >= 75) {
-          status = 'WARNING'
-          statusClass = 'warning'
+          status = 'WARNING';
+          statusClass = 'warning';
         } else {
-          status = 'CRITICAL'
-          statusClass = 'critical'
+          status = 'CRITICAL';
+          statusClass = 'critical';
         }
-        return { name, icon, status, statusClass, health }
-      }
+        return {
+          name, icon, status, statusClass, health
+        };
+      };
 
       const systems = [
         {
           ...generateSystemData('ELECTRICAL SYSTEM', 'd="M7 2v11h3v9l7-12h-4l4-8z"', 10),
           metrics: {
-            'VOLTAGE': (115 + (hash % 50) / 10).toFixed(1) + 'V',
-            'LOAD': (75 + (hash % 15)).toFixed(0) + '%',
+            VOLTAGE: `${(115 + (hash % 50) / 10).toFixed(1)}V`,
+            LOAD: `${(75 + (hash % 15)).toFixed(0)}%`,
             'GEN 1': 'ONLINE',
             'GEN 2': 'ONLINE'
           }
@@ -414,8 +470,8 @@ export default {
         {
           ...generateSystemData('HVAC SYSTEM', 'd="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"', 20),
           metrics: {
-            'CABIN TEMP': (68 + ((hash + 50) % 80) / 10).toFixed(1) + '°F',
-            'CABIN PRESS': (8 + ((hash + 30) % 20) / 10).toFixed(2) + ' PSI',
+            'CABIN TEMP': `${(68 + ((hash + 50) % 80) / 10).toFixed(1)}°F`,
+            'CABIN PRESS': `${(8 + ((hash + 30) % 20) / 10).toFixed(2)} PSI`,
             'PACK 1': 'ON',
             'PACK 2': 'ON'
           }
@@ -423,27 +479,27 @@ export default {
         {
           ...generateSystemData('HYDRAULICS', 'd="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"', 30),
           metrics: {
-            'SYSTEM A': (2800 + ((hash + 100) % 400)).toFixed(0) + ' PSI',
-            'SYSTEM B': (2800 + ((hash + 200) % 400)).toFixed(0) + ' PSI',
-            'RESERVOIR A': (90 + ((hash + 10) % 10)).toFixed(0) + '%',
-            'RESERVOIR B': (90 + ((hash + 20) % 10)).toFixed(0) + '%'
+            'SYSTEM A': `${(2800 + ((hash + 100) % 400)).toFixed(0)} PSI`,
+            'SYSTEM B': `${(2800 + ((hash + 200) % 400)).toFixed(0)} PSI`,
+            'RESERVOIR A': `${(90 + ((hash + 10) % 10)).toFixed(0)}%`,
+            'RESERVOIR B': `${(90 + ((hash + 20) % 10)).toFixed(0)}%`
           }
         },
         {
           ...generateSystemData('FUEL SYSTEM', 'd="M19.77 7.23l.01-.01-3.72-3.72L15 4.56l2.11 2.11c-.94.36-1.61 1.26-1.61 2.33 0 1.38 1.12 2.5 2.5 2.5.36 0 .69-.08 1-.21v7.21c0 .55-.45 1-1 1s-1-.45-1-1V14c0-1.1-.9-2-2-2h-1V5c0-1.1-.9-2-2-2H6c-1.1 0-2 .9-2 2v16h10v-7.5h1.5v5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V9c0-.69-.28-1.32-.73-1.77z"', 40),
           metrics: {
-            'TOTAL FUEL': (40000 + ((hash + 300) % 20000)).toFixed(0) + ' lbs',
-            'FLOW RATE': (5000 + ((hash + 400) % 2000)).toFixed(0) + ' lbs/hr',
-            'LEFT TANK': (85 + ((hash + 50) % 15)).toFixed(0) + '%',
-            'RIGHT TANK': (85 + ((hash + 60) % 15)).toFixed(0) + '%'
+            'TOTAL FUEL': `${(40000 + ((hash + 300) % 20000)).toFixed(0)} lbs`,
+            'FLOW RATE': `${(5000 + ((hash + 400) % 2000)).toFixed(0)} lbs/hr`,
+            'LEFT TANK': `${(85 + ((hash + 50) % 15)).toFixed(0)}%`,
+            'RIGHT TANK': `${(85 + ((hash + 60) % 15)).toFixed(0)}%`
           }
         }
-      ]
+      ];
 
-      return systems
+      return systems;
     }
   }
-}
+};
 </script>
 
 <style scoped>

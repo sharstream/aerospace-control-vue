@@ -10,19 +10,28 @@
         <h2>Display Options</h2>
         <div class="setting-item">
           <label>
-            <input type="checkbox" v-model="settings.showWeather" />
+            <input
+              v-model="settings.showWeather"
+              type="checkbox"
+            />
             Show weather hazards on map
           </label>
         </div>
         <div class="setting-item">
           <label>
-            <input type="checkbox" v-model="settings.showFlightPaths" />
+            <input
+              v-model="settings.showFlightPaths"
+              type="checkbox"
+            />
             Show flight paths
           </label>
         </div>
         <div class="setting-item">
           <label>
-            <input type="checkbox" v-model="settings.animateFlights" />
+            <input
+              v-model="settings.animateFlights"
+              type="checkbox"
+            />
             Animate flight movement
           </label>
         </div>
@@ -32,13 +41,19 @@
         <h2>Notifications</h2>
         <div class="setting-item">
           <label>
-            <input type="checkbox" v-model="settings.notifications" />
+            <input
+              v-model="settings.notifications"
+              type="checkbox"
+            />
             Enable notifications
           </label>
         </div>
         <div class="setting-item">
           <label>
-            <input type="checkbox" v-model="settings.soundAlerts" />
+            <input
+              v-model="settings.soundAlerts"
+              type="checkbox"
+            />
             Sound alerts for delays
           </label>
         </div>
@@ -49,8 +64,8 @@
         <div class="setting-item">
           <label>OpenAI API Key</label>
           <input
-            type="password"
             v-model="settings.apiKey"
+            type="password"
             placeholder="sk-..."
             class="api-key-input"
           />
@@ -84,7 +99,11 @@
         <div class="metrics-details">
           <h3>Time Spent by View</h3>
           <div class="time-spent-list">
-            <div v-for="(time, view) in usageMetrics.timeSpent" :key="view" class="time-spent-item">
+            <div
+              v-for="(time, view) in usageMetrics.timeSpent"
+              :key="view"
+              class="time-spent-item"
+            >
               <span class="view-name">{{ formatViewName(view) }}</span>
               <span class="time-value">{{ formatTime(time) }}</span>
             </div>
@@ -92,27 +111,59 @@
         </div>
 
         <div class="export-actions">
-          <button @click="exportMetrics('json')" class="export-btn">
-            <svg fill="currentColor" viewBox="0 0 24 24" width="16" height="16">
-              <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+          <button
+            class="export-btn"
+            @click="exportMetrics('json')"
+          >
+            <svg
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              width="16"
+              height="16"
+            >
+              <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
             </svg>
             Export JSON
           </button>
-          <button @click="exportMetrics('csv')" class="export-btn">
-            <svg fill="currentColor" viewBox="0 0 24 24" width="16" height="16">
-              <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+          <button
+            class="export-btn"
+            @click="exportMetrics('csv')"
+          >
+            <svg
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              width="16"
+              height="16"
+            >
+              <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
             </svg>
             Export CSV
           </button>
-          <button @click="exportMetrics('txt')" class="export-btn">
-            <svg fill="currentColor" viewBox="0 0 24 24" width="16" height="16">
-              <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+          <button
+            class="export-btn"
+            @click="exportMetrics('txt')"
+          >
+            <svg
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              width="16"
+              height="16"
+            >
+              <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
             </svg>
             Export TXT
           </button>
-          <button @click="clearMetrics" class="clear-btn">
-            <svg fill="currentColor" viewBox="0 0 24 24" width="16" height="16">
-              <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+          <button
+            class="clear-btn"
+            @click="clearMetrics"
+          >
+            <svg
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              width="16"
+              height="16"
+            >
+              <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
             </svg>
             Clear Data
           </button>
@@ -123,7 +174,7 @@
 </template>
 
 <script>
-import { useUsageTracking } from '../../composables/useUsageTracking'
+import { useUsageTracking } from '../../composables/useUsageTracking';
 
 export default {
   name: 'SettingsModule',
@@ -148,66 +199,66 @@ export default {
         }
       },
       metricsUpdateInterval: null
-    }
+    };
   },
   computed: {
     totalViewChanges() {
-      return Object.values(this.usageMetrics.viewChanges).reduce((sum, count) => sum + count, 0)
+      return Object.values(this.usageMetrics.viewChanges).reduce((sum, count) => sum + count, 0);
+    }
+  },
+  watch: {
+    'settings.apiKey': function (newValue) {
+      // Save API key to localStorage when it changes
+      if (newValue) {
+        localStorage.setItem('openai_api_key', newValue);
+      } else {
+        localStorage.removeItem('openai_api_key');
+      }
     }
   },
   mounted() {
     // Initialize usage tracking
-    this.tracker = useUsageTracking()
-    this.usageMetrics = this.tracker.getMetrics()
+    this.tracker = useUsageTracking();
+    this.usageMetrics = this.tracker.getMetrics();
 
     // Update metrics periodically
     this.metricsUpdateInterval = setInterval(() => {
-      this.usageMetrics = this.tracker.getMetrics()
-    }, 1000)
+      this.usageMetrics = this.tracker.getMetrics();
+    }, 1000);
   },
   beforeUnmount() {
     // Clear interval when component is destroyed
     if (this.metricsUpdateInterval) {
-      clearInterval(this.metricsUpdateInterval)
-    }
-  },
-  watch: {
-    'settings.apiKey'(newValue) {
-      // Save API key to localStorage when it changes
-      if (newValue) {
-        localStorage.setItem('openai_api_key', newValue)
-      } else {
-        localStorage.removeItem('openai_api_key')
-      }
+      clearInterval(this.metricsUpdateInterval);
     }
   },
   methods: {
     formatViewName(view) {
-      return view.charAt(0).toUpperCase() + view.slice(1)
+      return view.charAt(0).toUpperCase() + view.slice(1);
     },
 
     formatTime(milliseconds) {
-      const minutes = Math.floor(milliseconds / 60000)
-      const seconds = Math.floor((milliseconds % 60000) / 1000)
+      const minutes = Math.floor(milliseconds / 60000);
+      const seconds = Math.floor((milliseconds % 60000) / 1000);
 
       if (minutes === 0) {
-        return `${seconds}s`
+        return `${seconds}s`;
       }
-      return `${minutes}m ${seconds}s`
+      return `${minutes}m ${seconds}s`;
     },
 
     exportMetrics(format) {
-      this.tracker.exportMetrics(format)
+      this.tracker.exportMetrics(format);
     },
 
     clearMetrics() {
       if (confirm('Are you sure you want to clear all usage data? This action cannot be undone.')) {
-        this.tracker.clearMetrics()
-        this.usageMetrics = this.tracker.getMetrics()
+        this.tracker.clearMetrics();
+        this.usageMetrics = this.tracker.getMetrics();
       }
     }
   }
-}
+};
 </script>
 
 <style scoped>

@@ -1,6 +1,9 @@
 <template>
   <div class="delay-analysis-container">
-    <table v-if="delayedFlights.length > 0" class="delay-table">
+    <table
+      v-if="delayedFlights.length > 0"
+      class="delay-table"
+    >
       <thead>
         <tr>
           <th>Flight</th>
@@ -42,7 +45,10 @@
       </tbody>
     </table>
 
-    <div v-else class="no-delays-message">
+    <div
+      v-else
+      class="no-delays-message"
+    >
       <svg
         width="64"
         height="64"
@@ -50,7 +56,7 @@
         viewBox="0 0 24 24"
         class="success-icon"
       >
-        <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
+        <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
       </svg>
       <h3 class="no-delays-title">No Delays Reported</h3>
       <p class="no-delays-description">All flights are operating on schedule</p>
@@ -82,18 +88,18 @@ export default {
   methods: {
     getImpactClass(flight) {
       // Determine impact based on passengers and delay severity
-      if (flight.passengers > 250) return 'impact-high'
-      if (flight.passengers > 150) return 'impact-medium'
-      return 'impact-low'
+      if (flight.passengers > 250) return 'impact-high';
+      if (flight.passengers > 150) return 'impact-medium';
+      return 'impact-low';
     },
 
     getImpactLabel(flight) {
-      if (flight.passengers > 250) return 'High'
-      if (flight.passengers > 150) return 'Medium'
-      return 'Low'
+      if (flight.passengers > 250) return 'High';
+      if (flight.passengers > 150) return 'Medium';
+      return 'Low';
     }
   }
-}
+};
 </script>
 
 <style scoped>

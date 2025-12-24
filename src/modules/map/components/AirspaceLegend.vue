@@ -1,14 +1,31 @@
 <template>
-  <div class="legend-panel" :class="{ collapsed: isCollapsed }">
-    <div class="legend-header" @click="isCollapsed = !isCollapsed">
+  <div
+    class="legend-panel"
+    :class="{ collapsed: isCollapsed }"
+  >
+    <div
+      class="legend-header"
+      @click="isCollapsed = !isCollapsed"
+    >
       <div class="legend-title">
-        <svg fill="currentColor" viewBox="0 0 24 24" width="20" height="20">
-          <path d="M21,16v-2l-8-5V3.5c0-0.83-0.67-1.5-1.5-1.5S10,2.67,10,3.5V9l-8,5v2l8-2.5V19l-2,1.5V22l3.5-1l3.5,1v-1.5L13,19v-5.5 L21,16z"/>
+        <svg
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          width="20"
+          height="20"
+        >
+          <path d="M21,16v-2l-8-5V3.5c0-0.83-0.67-1.5-1.5-1.5S10,2.67,10,3.5V9l-8,5v2l8-2.5V19l-2,1.5V22l3.5-1l3.5,1v-1.5L13,19v-5.5 L21,16z" />
         </svg>
         Airspace Legend
       </div>
-      <svg class="collapse-icon" fill="currentColor" viewBox="0 0 24 24" width="20" height="20">
-        <path d="M7 10l5 5 5-5z"/>
+      <svg
+        class="collapse-icon"
+        fill="currentColor"
+        viewBox="0 0 24 24"
+        width="20"
+        height="20"
+      >
+        <path d="M7 10l5 5 5-5z" />
       </svg>
     </div>
 
@@ -21,8 +38,15 @@
           <span class="section-count">5 Active</span>
         </div>
         <div class="legend-items">
-          <div v-for="airline in airlines" :key="airline.code" class="legend-item">
-            <div class="airline-icon" :style="{ background: airline.color }">
+          <div
+            v-for="airline in airlines"
+            :key="airline.code"
+            class="legend-item"
+          >
+            <div
+              class="airline-icon"
+              :style="{ background: airline.color }"
+            >
               <span class="airline-logo">{{ airline.logo }}</span>
             </div>
             <span class="item-label">{{ airline.name }}</span>
@@ -75,8 +99,13 @@
 
       <!-- AI Navigation Button -->
       <button class="ai-nav-button">
-        <svg fill="currentColor" viewBox="0 0 24 24" width="16" height="16">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+        <svg
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          width="16"
+          height="16"
+        >
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
         </svg>
         AI-Enhanced Navigation
       </button>
@@ -104,27 +133,27 @@ export default {
   data() {
     return {
       isCollapsed: true
-    }
+    };
   },
   computed: {
     bottomPosition() {
       // Base position when bottom nav is shown
-      let base = 110
+      let base = 110;
 
       // Adjust for bottom nav collapse
       if (this.bottomNavCollapsed) {
-        base = 40
+        base = 40;
       }
 
       // Move up when flights table is open
       if (!this.flightsTableCollapsed) {
-        base += 360
+        base += 360;
       }
 
-      return `${base}px`
+      return `${base}px`;
     }
   }
-}
+};
 </script>
 
 <style scoped>

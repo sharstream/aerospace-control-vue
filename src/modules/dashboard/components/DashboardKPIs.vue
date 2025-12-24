@@ -1,13 +1,13 @@
 <template>
   <div class="dashboard-view active">
     <!-- Top KPI Cards -->
-    <DashboardKPIs :system-context="systemContext" />
+    <DashboardKPIs :systemContext="systemContext" />
 
     <div class="dashboard-content-grid">
       <!-- Left Column: Metrics & Charts -->
       <div class="metrics-column">
         <!-- Aerospace Industry Metrics -->
-        <DashboardMetrics :system-context="systemContext" />
+        <DashboardMetrics :systemContext="systemContext" />
         <!-- System Status & Charts -->
         <DashboardCharts />
       </div>
@@ -22,18 +22,21 @@
     </div>
 
     <!-- Selected Flight Detail (if needed later) -->
-    <div v-if="selectedFlight" class="flight-detail-panel">
+    <div
+      v-if="selectedFlight"
+      class="flight-detail-panel"
+    >
       <!-- Detailed view can be added here -->
     </div>
   </div>
 </template>
 
 <script>
-import DashboardKPIs from './components/DashboardKPIs.vue'
-import DashboardMetrics from './components/DashboardMetrics.vue'
-import DashboardCharts from './components/DashboardCharts.vue'
-import FlightList from './components/FlightList.vue'
-import { getSystemContext } from '@shared/utils/calculations'
+import { getSystemContext } from '@shared/utils/calculations';
+import DashboardKPIs from './components/DashboardKPIs.vue';
+import DashboardMetrics from './components/DashboardMetrics.vue';
+import DashboardCharts from './components/DashboardCharts.vue';
+import FlightList from './components/FlightList.vue';
 
 export default {
   name: 'DashboardModule',
@@ -64,21 +67,21 @@ export default {
   data() {
     return {
       currentSelectedFlight: null
-    }
+    };
   },
   computed: {
     systemContext() {
-      return getSystemContext(this.flights, this.airlines)
+      return getSystemContext(this.flights, this.airlines);
     }
   },
   methods: {
     selectFlight(flight) {
-      this.currentSelectedFlight = flight
+      this.currentSelectedFlight = flight;
       // Assuming parent might listen to this, but local state was used in original
       // Keeping original behavior logic
     }
   }
-}
+};
 </script>
 
 <style scoped>

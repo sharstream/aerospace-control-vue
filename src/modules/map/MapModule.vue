@@ -1,11 +1,14 @@
 <template>
-  <div ref="mapContainer" class="map-container"></div>
+  <div
+    ref="mapContainer"
+    class="map-container"
+  ></div>
 </template>
 
 <script>
-import L from 'leaflet'
-import { airlines } from '@shared/data'
-import { calculateBearing } from '@shared/utils/calculations'
+import L from 'leaflet';
+import { airlines } from '@shared/data';
+import { calculateBearing } from '@shared/utils/calculations';
 
 export default {
   name: 'MapModule',
@@ -27,28 +30,28 @@ export default {
       flightPaths: {},
       weatherCircles: [],
       resizeHandler: null
-    }
-  },
-  mounted() {
-    this.initializeMap()
-    this.renderFlights()
-    this.renderWeather()
+    };
   },
   watch: {
     flights: {
       handler() {
-        this.updateFlightPositions()
+        this.updateFlightPositions();
       },
       deep: true
     }
   },
+  mounted() {
+    this.initializeMap();
+    this.renderFlights();
+    this.renderWeather();
+  },
   beforeUnmount() {
     // Clean up event listeners
     if (this.resizeHandler) {
-      window.removeEventListener('resize', this.resizeHandler)
+      window.removeEventListener('resize', this.resizeHandler);
     }
     if (this.map) {
-      this.map.remove()
+      this.map.remove();
     }
   },
   methods: {
@@ -59,49 +62,49 @@ export default {
         zoom: 3,
         zoomControl: false,
         attributionControl: true
-      })
+      });
 
       // Add OpenStreetMap tiles
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors',
         maxZoom: 19
-      }).addTo(this.map)
+      }).addTo(this.map);
 
       // Add zoom control to top right
-      L.control.zoom({ position: 'topright' }).addTo(this.map)
+      L.control.zoom({ position: 'topright' }).addTo(this.map);
 
       // Fix zoom bug: invalidate map size on zoom events
       this.map.on('zoomstart', () => {
-        this.map.invalidateSize()
-      })
+        this.map.invalidateSize();
+      });
 
       this.map.on('zoomend', () => {
-        this.map.invalidateSize()
-      })
+        this.map.invalidateSize();
+      });
 
       // Also handle window resize
       this.resizeHandler = () => {
         if (this.map) {
-          this.map.invalidateSize()
+          this.map.invalidateSize();
         }
-      }
-      window.addEventListener('resize', this.resizeHandler)
+      };
+      window.addEventListener('resize', this.resizeHandler);
     },
 
     renderFlights() {
-      this.flights.forEach(flight => {
+      this.flights.forEach((flight) => {
         // Create flight path
         const pathLine = L.polyline(flight.path, {
           color: airlines[flight.airline]?.color || '#4a9dd7',
           weight: 2,
           opacity: 0.6,
           dashArray: flight.bottleneck ? '10, 10' : null
-        }).addTo(this.map)
+        }).addTo(this.map);
 
-        this.flightPaths[flight.name] = pathLine
+        this.flightPaths[flight.name] = pathLine;
 
         // Create flight marker with popup
-        const airline = airlines[flight.airline]
+        const airline = airlines[flight.airline];
         const markerIcon = L.divIcon({
           className: 'plane-icon',
           html: `<div class="plane-marker ${flight.bottleneck ? 'bottleneck' : ''}"
@@ -110,7 +113,7 @@ export default {
                  </div>`,
           iconSize: [30, 30],
           iconAnchor: [15, 15]
-        })
+        });
 
         const popupContent = `
           <div class="flight-popup">
@@ -144,7 +147,7 @@ export default {
               </div>
             </div>
           </div>
-        `
+        `;
 
         const marker = L.marker(flight.path[0], { icon: markerIcon })
           .addTo(this.map)
@@ -153,54 +156,54 @@ export default {
             maxWidth: 300,
             closeButton: true
           })
-          .on('click', () => this.$emit('flight-click', flight))
+          .on('click', () => this.$emit('flight-click', flight));
 
-        this.flightMarkers[flight.name] = marker
-      })
+        this.flightMarkers[flight.name] = marker;
+      });
     },
 
     updateFlightPositions() {
-      this.flights.forEach(flight => {
-        const marker = this.flightMarkers[flight.name]
-        if (!marker) return
+      this.flights.forEach((flight) => {
+        const marker = this.flightMarkers[flight.name];
+        if (!marker) return;
 
         // Calculate current position
-        const lat = flight.path[0][0] + (flight.path[1][0] - flight.path[0][0]) * flight.progress
-        const lng = flight.path[0][1] + (flight.path[1][1] - flight.path[0][1]) * flight.progress
+        const lat = flight.path[0][0] + (flight.path[1][0] - flight.path[0][0]) * flight.progress;
+        const lng = flight.path[0][1] + (flight.path[1][1] - flight.path[0][1]) * flight.progress;
 
         // Calculate bearing
-        const nextProgress = Math.min(flight.progress + 0.01, 1.0)
-        const nextLat = flight.path[0][0] + (flight.path[1][0] - flight.path[0][0]) * nextProgress
-        const nextLng = flight.path[0][1] + (flight.path[1][1] - flight.path[0][1]) * nextProgress
-        const bearing = calculateBearing(lat, lng, nextLat, nextLng)
+        const nextProgress = Math.min(flight.progress + 0.01, 1.0);
+        const nextLat = flight.path[0][0] + (flight.path[1][0] - flight.path[0][0]) * nextProgress;
+        const nextLng = flight.path[0][1] + (flight.path[1][1] - flight.path[0][1]) * nextProgress;
+        const bearing = calculateBearing(lat, lng, nextLat, nextLng);
 
         // Update marker position and rotation
-        marker.setLatLng([lat, lng])
-        const iconElement = marker.getElement()
+        marker.setLatLng([lat, lng]);
+        const iconElement = marker.getElement();
         if (iconElement) {
-          const planeMarker = iconElement.querySelector('.plane-marker')
+          const planeMarker = iconElement.querySelector('.plane-marker');
           if (planeMarker) {
-            planeMarker.style.transform = `rotate(${bearing}deg)`
+            planeMarker.style.transform = `rotate(${bearing}deg)`;
           }
         }
-      })
+      });
     },
 
     renderWeather() {
-      this.weatherHazards.forEach(hazard => {
+      this.weatherHazards.forEach((hazard) => {
         const circle = L.circle(hazard.center, {
           color: hazard.severity === 'high' ? '#ef4444' : '#f59e0b',
           fillColor: hazard.severity === 'high' ? '#dc2626' : '#d97706',
           fillOpacity: 0.2,
           radius: hazard.radius * 1000,
           weight: 2
-        }).addTo(this.map)
+        }).addTo(this.map);
 
-        this.weatherCircles.push(circle)
-      })
+        this.weatherCircles.push(circle);
+      });
     }
   }
-}
+};
 </script>
 
 <style scoped>
