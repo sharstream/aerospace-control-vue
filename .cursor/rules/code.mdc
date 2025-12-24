@@ -1,0 +1,48 @@
+---
+alwaysApply: true
+---
+
+# Coding Standards and Styling
+
+When Global and Workspace rules conflict, follow Workspace rules for this repo *ALWAYS*.
+
+## Principles
+- Do not generate code that is "clever". Prefer readability and explicit intent.
+- Use the most simple solution to the problem.
+
+## Cyclomatic Complexity
+- When evaluating cyclomatic complexity use ESLINT-style counting.
+- Ensure each new method or function you produce has a maximum cyclomatic complexity of as close to 10 as possible.
+- When making changes to existing code, make a recommendation to refactor the code to reduce the cyclomatic complexity to as close to 10 as possible. Do not make the changes automatically.
+- Remind the developer to be mindful of the scope of work before refactoring.
+
+## Single Responsibility Principle
+- Ensure each new class, component, or function you produce has a single responsibility.
+- When making changes to existing code, make a recommendation to refactor the code to reduce the number of responsibilities to as close to 1 as possible. Do not make the changes automatically.
+
+## Documentation
+- Ensure each new class, component, or function you produce has proper documentation.
+- Use JSDocs syntax.
+
+## Testing
+- Ensure each class, component, or function you produce has proper tests.
+- Use Vitest libraries and syntax.
+- Ensure each test is self-contained and does not depend on other tests.
+- Test File Location
+  - Place test files in a `__tests__` directory adjacent to the file being tested
+  - Example structure:
+    ```
+    components/
+      MyComponent.vue
+      __tests__/
+        MyComponent.test.js
+    ```
+  - Test files must use the `.test.js` extension
+  - Test file names should match the file they test: `MyComponent.vue` → `MyComponent.test.js`
+
+## Naming Conventions
+- Use camelCase for variable and function names.
+- Use PascalCase for class and component names.
+- File Name Conventions
+  - Use PascalCase for component file names. Example: MyComponent.vue
+  - Use kebab-case for all other file names. Example: my-file.js

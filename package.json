@@ -1,0 +1,23 @@
+{
+  "name": "aerospace-control-vue",
+  "version": "1.0.0",
+  "description": "Aerospace Airline Visualization System - Vue 3 Refactor",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "leaflet": "^1.9.4",
+    "mitt": "^3.0.1",
+    "moment": "^2.30.1",
+    "moment-timezone": "^0.6.0",
+    "pinia": "^2.3.1",
+    "vue": "^3.5.26"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "vite": "^6.0.7"
+  }
+}

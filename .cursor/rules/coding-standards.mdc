@@ -1,0 +1,57 @@
+---
+description: : You MUST consider and apply these standards whenever proposing code via edit_file during task execution. Refer back to these principles during impact-analysis and pre-edit-check. Log adherence checks and any deviations (with justification) in your notebook. SME review will verify adherence for tasks marked READY_FOR_REVIEW
+globs: 
+alwaysApply: false
+---
+# Coding Standards and Best Practices (Engineer Guidance)
+
+**Engineer Agent Instructions:** You MUST consider and apply these standards whenever proposing code via `edit_file` during task execution. Refer back to these principles during `impact-analysis` and `pre-edit-check`. Log adherence checks and any deviations (with justification) in your `notebook`. If your task involves code changes and is marked `READY_FOR_REVIEW`, an SME agent will verify adherence to these standards.
+
+## Core Principles:
+
+1.  **SOLID Principles:**
+    *   **Single Responsibility:** Classes/modules should have one primary reason to change.
+    *   **Open/Closed:** Software entities should be open for extension, but closed for modification.
+    *   **Liskov Substitution:** Subtypes must be substitutable for their base types without altering correctness.
+    *   **Interface Segregation:** Clients should not be forced to depend on interfaces they do not use.
+    *   **Dependency Inversion:** Depend upon abstractions, not concretions.
+2.  **DRY (Don't Repeat Yourself):** Avoid duplication of code and logic. Use functions, classes, and abstractions.
+3.  **KISS (Keep It Simple, Stupid):** Prefer straightforward, simple solutions over unnecessary complexity.
+4.  **YAGNI (You Ain't Gonna Need It):** Do not implement functionality before it is actually required by the task description or PRD.
+
+## Specific Standards:
+
+5.  **Readability & Naming:**
+    *   Use clear, descriptive, and explicit variable, function, and class names. Avoid ambiguity (e.g., prefer `userProfileData` over `data`).
+    *   Follow established project/language naming conventions (e.g., camelCase, PascalCase, snake_case).
+6.  **Consistency:** Adhere to the existing coding style (formatting, patterns) found in the surrounding codebase.
+7.  **Performance:**
+    *   Be mindful of performance implications (e.g., algorithmic complexity, database query efficiency, network requests).
+    *   Avoid unnecessary computations or data fetching, especially in loops or frequently called code.
+8.  **Security (OWASP Top 10 & General):**
+    *   **Input Validation:** Validate and sanitize all external inputs (user-provided, API responses, file reads).
+    *   **Output Encoding:** Properly encode data before displaying it in UI contexts (though frameworks often help).
+    *   **Authentication & Authorization:** Ensure appropriate checks are in place. Do not hardcode credentials. Verify permissions (e.g., CRUD/FLS, Sharing Rules in Salesforce Apex).
+    *   **Injection Prevention:** Guard against injection attacks (SOQL, SQL, NoSQL, OS command, XSS). Use parameterized queries/prepared statements/bind variables. Use `WITH SECURITY_ENFORCED` in SOQL where applicable.
+    *   **Secure Defaults:** Configure libraries and frameworks securely.
+    *   **Error Handling:** Avoid revealing sensitive information in error messages.
+    *   **Dependency Security:** Be aware of vulnerabilities in third-party libraries.
+9.  **Testing:**
+    *   Aim for good test coverage for new or modified logic, especially considering Salesforce's 75% requirement.
+    *   Write clear, focused unit tests. Consider integration tests for interactions. Use appropriate test data setup.
+    *   Include tests for positive cases, negative cases, bulk scenarios (for Apex triggers/batch), and edge cases (null inputs, empty lists, boundary values, governor limits).
+    *   If you are operating as an Engineer in the Multi-agent workflow, ensure the admin knows that you made changes and what needs to be tested, if testing was not included in your task. If tests are included, ensure they pass before marking the task `DONE` or `READY_FOR_REVIEW`.
+10. **Error Handling & Logging (via `notebook`):**
+    *   Implement robust error handling (try-catch blocks, promise rejections).
+    *   Log errors encountered during execution using the `notebook` tool. Provide context, avoid sensitive data. Include stack traces if relevant.
+    *   Fail gracefully where possible. If an unrecoverable error occurs, report `FAILED` via `update_administrator`, including relevant logs from `notebook` in the summary.
+11. **Modularity & Reusability:** Design components and functions to be reusable and loosely coupled.
+12. **Version Compatibility:** Ensure changes are compatible with specified language/framework versions (refer to project config or `distilled_context`).
+13. **No Magic Numbers/Strings:** Replace hardcoded constants with named variables/enums for clarity and maintainability.
+14. **Comments & Logging:**
+    * Add comments to explain *why* something is done (the intent), especially for complex or non-obvious code. Avoid commenting *what* the code does if it's already clear.
+    * Document public APIs (functions, classes, methods, LWC `@api` properties).
+    * Use the `notebook` tool to log significant implementation decisions and rationale.
+15. **Configuration Management:** Avoid hardcoding configuration values. Check `distilled_context` for configuration instructions or use standard mechanisms (Custom Settings, Custom Metadata Types, etc.).
+16. **Resource Management:** Ensure resources (file handles, network connections, locks) are properly released (e.g., try-with-resources in Java, `finally` blocks, `using` statements in C#).
+17. **Commit Messages:** When logging the completion of a code change in your `notebook`, include a suggested commit message following Conventional Commits format (e.g., `feat: Add user profile endpoint` or `fix: Correct calculation error in checkout`). If you are asked to create commits, use this message. Additionally, report these commit messages to the Administrator (and the commit id if you are required to make one).

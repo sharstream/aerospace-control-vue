@@ -1,0 +1,181 @@
+---
+alwaysApply: true
+---
+
+# Accessibility Guidelines
+
+All components must follow these accessibility standards to ensure our application is usable by everyone, including users with disabilities.
+
+---
+
+## Core Principles
+
+### ARIA Attributes
+
+Use appropriate ARIA attributes to provide semantic meaning to assistive technologies:
+
+- Use appropriate ARIA roles for components
+- Include descriptive `aria-labels` for all interactive elements
+- Maintain proper `aria-expanded` states for collapsible elements
+- Use `aria-hidden` for decorative elements that shouldn't be announced
+- Include `aria-haspopup` for elements that trigger popups or menus
+
+**Example** from [OverflowMenu.vue](mdc:ext/mapsV2/desktop/components/mobile-menu/OverflowMenu.vue):
+
+```vue
+<button
+    aria-label="Menu"
+    aria-expanded="false"
+    aria-haspopup="true"
+    role="button"
+>
+```
+
+### Keyboard Navigation
+
+All interactive elements must be fully keyboard accessible:
+
+- Support **Tab** key for sequential navigation
+- Implement **arrow key** controls for lists and menus
+- Handle **Enter/Space** keys for activation
+- Support **Escape** key for closing dialogs and menus
+
+**Example:**
+
+```vue
+<div
+    tabindex="0"
+    @keydown.enter="handleEnter"
+    @keydown.escape="handleEscape"
+    @keydown.arrow-up="handleArrowUp"
+    @keydown.arrow-down="handleArrowDown"
+>
+```
+
+### Focus Management
+
+Proper focus management ensures users always know where they are in the interface:
+
+- **Trap focus** within modals and dialogs
+- **Return focus** to the triggering element when closing
+- **Maintain focus order** that follows visual layout
+- **Handle focus restoration** during dynamic content changes
+
+**Example:**
+
+```javascript
+// Focus trap implementation
+const focusableElements = wrapper.querySelectorAll(
+    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+);
+```
+
+---
+
+## Component Patterns
+
+### Modal Components
+
+- Use `role="dialog"` or `role="alertdialog"`
+- Include `aria-modal="true"`
+- Implement focus trapping
+- Handle **Escape** key to close
+- Return focus to trigger element on close
+
+### Menu Components
+
+- Use `role="menu"` with `role="menuitem"` children
+- Support **arrow key** navigation between items
+- Handle **Enter/Space** for selection
+- Include `aria-expanded` state on trigger
+- Support **Escape** key for closing
+
+### Interactive Elements
+
+- Use semantic HTML elements (`<button>`, `<a>`, etc.)
+- Include proper ARIA roles when semantic HTML isn't sufficient
+- Support keyboard interaction for all mouse interactions
+- Provide visual feedback for all states
+- Include visible focus indicators
+
+---
+
+## Testing Accessibility
+
+### Test Categories
+
+Every component should be tested for:
+
+- **Keyboard navigation** - All functionality accessible via keyboard
+- **Screen reader compatibility** - Proper announcements and context
+- **Focus management** - Focus moves logically and is always visible
+- **ARIA attribute validation** - Proper roles, labels, and states
+- **Color contrast** - Meets WCAG AA standards (4.5:1 for normal text)
+- **Text alternatives** - All images and icons have appropriate alt text
+
+### Test Tools
+
+- **Vue Test Utils** for component testing
+- **Manual testing** with screen readers (NVDA, JAWS, VoiceOver)
+- **Keyboard navigation testing** (unplug your mouse!)
+- **Focus management verification** using visual focus indicators
+
+---
+
+## Best Practices
+
+### Use SLDS-Vue Components First
+
+**Always use SLDS-Vue components from `@spm` before creating custom/bespoke elements.**
+
+SLDS-Vue components are pre-built, accessible, and tested to meet accessibility standards. These components are available in `node_modules/@spm` and include:
+
+- **Buttons** - Standard button components with proper ARIA attributes
+- **Modals/Dialogs** - Accessible modal dialogs with focus trapping
+- **Tabs** - Tabbed interfaces with keyboard navigation
+- **Menus** - Dropdown and context menus
+- **Form elements** - Input fields, selects, checkboxes, radio buttons
+- **Cards** - Content containers
+- **Alerts/Toasts** - Notification components
+- And many more...
+
+✅ **DO** use SLDS-Vue components when:
+- An SLDS-Vue component exists for your use case
+- The component meets your functional requirements
+- Minor styling adjustments can achieve your design goals
+
+❌ **DO NOT** create custom components when:
+- An equivalent SLDS-Vue component is available
+- You're replicating functionality that SLDS-Vue already provides
+- You haven't checked if an SLDS-Vue component exists
+
+### Semantic HTML
+
+Only create custom components when no equivalent SLDS-Vue component exists. When building custom components, always start with semantic HTML before adding ARIA:
+
+- Use appropriate HTML elements (`<button>`, `<nav>`, `<main>`, etc.)
+- Maintain proper heading hierarchy (`<h1>` through `<h6>`)
+- Include `alt` text for images and icons
+- Use proper form labels with `<label>` elements
+- Implement proper landmarks (`<header>`, `<nav>`, `<main>`, `<footer>`)
+- Document why SLDS-Vue components cannot be used
+
+### Interactive Elements
+
+Ensure all interactive elements are accessible:
+
+- Ensure sufficient color contrast (4.5:1 for normal text, 3:1 for large text)
+- Provide visible focus indicators (don't remove outlines without replacement)
+- Include hover, focus, and active states
+- Support touch targets of at least 44×44 pixels
+- Implement proper spacing to prevent accidental clicks
+
+### Screen Reader Support
+
+Optimize the experience for screen reader users:
+
+- Use descriptive labels that make sense out of context
+- Include proper ARIA attributes for custom components
+- Maintain logical tab order (follows visual layout)
+- Provide text alternatives for visual-only information
+- Handle dynamic content updates with `aria-live` regions

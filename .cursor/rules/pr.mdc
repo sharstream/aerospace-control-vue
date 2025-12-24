@@ -1,0 +1,65 @@
+---
+alwaysApply: true
+---
+
+# PR Creation
+- Use this rule whenever you are prompted to create a PR.
+- Let the user know that you are using this rule to create the PR.
+- Always provide the user with what the PR will look like and wait for confirmation before creating the PR.
+
+## Requirements
+- The following must be provided by the user in the prompt. If not, do not create a PR and ask the user to provide them.
+- Inputs
+  - Name of parent or target branch.
+  - Name of the work items in the form of W-{number}. This can be multiple work items.
+- Do not ask the user for PR Title or PR Description. You are providing that for them.
+
+## CRITICAL: PR Creation Protocol
+- **ALWAYS** Run your own code review of the changes against your own best practices but make sure to prioritize the coding rules defined in the project when there is a conflict. Allow the user the opportunity to address the issues with or without your help.
+- **ALWAYS** Always follow the rules in the PR Title and PR Description sections as they are *CRITICAL* for consistency.
+- **ALWAYS** read and follow the PR Creation rules in this file before creating any PR.
+- **NEVER** create a PR without first reviewing these rules.
+- **DO NOT** use conventional commit prefixes (feat:, fix:, docs:, etc.) in PR titles.
+- **DO NOT** place work items in the PR body - they MUST be in the title.
+- If you are unsure about the format, show the user the proposed title and description BEFORE creating the PR.
+- The repository where you will create the PR is `maps/ma-unified`.
+
+## Algorithm to Follow
+- Use these instructions *EVERY* time you are running this "command".
+- Get the current working branch by running `git branch --show-current`.
+- Get the latest for the target branch to prepare the diff. `git fetch origin <target_branch>`.
+- Run a diff between the current working branch and the provided parent or target branch using `git diff`.
+- Do the code review at this time.
+- Do the accessibility check at this time using the guidelines from `accessibility.mdc`:
+  - Verify ARIA attributes are properly used
+  - Confirm keyboard navigation support
+  - Check focus management implementation
+  - Validate component patterns (modals, menus, interactive elements)
+  - Ensure SLDS-Vue components are used where appropriate
+  - Verify semantic HTML usage
+  - Check for proper screen reader support
+- Use `gh` to create the PR.
+
+## PR Title
+- **REQUIRED FORMAT**: `@W-{number}: Short title summarizing changes`
+- For multiple work items: `@W-{number}, @W-{number}: Short title`
+- **DO NOT** use conventional commit prefixes like `feat:`, `fix:`, `docs:`, etc.
+- **DO NOT** include the work item anywhere else except the title
+- Examples
+  - `@W-123: Added new feature to support X`
+  - `@W-123, @W-456: Fixed bug in feature Y`
+  - `@W-123, @W-456: Refactored code to improve performance`
+  - `@W-123, @W-456: Updated translations for feature Z`
+
+## PR Description
+- Avoid lengthy bullet points or technical minutiae.
+- Focus on impact - what changed why it matters.
+- Each PR should only have the following sections:
+  - Description
+  - Notable Changes
+  - Testing Instructions
+  - Accessibility Report Card
+  - GUS Tickets
+    - Leave this section completely empty.
+    - Do not add placeholder text.
+    - Literally empty.
