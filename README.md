@@ -166,7 +166,7 @@ Future enhancements to consider:
 
 ## 🐛 Known Issues
 
-None currently. The refactor maintains 100% functional parity with the original application.
+Pinia store proxy disconnection errors when accessing store properties during async operations (fixed - use `storeToRefs` pattern).
 
 ## 📄 License
 
@@ -183,6 +183,28 @@ Proprietary - Internal use only
 ## 📞 Support
 
 For questions or issues, contact the development team.
+
+---
+
+## 🔍 Dev Notes
+
+### Pinia Proxy Fix (Dec 2024)
+**Issue**: `Uncaught Error: disconnected port object` during async store updates
+**Cause**: Race condition accessing Pinia proxy while async API calls update state
+**Fix**: Use `storeToRefs` to extract reactive refs in `setup()`:
+
+```js
+import { storeToRefs } from 'pinia';
+setup() {
+  const store = useFlightsStore();
+  const { lastUpdate } = storeToRefs(store);  // Extract refs
+  const formatted = computed(() => lastUpdate.value?.toLocaleTimeString());
+  return { formatted };
+}
+// ❌ BAD: this.store.lastUpdate (proxy access during async)
+// ✅ GOOD: storeToRefs + .value (safe ref access)
+```
+**Affected**: `src/modules/settings/SettingsModule.vue`
 
 ---
 

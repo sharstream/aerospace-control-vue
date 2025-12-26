@@ -1,12 +1,19 @@
 import { defineStore } from 'pinia';
 import { flightData, airlines, aircraftModels } from '@shared/data';
+import { fetchAirspaceData, transformAircraftData, checkApiHealth } from '@/services/api';
 
 export const useFlightsStore = defineStore('flights', {
     state: () => ({
         flights: [...flightData],
         airlines,
         aircraftModels,
-        animationInterval: null
+        animationInterval: null,
+        refreshInterval: null,
+        useRealData: false,
+        isLoading: false,
+        apiStatus: 'unknown',
+        lastUpdate: null,
+        error: null
     }),
 
     getters: {
@@ -26,7 +33,13 @@ export const useFlightsStore = defineStore('flights', {
         flightCount: state => state.flights.length,
 
     // Get flights with bottleneck
-        bottleneckFlights: state => state.flights.filter(flight => flight.bottleneck)
+        bottleneckFlights: state => state.flights.filter(flight => flight.bottleneck),
+
+    // Check if using real-time data
+        isUsingRealData: state => state.useRealData,
+
+    // Get API connection status
+        getApiStatus: state => state.apiStatus
     },
 
     actions: {
@@ -93,6 +106,117 @@ export const useFlightsStore = defineStore('flights', {
             const index = this.flights.findIndex(f => f.id === flightId);
             if (index !== -1) {
                 this.flights.splice(index, 1);
+            }
+        },
+
+    // Check API health status
+        async checkApiConnection() {
+            try {
+                const health = await checkApiHealth();
+                this.apiStatus = health.status === 'operational' ? 'connected' : 'error';
+                return true;
+            } catch (error) {
+                this.apiStatus = 'disconnected';
+                console.error('API connection check failed:', error);
+                return false;
+            }
+        },
+
+    // Fetch real-time aircraft data from backend
+        async fetchRealTimeData() {
+            debugger;
+            if (!this.useRealData) {
+                return;
+            }
+
+            this.isLoading = true;
+            this.error = null;
+
+            try {
+                const geojsonData = await fetchAirspaceData(50);
+                const transformedFlights = transformAircraftData(geojsonData);
+
+                // Preserve progress values for smooth animation
+                const updatedFlights = transformedFlights.map(newFlight => {
+                    const existingFlight = this.flights.find(f => f.icao24 === newFlight.icao24);
+                    if (existingFlight) {
+                        return {
+                            ...newFlight,
+                            progress: existingFlight.progress,
+                            speed: existingFlight.speed
+                        };
+                    }
+                    return newFlight;
+                });
+
+                this.flights = updatedFlights;
+                this.lastUpdate = new Date();
+                this.apiStatus = 'connected';
+            } catch (error) {
+                console.error('Failed to fetch real-time data:', error);
+                this.error = error.message;
+                this.apiStatus = 'error';
+
+                // Fall back to mock data if real data fails
+                if (this.flights.length === 0) {
+                    this.flights = [...flightData];
+                }
+            } finally {
+                this.isLoading = false;
+            }
+        },
+
+    // Toggle between real and mock data
+        async toggleDataSource() {
+            this.useRealData = !this.useRealData;
+
+            if (this.useRealData) {
+                // Check API connection first
+                const isConnected = await this.checkApiConnection();
+
+                if (!isConnected) {
+                    this.useRealData = false;
+                    throw new Error('Cannot connect to SkySentinel API. Please ensure the backend is running.');
+                }
+
+                // Fetch initial data
+                await this.fetchRealTimeData();
+
+                // Start periodic refresh (every 10 seconds)
+                this.refreshInterval = setInterval(() => {
+                    this.fetchRealTimeData();
+                }, 10000);
+            } else {
+                // Stop refresh and revert to mock data
+                if (this.refreshInterval) {
+                    clearInterval(this.refreshInterval);
+                    this.refreshInterval = null;
+                }
+                this.flights = [...flightData];
+                this.apiStatus = 'disconnected';
+            }
+        },
+
+    // Start using real-time data
+        async enableRealTimeData() {
+            if (!this.useRealData) {
+                await this.toggleDataSource();
+            }
+        },
+
+    // Switch back to mock data
+        disableRealTimeData() {
+            if (this.useRealData) {
+                this.toggleDataSource();
+            }
+        },
+
+    // Clean up intervals on store disposal
+        cleanup() {
+            this.stopFlightAnimation();
+            if (this.refreshInterval) {
+                clearInterval(this.refreshInterval);
+                this.refreshInterval = null;
             }
         }
     }
