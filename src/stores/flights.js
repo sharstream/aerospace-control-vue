@@ -137,7 +137,7 @@ export const useFlightsStore = defineStore('flights', {
                 const transformedFlights = transformAircraftData(geojsonData);
 
                 // Preserve progress values for smooth animation
-                const updatedFlights = transformedFlights.map(newFlight => {
+                const updatedFlights = transformedFlights.map((newFlight) => {
                     const existingFlight = this.flights.find(f => f.icao24 === newFlight.icao24);
                     if (existingFlight) {
                         return {

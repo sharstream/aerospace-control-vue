@@ -37,7 +37,9 @@ export async function fetchAirspaceData(limit = 50) {
  */
 export async function fetchAirspaceRegion(bounds) {
     try {
-        const { minLat, maxLat, minLon, maxLon } = bounds;
+        const {
+ minLat, maxLat, minLon, maxLon
+} = bounds;
         const params = new URLSearchParams({
             min_lat: minLat,
             max_lat: maxLat,
