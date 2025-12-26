@@ -15,13 +15,31 @@ export async function fetchAirspaceData(limit = 50) {
         const response = await fetch(`${API_BASE_URL}/api/v1/airspace?limit=${limit}`);
 
         if (!response.ok) {
-            throw new Error(`Failed to fetch airspace data: ${response.statusText}`);
+            // Try to parse error response from backend
+            let errorData = null;
+            try {
+                errorData = await response.json();
+            } catch (e) {
+                // If JSON parse fails, use status text
+            }
+
+            const error = new Error(errorData?.detail || `Failed to fetch airspace data: ${response.statusText}`);
+            error.errorType = errorData?.error || 'UNKNOWN';
+            error.statusCode = response.status;
+            throw error;
         }
 
         const data = await response.json();
         return data;
     } catch (error) {
         console.error('Error fetching airspace data:', error);
+
+        // If it's a network error (no response), mark as connection error
+        if (!error.statusCode) {
+            error.errorType = 'CONNECTION_ERROR';
+            error.message = 'Cannot connect to backend. Please ensure it is running.';
+        }
+
         throw error;
     }
 }

@@ -13,7 +13,8 @@ export const useFlightsStore = defineStore('flights', {
         isLoading: false,
         apiStatus: 'unknown',
         lastUpdate: null,
-        error: null
+        error: null,
+        errorType: null
     }),
 
     getters: {
@@ -124,13 +125,13 @@ export const useFlightsStore = defineStore('flights', {
 
     // Fetch real-time aircraft data from backend
         async fetchRealTimeData() {
-            debugger;
             if (!this.useRealData) {
                 return;
             }
 
             this.isLoading = true;
             this.error = null;
+            this.errorType = null;
 
             try {
                 const geojsonData = await fetchAirspaceData(50);
@@ -154,8 +155,24 @@ export const useFlightsStore = defineStore('flights', {
                 this.apiStatus = 'connected';
             } catch (error) {
                 console.error('Failed to fetch real-time data:', error);
+
+                // Parse error type from backend response
+                if (error.errorType) {
+                    this.errorType = error.errorType;
+                    // Map error types to specific status
+                    if (error.errorType === 'RATE_LIMIT') {
+                        this.apiStatus = 'rate_limited';
+                    } else if (error.errorType === 'CONNECTION_ERROR') {
+                        this.apiStatus = 'connection_error';
+                    } else {
+                        this.apiStatus = 'error';
+                    }
+                } else {
+                    this.apiStatus = 'error';
+                    this.errorType = 'UNKNOWN';
+                }
+
                 this.error = error.message;
-                this.apiStatus = 'error';
 
                 // Fall back to mock data if real data fails
                 if (this.flights.length === 0) {

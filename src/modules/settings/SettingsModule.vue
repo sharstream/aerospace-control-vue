@@ -271,6 +271,8 @@ export default {
         const statusMap = {
           connected: 'status-connected',
           disconnected: 'status-disconnected',
+          rate_limited: 'status-warning',
+          connection_error: 'status-error',
           error: 'status-error',
           unknown: 'status-unknown'
         };
@@ -285,6 +287,8 @@ export default {
         const textMap = {
           connected: 'Connected',
           disconnected: 'Disconnected',
+          rate_limited: 'Rate Limited',
+          connection_error: 'Connection Error',
           error: 'Error',
           unknown: 'Unknown'
         };
@@ -806,6 +810,15 @@ export default {
 
 .status-error .status-dot {
   background: #ef4444;
+}
+
+.status-warning {
+  background: rgba(251, 191, 36, 0.1);
+  color: #fbbf24;
+}
+
+.status-warning .status-dot {
+  background: #fbbf24;
 }
 
 .status-unknown {
