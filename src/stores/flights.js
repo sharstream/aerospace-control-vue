@@ -14,7 +14,13 @@ export const useFlightsStore = defineStore('flights', {
         apiStatus: 'unknown',
         lastUpdate: null,
         error: null,
-        errorType: null
+        errorType: null,
+        rateLimitInfo: {
+            remaining: null,
+            retryAfterSeconds: null
+        },
+        countdownSeconds: null,
+        countdownInterval: null
     }),
 
     getters: {
@@ -123,8 +129,39 @@ export const useFlightsStore = defineStore('flights', {
             }
         },
 
+        // Start countdown timer for rate limit retry
+        startRateLimitCountdown(seconds) {
+            debugger;
+            // Clear existing countdown if any
+            this.stopRateLimitCountdown();
+
+            this.countdownSeconds = seconds;
+
+            this.countdownInterval = setInterval(() => {
+                this.countdownSeconds -= 1;
+
+                if (this.countdownSeconds <= 0) {
+                    this.stopRateLimitCountdown();
+                    // Automatically retry fetching data when countdown reaches 0
+                    if (this.useRealData) {
+                        this.fetchRealTimeData();
+                    }
+                }
+            }, 1000);
+        },
+
+        // Stop countdown timer
+        stopRateLimitCountdown() {
+            if (this.countdownInterval) {
+                clearInterval(this.countdownInterval);
+                this.countdownInterval = null;
+            }
+            this.countdownSeconds = null;
+        },
+
         // Fetch real-time aircraft data from backend
         async fetchRealTimeData() {
+            debugger;
             if (!this.useRealData) {
                 return;
             }
@@ -134,8 +171,8 @@ export const useFlightsStore = defineStore('flights', {
             this.errorType = null;
 
             try {
-                const geojsonData = await fetchAirspaceData(50);
-                const transformedFlights = transformAircraftData(geojsonData);
+                const responseData = await fetchAirspaceData(50);
+                const transformedFlights = transformAircraftData(responseData);
 
                 // Preserve progress values for smooth animation
                 const updatedFlights = transformedFlights.map((newFlight) => {
@@ -153,6 +190,17 @@ export const useFlightsStore = defineStore('flights', {
                 this.flights = updatedFlights;
                 this.lastUpdate = new Date();
                 this.apiStatus = 'connected';
+
+                // Update rate limit info from successful response
+                if (responseData.rateLimit) {
+                    this.rateLimitInfo = {
+                        remaining: responseData.rateLimit.remaining,
+                        retryAfterSeconds: responseData.rateLimit.retryAfterSeconds
+                    };
+                }
+
+                // Stop countdown if it was running (successful request)
+                this.stopRateLimitCountdown();
             } catch (error) {
                 console.error('Failed to fetch real-time data:', error);
 
@@ -162,6 +210,19 @@ export const useFlightsStore = defineStore('flights', {
                     // Map error types to specific status
                     if (error.errorType === 'RATE_LIMIT') {
                         this.apiStatus = 'rate_limited';
+
+                        // Extract rate limit info from error
+                        if (error.rateLimit) {
+                            this.rateLimitInfo = {
+                                remaining: error.rateLimit.remaining,
+                                retryAfterSeconds: error.rateLimit.retryAfterSeconds
+                            };
+
+                            // Start countdown timer if retry after seconds is available
+                            if (error.rateLimit.retryAfterSeconds) {
+                                this.startRateLimitCountdown(error.rateLimit.retryAfterSeconds);
+                            }
+                        }
                     } else if (error.errorType === 'CONNECTION_ERROR') {
                         this.apiStatus = 'connection_error';
                     } else {
@@ -226,6 +287,7 @@ export const useFlightsStore = defineStore('flights', {
         // Clean up intervals on store disposal
         cleanup() {
             this.stopFlightAnimation();
+            this.stopRateLimitCountdown();
             if (this.refreshInterval) {
                 clearInterval(this.refreshInterval);
                 this.refreshInterval = null;

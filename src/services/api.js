@@ -8,7 +8,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000
 /**
  * Fetches current airspace data from the backend
  * @param {number} limit - Maximum number of aircraft to fetch (default: 50)
- * @returns {Promise<Object>} GeoJSON FeatureCollection with aircraft data
+ * @returns {Promise<Object>} GeoJSON FeatureCollection with aircraft data and rate limit info
  */
 export async function fetchAirspaceData(limit = 50) {
     try {
@@ -26,11 +26,30 @@ export async function fetchAirspaceData(limit = 50) {
             const error = new Error(errorData?.detail || `Failed to fetch airspace data: ${response.statusText}`);
             error.errorType = errorData?.error || 'UNKNOWN';
             error.statusCode = response.status;
+
+            // Extract rate limit info from error response
+            if (errorData?.rate_limit) {
+                error.rateLimit = {
+                    remaining: errorData.rate_limit.remaining,
+                    retryAfterSeconds: errorData.rate_limit.retry_after_seconds
+                };
+            }
+
             throw error;
         }
 
         const data = await response.json();
-        return data;
+
+        // Extract rate limit info from successful response
+        const result = {
+            ...data,
+            rateLimit: data.rate_limit ? {
+                remaining: data.rate_limit.remaining,
+                retryAfterSeconds: data.rate_limit.retry_after_seconds
+            } : null
+        };
+
+        return result;
     } catch (error) {
         console.error('Error fetching airspace data:', error);
 
