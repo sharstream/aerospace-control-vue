@@ -18,33 +18,33 @@ export const useFlightsStore = defineStore('flights', {
     }),
 
     getters: {
-    // Get flight by ID
+        // Get flight by ID
         getFlightById: state => id => state.flights.find(flight => flight.id === id),
 
-    // Get flight by name
+        // Get flight by name
         getFlightByName: state => name => state.flights.find(flight => flight.name === name),
 
-    // Get flights by airline
+        // Get flights by airline
         getFlightsByAirline: state => airlineCode => state.flights.filter(flight => flight.airline === airlineCode),
 
-    // Get flights by status
+        // Get flights by status
         getFlightsByStatus: state => statusClass => state.flights.filter(flight => flight.statusClass === statusClass),
 
-    // Get total flight count
+        // Get total flight count
         flightCount: state => state.flights.length,
 
-    // Get flights with bottleneck
+        // Get flights with bottleneck
         bottleneckFlights: state => state.flights.filter(flight => flight.bottleneck),
 
-    // Check if using real-time data
+        // Check if using real-time data
         isUsingRealData: state => state.useRealData,
 
-    // Get API connection status
+        // Get API connection status
         getApiStatus: state => state.apiStatus
     },
 
     actions: {
-    // Update flight progress
+        // Update flight progress
         updateFlightProgress(flightId, progress) {
             const flight = this.flights.find(f => f.id === flightId);
             if (flight) {
@@ -52,12 +52,12 @@ export const useFlightsStore = defineStore('flights', {
             }
         },
 
-    // Update all flight positions (for animation)
+        // Update all flight positions (for animation)
         updateAllFlightPositions() {
             this.flights = this.flights.map((flight) => {
                 let newProgress = flight.progress + flight.speed;
 
-        // Reset if completed
+                // Reset if completed
                 if (newProgress >= 1) {
                     newProgress = 0;
                 }
@@ -69,7 +69,7 @@ export const useFlightsStore = defineStore('flights', {
             });
         },
 
-    // Start flight animation
+        // Start flight animation
         startFlightAnimation() {
             if (this.animationInterval) {
                 return; // Already running
@@ -80,7 +80,7 @@ export const useFlightsStore = defineStore('flights', {
             }, 50);
         },
 
-    // Stop flight animation
+        // Stop flight animation
         stopFlightAnimation() {
             if (this.animationInterval) {
                 clearInterval(this.animationInterval);
@@ -88,7 +88,7 @@ export const useFlightsStore = defineStore('flights', {
             }
         },
 
-    // Update flight status
+        // Update flight status
         updateFlightStatus(flightId, status, statusClass) {
             const flight = this.flights.find(f => f.id === flightId);
             if (flight) {
@@ -97,12 +97,12 @@ export const useFlightsStore = defineStore('flights', {
             }
         },
 
-    // Add new flight
+        // Add new flight
         addFlight(flight) {
             this.flights.push(flight);
         },
 
-    // Remove flight
+        // Remove flight
         removeFlight(flightId) {
             const index = this.flights.findIndex(f => f.id === flightId);
             if (index !== -1) {
@@ -110,7 +110,7 @@ export const useFlightsStore = defineStore('flights', {
             }
         },
 
-    // Check API health status
+        // Check API health status
         async checkApiConnection() {
             try {
                 const health = await checkApiHealth();
@@ -123,7 +123,7 @@ export const useFlightsStore = defineStore('flights', {
             }
         },
 
-    // Fetch real-time aircraft data from backend
+        // Fetch real-time aircraft data from backend
         async fetchRealTimeData() {
             if (!this.useRealData) {
                 return;
@@ -183,7 +183,7 @@ export const useFlightsStore = defineStore('flights', {
             }
         },
 
-    // Toggle between real and mock data
+        // Toggle between real and mock data
         async toggleDataSource() {
             this.useRealData = !this.useRealData;
 
@@ -198,11 +198,6 @@ export const useFlightsStore = defineStore('flights', {
 
                 // Fetch initial data
                 await this.fetchRealTimeData();
-
-                // Start periodic refresh (every 10 seconds)
-                this.refreshInterval = setInterval(() => {
-                    this.fetchRealTimeData();
-                }, 10000);
             } else {
                 // Stop refresh and revert to mock data
                 if (this.refreshInterval) {
@@ -214,21 +209,21 @@ export const useFlightsStore = defineStore('flights', {
             }
         },
 
-    // Start using real-time data
+        // Start using real-time data
         async enableRealTimeData() {
             if (!this.useRealData) {
                 await this.toggleDataSource();
             }
         },
 
-    // Switch back to mock data
+        // Switch back to mock data
         disableRealTimeData() {
             if (this.useRealData) {
                 this.toggleDataSource();
             }
         },
 
-    // Clean up intervals on store disposal
+        // Clean up intervals on store disposal
         cleanup() {
             this.stopFlightAnimation();
             if (this.refreshInterval) {

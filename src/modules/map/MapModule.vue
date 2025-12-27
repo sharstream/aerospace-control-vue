@@ -6,7 +6,15 @@
 </template>
 
 <script>
-import L from 'leaflet';
+import {
+  Map,
+  TileLayer,
+  Marker,
+  Polyline,
+  Circle,
+  DivIcon,
+  Control
+} from 'leaflet';
 import { airlines } from '@shared/data';
 import { calculateBearing } from '@shared/utils/calculations';
 
@@ -57,7 +65,7 @@ export default {
   methods: {
     initializeMap() {
       // Initialize Leaflet map
-      this.map = L.map(this.$refs.mapContainer, {
+      this.map = new Map(this.$refs.mapContainer, {
         center: [40, -40],
         zoom: 3,
         zoomControl: false,
@@ -65,13 +73,13 @@ export default {
       });
 
       // Add OpenStreetMap tiles
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      new TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors',
         maxZoom: 19
       }).addTo(this.map);
 
       // Add zoom control to top right
-      L.control.zoom({ position: 'topright' }).addTo(this.map);
+      new Control.Zoom({ position: 'topright' }).addTo(this.map);
 
       // Fix zoom bug: invalidate map size on zoom events
       this.map.on('zoomstart', () => {
@@ -94,7 +102,7 @@ export default {
     renderFlights() {
       this.flights.forEach((flight) => {
         // Create flight path
-        const pathLine = L.polyline(flight.path, {
+        const pathLine = new Polyline(flight.path, {
           color: airlines[flight.airline]?.color || '#4a9dd7',
           weight: 2,
           opacity: 0.6,
@@ -105,7 +113,7 @@ export default {
 
         // Create flight marker with popup
         const airline = airlines[flight.airline];
-        const markerIcon = L.divIcon({
+        const markerIcon = new DivIcon({
           className: 'plane-icon',
           html: `<div class="plane-marker ${flight.bottleneck ? 'bottleneck' : ''}"
                       style="background: ${airline?.color || '#4a9dd7'}">
@@ -149,7 +157,7 @@ export default {
           </div>
         `;
 
-        const marker = L.marker(flight.path[0], { icon: markerIcon })
+        const marker = new Marker(flight.path[0], { icon: markerIcon })
           .addTo(this.map)
           .bindPopup(popupContent, {
             className: 'flight-popup-container',
@@ -191,7 +199,7 @@ export default {
 
     renderWeather() {
       this.weatherHazards.forEach((hazard) => {
-        const circle = L.circle(hazard.center, {
+        const circle = new Circle(hazard.center, {
           color: hazard.severity === 'high' ? '#ef4444' : '#f59e0b',
           fillColor: hazard.severity === 'high' ? '#dc2626' : '#d97706',
           fillOpacity: 0.2,
