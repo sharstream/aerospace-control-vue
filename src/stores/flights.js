@@ -131,7 +131,6 @@ export const useFlightsStore = defineStore('flights', {
 
         // Start countdown timer for rate limit retry
         startRateLimitCountdown(seconds) {
-            debugger;
             // Clear existing countdown if any
             this.stopRateLimitCountdown();
 
@@ -161,7 +160,6 @@ export const useFlightsStore = defineStore('flights', {
 
         // Fetch real-time aircraft data from backend
         async fetchRealTimeData() {
-            debugger;
             if (!this.useRealData) {
                 return;
             }
