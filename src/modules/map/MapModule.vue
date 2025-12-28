@@ -17,6 +17,7 @@ import {
 } from 'leaflet';
 import { airlines } from '@shared/data';
 import { calculateBearing } from '@shared/utils/calculations';
+import { GEORGIA_BBOX, ATLANTA_CENTER } from '@/config/constants';
 
 export default {
   name: 'MapModule',
@@ -64,10 +65,10 @@ export default {
   },
   methods: {
     initializeMap() {
-      // Initialize Leaflet map
+      // Initialize Leaflet map centered on Atlanta Airport (from global config)
       this.map = new Map(this.$refs.mapContainer, {
-        center: [40, -40],
-        zoom: 3,
+        center: ATLANTA_CENTER,
+        zoom: 7,
         zoomControl: false,
         attributionControl: true
       });
@@ -77,6 +78,11 @@ export default {
         attribution: '© OpenStreetMap contributors',
         maxZoom: 19
       }).addTo(this.map);
+
+      // Fit map to Georgia state bounding box (24.9 sq deg - same as backend)
+      this.map.fitBounds([GEORGIA_BBOX.southWest, GEORGIA_BBOX.northEast], {
+        padding: [20, 20] // Add 20px padding on all sides
+      });
 
       // Add zoom control to top right
       new Control.Zoom({ position: 'topright' }).addTo(this.map);
