@@ -56,11 +56,11 @@
 
         <!-- Data Source Configuration -->
         <DataSourceConfiguration
-          :api-status="apiStatus"
-          :last-update="lastUpdate"
-          :use-real-data="useRealData"
-          :rate-limit-info="rateLimitInfo"
-          :countdown-seconds="countdownSeconds"
+          :apiStatus="apiStatus"
+          :lastUpdate="lastUpdate"
+          :useRealData="useRealData"
+          :rateLimitInfo="rateLimitInfo"
+          :countdownSeconds="countdownSeconds"
           @toggle-data-source="toggleDataSource"
         />
 
@@ -184,7 +184,9 @@ export default {
   },
   setup() {
     const flightsStore = useFlightsStore();
-    const { lastUpdate, apiStatus, useRealData, rateLimitInfo, countdownSeconds } = storeToRefs(flightsStore);
+    const {
+      lastUpdate, apiStatus, useRealData, rateLimitInfo, countdownSeconds
+    } = storeToRefs(flightsStore);
 
     return {
       flightsStore,

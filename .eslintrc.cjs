@@ -75,6 +75,12 @@ module.exports = {
         'object-shorthand': [1],
         'no-nested-ternary': [1],
         'no-mixed-operators': [0],
-        radix: [1]
+        radix: [1],
+        'object-curly-newline': ['error', {
+            ObjectExpression: { consistent: true },
+            ObjectPattern: { consistent: true },
+            ImportDeclaration: { consistent: true },
+            ExportDeclaration: { consistent: true }
+        }]
     }
 };

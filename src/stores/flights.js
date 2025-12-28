@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { flightData, airlines, aircraftModels } from '@shared/data';
-import { fetchAirspaceData, transformAircraftData, checkApiHealth } from '@/services/api';
+import { fetchAirspaceData, transformAircraftData } from '@/services/api';
 
 export const useFlightsStore = defineStore('flights', {
     state: () => ({
@@ -116,18 +116,8 @@ export const useFlightsStore = defineStore('flights', {
             }
         },
 
-        // Check API health status
-        async checkApiConnection() {
-            try {
-                const health = await checkApiHealth();
-                this.apiStatus = health.status === 'operational' ? 'connected' : 'error';
-                return true;
-            } catch (error) {
-                this.apiStatus = 'disconnected';
-                console.error('API connection check failed:', error);
-                return false;
-            }
-        },
+        // Note: checkApiConnection() removed - no longer needed
+        // Health checks happen implicitly via fetchRealTimeData() error handling
 
         // Start countdown timer for rate limit retry
         startRateLimitCountdown(seconds) {
@@ -247,16 +237,23 @@ export const useFlightsStore = defineStore('flights', {
             this.useRealData = !this.useRealData;
 
             if (this.useRealData) {
-                // Check API connection first
-                const isConnected = await this.checkApiConnection();
+                try {
+                    // Fetch initial data (no separate health check needed - fetchRealTimeData will fail if backend is down)
+                    // This saves 1 API credit per toggle
+                    await this.fetchRealTimeData();
 
-                if (!isConnected) {
+                    // If fetch succeeded, set up polling interval (10 seconds)
+                    // if (this.apiStatus === 'connected' && !this.refreshInterval) {
+                    //     this.refreshInterval = setInterval(() => {
+                    //         this.fetchRealTimeData();
+                    //     }, 10000); // 10 seconds
+                    // }
+                } catch (error) {
+                    // If initial fetch fails, revert to mock data
                     this.useRealData = false;
+                    this.flights = [...flightData];
                     throw new Error('Cannot connect to SkySentinel API. Please ensure the backend is running.');
                 }
-
-                // Fetch initial data
-                await this.fetchRealTimeData();
             } else {
                 // Stop refresh and revert to mock data
                 if (this.refreshInterval) {

@@ -12,23 +12,23 @@
       <div class="data-source-controls">
         <!-- Backend Status Section -->
         <BackendStatusCard
-          :api-status="apiStatus"
-          :last-update="lastUpdate"
+          :apiStatus="apiStatus"
+          :lastUpdate="lastUpdate"
         />
 
         <!-- Rate Limit Status Section (only shown when using real data) -->
         <RateLimitStatusCard
           v-if="useRealData"
-          :rate-limit-info="rateLimitInfo"
-          :countdown-seconds="countdownSeconds"
-          :api-status="apiStatus"
-          :max-credits="maxCredits"
+          :rateLimitInfo="rateLimitInfo"
+          :countdownSeconds="countdownSeconds"
+          :apiStatus="apiStatus"
+          :maxCredits="maxCredits"
         />
 
         <!-- Data Source Toggle -->
         <DataSourceToggle
-          :use-real-data="useRealData"
-          :is-toggling="isToggling"
+          :useRealData="useRealData"
+          :isToggling="isToggling"
           :error="error"
           @toggle="handleToggle"
         />
