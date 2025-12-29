@@ -12,7 +12,6 @@ import {
   Map,
   TileLayer,
   Marker,
-  Polyline,
   Circle,
   DivIcon,
   Control
@@ -307,15 +306,7 @@ export default {
     createAircraftMarker(flight) {
       if (!flight.icao24) return;
 
-      // Create flight path
-      const pathLine = new Polyline(flight.path, {
-        color: airlines[flight.airline]?.color || '#4a9dd7',
-        weight: 2,
-        opacity: 0.6,
-        dashArray: flight.bottleneck ? '10, 10' : null
-      }).addTo(this.map);
-
-      this.flightPaths[flight.icao24] = pathLine;
+      // Flight paths removed - only showing aircraft markers
 
       // Create flight marker with popup using SVG aircraft icon
       const airline = airlines[flight.airline];
@@ -420,11 +411,9 @@ export default {
           closeButton: true
         })
         .on('click', () => {
-          // Emit flight-click event
-          this.$emit('flight-click', flight);
-
-          // Start tracking this aircraft
+          // Start tracking this aircraft (shows red trajectory line)
           this.startTrackingAircraft(flight);
+          // Popup opens automatically - no navigation to dashboard
         });
 
       this.flightMarkers[flight.icao24] = marker;
@@ -460,12 +449,6 @@ export default {
             aircraftIcon.style.transform = `rotate(${bearing}deg)`;
           }
         }
-
-        // Update path if it exists
-        const path = this.flightPaths[flight.icao24];
-        if (path) {
-          path.setLatLngs(flight.path);
-        }
       } catch (error) {
         // Silently catch errors during position updates to prevent crashes
         console.warn(`Failed to update marker for ${flight.icao24}:`, error);
@@ -473,21 +456,15 @@ export default {
     },
 
     /**
-     * Remove aircraft marker and path
+     * Remove aircraft marker
      * @param {string} icao24 - Aircraft ICAO24 address
      */
     removeAircraftMarker(icao24) {
       const marker = this.flightMarkers[icao24];
-      const path = this.flightPaths[icao24];
 
       if (marker) {
         marker.remove();
         delete this.flightMarkers[icao24];
-      }
-
-      if (path) {
-        path.remove();
-        delete this.flightPaths[icao24];
       }
     },
 
@@ -521,8 +498,8 @@ export default {
     },
 
     /**
-     * Create SVG aircraft icon (OpenSky-style)
-     * @param {string} color - Aircraft color
+     * Create SVG aircraft icon with airline colors
+     * @param {string} color - Aircraft color (airline color)
      * @param {boolean} isBottleneck - Whether aircraft has bottleneck
      * @returns {string} SVG HTML string
      */
@@ -530,11 +507,15 @@ export default {
       const pulseClass = isBottleneck ? 'bottleneck' : '';
       return `
         <div class="aircraft-icon ${pulseClass}">
-          <svg viewBox="0 0 24 24" width="24" height="24" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">
-            <path fill="${color}" d="M12 2L4 7v6c0 5.55 3.84 10.74 9 12c5.16-1.26 9-6.45 9-12V7l-8-5z"/>
-            <path fill="#ffffff" d="M12 4l6 4v5c0 4.17-2.88 8.07-6 9c-3.12-.93-6-4.83-6-9V8l6-4z" opacity="0.9"/>
-            <path fill="${color}" d="M12 6l-4 3v4c0 2.76 1.92 5.38 4 6c2.08-.62 4-3.24 4-6V9l-4-3z"/>
-            <circle cx="12" cy="12" r="2" fill="#ffffff"/>
+          <svg viewBox="0 0 48 48" width="32" height="32" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));">
+            <!-- Airplane body -->
+            <path fill="${color}" stroke="#000" stroke-width="1" d="M24 4 L28 20 L40 22 L40 26 L28 24 L26 38 L30 40 L30 42 L24 40 L18 42 L18 40 L22 38 L20 24 L8 26 L8 22 L20 20 Z"/>
+            <!-- Cockpit window -->
+            <circle cx="24" cy="12" r="2" fill="rgba(255,255,255,0.4)" stroke="#000" stroke-width="0.5"/>
+            <!-- Wing details -->
+            <line x1="20" y1="20" x2="28" y2="20" stroke="#000" stroke-width="0.5" opacity="0.3"/>
+            <!-- Tail stabilizer -->
+            <path fill="${color}" stroke="#000" stroke-width="0.5" d="M22 38 L24 42 L26 38 Z" opacity="0.8"/>
           </svg>
         </div>
       `;
