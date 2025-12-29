@@ -2,18 +2,18 @@
   <div class="flight-monitoring-card">
     <div
       class="flight-card-header"
-      :style="{ borderLeftColor: airlines[flight.airline].color }"
+      :style="{ borderLeftColor: airlineData.color }"
       @click="$emit('toggle-detail')"
     >
       <div
         class="flight-card-logo"
-        :style="{ color: airlines[flight.airline].color }"
+        :style="{ color: airlineData.color }"
       >
-        {{ airlines[flight.airline].logo }}
+        {{ airlineData.logo }}
       </div>
       <div class="flight-card-info">
         <div class="flight-card-title">{{ flight.name }}</div>
-        <div class="flight-card-subtitle">{{ airlines[flight.airline].name }} • {{ flight.aircraft }}</div>
+        <div class="flight-card-subtitle">{{ airlineData.name }} • {{ flight.aircraft }}</div>
       </div>
       <div :class="['system-badge', systemHealth.statusClass]">
         {{ systemHealth.label }}
@@ -73,7 +73,17 @@ export default {
       })
     }
   },
-  emits: ['toggle-detail']
+  emits: ['toggle-detail'],
+  computed: {
+    airlineData() {
+      // Get airline or use default fallback for unknown airlines
+      return this.airlines[this.flight.airline] || {
+        name: 'Unknown Carrier',
+        logo: '✈️',
+        color: '#4a9dd7'
+      };
+    }
+  }
 };
 </script>
 

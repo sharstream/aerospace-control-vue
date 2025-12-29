@@ -55,15 +55,30 @@ export default {
   },
   watch: {
     flights: {
-      handler() {
-        this.updateFlightPositions();
+      handler(newFlights, oldFlights) {
+        // Determine if this is a structural change (add/remove) or just position updates
+        const isStructuralChange = !oldFlights
+          || newFlights.length !== oldFlights.length
+          || this.hasAircraftListChanged(newFlights, oldFlights);
+
+        if (isStructuralChange) {
+          // Full sync for add/remove operations
+          this.$nextTick(() => {
+            if (this.map && newFlights) {
+              this.syncFlights(newFlights);
+            }
+          });
+        } else {
+          // Just update positions (lightweight)
+          this.updateAllPositions(newFlights);
+        }
       },
-      deep: true
+      deep: false
     }
   },
   mounted() {
     this.initializeMap();
-    this.renderFlights();
+    this.syncFlights(this.flights); // Initial render using sync
     this.renderWeather();
   },
   beforeUnmount() {
@@ -211,143 +226,227 @@ export default {
       this.trackedAircraft.clear();
     },
 
-    renderFlights() {
-      this.flights.forEach((flight) => {
-        // Create flight path
-        const pathLine = new Polyline(flight.path, {
-          color: airlines[flight.airline]?.color || '#4a9dd7',
-          weight: 2,
-          opacity: 0.6,
-          dashArray: flight.bottleneck ? '10, 10' : null
-        }).addTo(this.map);
+    /**
+     * Check if the aircraft list has structurally changed (not just position updates)
+     * @param {Array} newFlights - New flights array
+     * @param {Array} oldFlights - Old flights array
+     * @returns {boolean} True if aircraft were added/removed
+     */
+    hasAircraftListChanged(newFlights, oldFlights) {
+      if (!newFlights || !oldFlights) return true;
 
-        this.flightPaths[flight.name] = pathLine;
+      const newIcao24s = new Set(newFlights.map(f => f.icao24).filter(Boolean));
+      const oldIcao24s = new Set(oldFlights.map(f => f.icao24).filter(Boolean));
 
-        // Create flight marker with popup using SVG aircraft icon
-        const airline = airlines[flight.airline];
-        const isTracked = this.trajectoryRenderer.hasTrajectory(flight.icao24);
-        const markerIcon = new DivIcon({
-          className: `aircraft-marker-container${isTracked ? ' tracked' : ''}`,
-          html: this.createAircraftIcon(airline?.color || '#4a9dd7', flight.bottleneck),
-          iconSize: [32, 32],
-          iconAnchor: [16, 16]
-        });
+      // Check if sets are equal
+      if (newIcao24s.size !== oldIcao24s.size) return true;
 
-        // Enhanced popup with OpenSky-style spatial data and aircraft image
-        const aircraftType = flight.aircraft || 'Unknown';
-        const aircraftImage = getAircraftImage(aircraftType);
-        const aircraftFamily = getAircraftFamily(aircraftType);
+      for (const icao of newIcao24s) {
+        if (!oldIcao24s.has(icao)) return true;
+      }
 
-        const popupContent = `
-          <div class="flight-popup enhanced">
-            <div class="popup-header" style="background: ${airline?.color || '#4a9dd7'}">
-              <span class="popup-logo">${airline?.logo}</span>
-              <div class="popup-header-info">
-                <span class="popup-flight-number">${flight.name}</span>
-                <span class="popup-icao24">${flight.icao24 || 'N/A'}</span>
+      return false;
+    },
+
+    /**
+     * Update all aircraft positions (lightweight, no marker creation/removal)
+     * @param {Array} flights - Current flights array
+     */
+    updateAllPositions(flights) {
+      if (!this.map) return;
+
+      flights.forEach((flight) => {
+        if (!flight.icao24) return;
+        this.updateAircraftMarker(flight);
+      });
+    },
+
+    /**
+     * Sync flight markers with current flights array
+     * Adds new aircraft, updates existing, removes stale
+     * @param {Array} flights - Current flights array
+     */
+    syncFlights(flights) {
+      if (!this.map) {
+        return; // Map not initialized yet
+      }
+
+      // Create Set of current icao24s for fast lookup
+      const currentIcao24s = new Set(flights.map(f => f.icao24).filter(Boolean));
+
+      // Remove stale markers (aircraft no longer in flights array)
+      Object.keys(this.flightMarkers).forEach((icao24) => {
+        if (!currentIcao24s.has(icao24)) {
+          this.removeAircraftMarker(icao24);
+        }
+      });
+
+      // Add or update markers for each flight
+      flights.forEach((flight) => {
+        if (!flight.icao24) {
+          console.warn('Flight missing icao24:', flight);
+          return;
+        }
+
+        const existingMarker = this.flightMarkers[flight.icao24];
+
+        if (existingMarker) {
+          // Update existing marker position
+          this.updateAircraftMarker(flight);
+        } else {
+          // Create new marker
+          this.createAircraftMarker(flight);
+        }
+      });
+    },
+
+    /**
+     * Create a new aircraft marker and path
+     * @param {Object} flight - Flight object
+     */
+    createAircraftMarker(flight) {
+      if (!flight.icao24) return;
+
+      // Create flight path
+      const pathLine = new Polyline(flight.path, {
+        color: airlines[flight.airline]?.color || '#4a9dd7',
+        weight: 2,
+        opacity: 0.6,
+        dashArray: flight.bottleneck ? '10, 10' : null
+      }).addTo(this.map);
+
+      this.flightPaths[flight.icao24] = pathLine;
+
+      // Create flight marker with popup using SVG aircraft icon
+      const airline = airlines[flight.airline];
+      const isTracked = this.trajectoryRenderer.hasTrajectory(flight.icao24);
+      const markerIcon = new DivIcon({
+        className: `aircraft-marker-container${isTracked ? ' tracked' : ''}`,
+        html: this.createAircraftIcon(airline?.color || '#4a9dd7', flight.bottleneck),
+        iconSize: [32, 32],
+        iconAnchor: [16, 16]
+      });
+
+      // Enhanced popup with OpenSky-style spatial data and aircraft image
+      const aircraftType = flight.aircraft || 'Unknown';
+      const aircraftImage = getAircraftImage(aircraftType);
+      const aircraftFamily = getAircraftFamily(aircraftType);
+
+      const popupContent = `
+        <div class="flight-popup enhanced">
+          <div class="popup-header" style="background: ${airline?.color || '#4a9dd7'}">
+            <span class="popup-logo">${airline?.logo}</span>
+            <div class="popup-header-info">
+              <span class="popup-flight-number">${flight.name}</span>
+              <span class="popup-icao24">${flight.icao24 || 'N/A'}</span>
+            </div>
+          </div>
+
+          <!-- Aircraft Image -->
+          <div class="popup-aircraft-image">
+            <img src="${aircraftImage}" alt="${aircraftFamily}" />
+            <div class="aircraft-type-label">${aircraftFamily}</div>
+          </div>
+
+          <div class="popup-content">
+            <div class="popup-route">
+              <span class="popup-airport">${flight.from}</span>
+              <span class="popup-arrow">→</span>
+              <span class="popup-airport">${flight.to}</span>
+            </div>
+
+            <!-- SPATIAL Section -->
+            <div class="popup-section">
+              <div class="section-header">SPATIAL</div>
+              <div class="section-grid">
+                <div class="data-row">
+                  <span class="label">Groundspeed:</span>
+                  <span class="value">${flight.velocity || 'N/A'}</span>
+                </div>
+                <div class="data-row">
+                  <span class="label">Altitude:</span>
+                  <span class="value">${flight.altitude || 'N/A'}</span>
+                </div>
+                <div class="data-row">
+                  <span class="label">Vert. Rate:</span>
+                  <span class="value">${flight.vertical_rate || 'N/A'}</span>
+                </div>
+                <div class="data-row">
+                  <span class="label">Track:</span>
+                  <span class="value">${flight.heading || 'N/A'}</span>
+                </div>
               </div>
             </div>
 
-            <!-- Aircraft Image -->
-            <div class="popup-aircraft-image">
-              <img src="${aircraftImage}" alt="${aircraftFamily}" />
-              <div class="aircraft-type-label">${aircraftFamily}</div>
+            <!-- SIGNAL Section -->
+            <div class="popup-section">
+              <div class="section-header">SIGNAL</div>
+              <div class="section-grid">
+                <div class="data-row">
+                  <span class="label">Source:</span>
+                  <span class="value">ADS-B</span>
+                </div>
+                <div class="data-row">
+                  <span class="label">Category:</span>
+                  <span class="value">${flight.category || 'N/A'}</span>
+                </div>
+              </div>
             </div>
 
-            <div class="popup-content">
-              <div class="popup-route">
-                <span class="popup-airport">${flight.from}</span>
-                <span class="popup-arrow">→</span>
-                <span class="popup-airport">${flight.to}</span>
-              </div>
-
-              <!-- SPATIAL Section -->
-              <div class="popup-section">
-                <div class="section-header">SPATIAL</div>
-                <div class="section-grid">
-                  <div class="data-row">
-                    <span class="label">Groundspeed:</span>
-                    <span class="value">${flight.velocity || 'N/A'}</span>
-                  </div>
-                  <div class="data-row">
-                    <span class="label">Altitude:</span>
-                    <span class="value">${flight.altitude || 'N/A'}</span>
-                  </div>
-                  <div class="data-row">
-                    <span class="label">Vert. Rate:</span>
-                    <span class="value">${flight.vertical_rate || 'N/A'}</span>
-                  </div>
-                  <div class="data-row">
-                    <span class="label">Track:</span>
-                    <span class="value">${flight.heading || 'N/A'}</span>
-                  </div>
+            <!-- STATUS Section -->
+            <div class="popup-section">
+              <div class="section-header">STATUS</div>
+              <div class="section-grid">
+                <div class="data-row">
+                  <span class="label">Flight:</span>
+                  <span class="value status-${flight.statusClass}">${flight.status}</span>
                 </div>
-              </div>
-
-              <!-- SIGNAL Section -->
-              <div class="popup-section">
-                <div class="section-header">SIGNAL</div>
-                <div class="section-grid">
-                  <div class="data-row">
-                    <span class="label">Source:</span>
-                    <span class="value">ADS-B</span>
-                  </div>
-                  <div class="data-row">
-                    <span class="label">Category:</span>
-                    <span class="value">${flight.category || 'N/A'}</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- STATUS Section -->
-              <div class="popup-section">
-                <div class="section-header">STATUS</div>
-                <div class="section-grid">
-                  <div class="data-row">
-                    <span class="label">Flight:</span>
-                    <span class="value status-${flight.statusClass}">${flight.status}</span>
-                  </div>
-                  <div class="data-row">
-                    <span class="label">Aircraft:</span>
-                    <span class="value">${flight.aircraft || 'Unknown'}</span>
-                  </div>
+                <div class="data-row">
+                  <span class="label">Aircraft:</span>
+                  <span class="value">${flight.aircraft || 'Unknown'}</span>
                 </div>
               </div>
             </div>
           </div>
-        `;
+        </div>
+      `;
 
-        const marker = new Marker(flight.path[0], { icon: markerIcon })
-          .addTo(this.map)
-          .bindPopup(popupContent, {
-            className: 'flight-popup-container',
-            maxWidth: 350,
-            minWidth: 320,
-            closeButton: true
-          })
-          .on('click', () => {
-            // Emit flight-click event
-            this.$emit('flight-click', flight);
+      const marker = new Marker(flight.path[0], { icon: markerIcon })
+        .addTo(this.map)
+        .bindPopup(popupContent, {
+          className: 'flight-popup-container',
+          maxWidth: 350,
+          minWidth: 320,
+          closeButton: true
+        })
+        .on('click', () => {
+          // Emit flight-click event
+          this.$emit('flight-click', flight);
 
-            // Start tracking this aircraft
-            this.startTrackingAircraft(flight);
-          });
+          // Start tracking this aircraft
+          this.startTrackingAircraft(flight);
+        });
 
-        this.flightMarkers[flight.name] = marker;
-      });
+      this.flightMarkers[flight.icao24] = marker;
     },
 
-    updateFlightPositions() {
-      this.flights.forEach((flight) => {
-        const marker = this.flightMarkers[flight.name];
-        if (!marker) return;
+    /**
+     * Update existing aircraft marker position
+     * @param {Object} flight - Flight object
+     */
+    updateAircraftMarker(flight) {
+      if (!flight?.icao24 || !flight?.path || flight.path.length < 2) return;
 
+      const marker = this.flightMarkers[flight.icao24];
+      if (!marker) return; // Marker doesn't exist yet, skip
+
+      try {
         // Calculate current position
-        const lat = flight.path[0][0] + (flight.path[1][0] - flight.path[0][0]) * flight.progress;
-        const lng = flight.path[0][1] + (flight.path[1][1] - flight.path[0][1]) * flight.progress;
+        const lat = flight.path[0][0] + (flight.path[1][0] - flight.path[0][0]) * (flight.progress || 0);
+        const lng = flight.path[0][1] + (flight.path[1][1] - flight.path[0][1]) * (flight.progress || 0);
 
         // Calculate bearing
-        const nextProgress = Math.min(flight.progress + 0.01, 1.0);
+        const nextProgress = Math.min((flight.progress || 0) + 0.01, 1.0);
         const nextLat = flight.path[0][0] + (flight.path[1][0] - flight.path[0][0]) * nextProgress;
         const nextLng = flight.path[0][1] + (flight.path[1][1] - flight.path[0][1]) * nextProgress;
         const bearing = calculateBearing(lat, lng, nextLat, nextLng);
@@ -361,7 +460,35 @@ export default {
             aircraftIcon.style.transform = `rotate(${bearing}deg)`;
           }
         }
-      });
+
+        // Update path if it exists
+        const path = this.flightPaths[flight.icao24];
+        if (path) {
+          path.setLatLngs(flight.path);
+        }
+      } catch (error) {
+        // Silently catch errors during position updates to prevent crashes
+        console.warn(`Failed to update marker for ${flight.icao24}:`, error);
+      }
+    },
+
+    /**
+     * Remove aircraft marker and path
+     * @param {string} icao24 - Aircraft ICAO24 address
+     */
+    removeAircraftMarker(icao24) {
+      const marker = this.flightMarkers[icao24];
+      const path = this.flightPaths[icao24];
+
+      if (marker) {
+        marker.remove();
+        delete this.flightMarkers[icao24];
+      }
+
+      if (path) {
+        path.remove();
+        delete this.flightPaths[icao24];
+      }
     },
 
     renderWeather() {

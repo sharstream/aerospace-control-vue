@@ -73,13 +73,13 @@
                 <div class="flight-cell-content">
                   <div
                     class="airline-logo"
-                    :style="{ background: airlines[flight.airline].color }"
+                    :style="{ background: airlines[flight.airline]?.color || '#4a9dd7' }"
                   >
-                    {{ airlines[flight.airline].logo }}
+                    {{ airlines[flight.airline]?.logo || '✈️' }}
                   </div>
                   <div class="flight-info">
                     <div class="flight-number">{{ flight.name }}</div>
-                    <div class="airline-name">{{ airlines[flight.airline].name }}</div>
+                    <div class="airline-name">{{ airlines[flight.airline]?.name || 'Unknown' }}</div>
                   </div>
                 </div>
               </td>

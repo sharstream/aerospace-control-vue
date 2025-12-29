@@ -92,9 +92,10 @@ export async function fetchAirspaceData(limit = 50) {
  * @param {number} bounds.maxLat - Maximum latitude
  * @param {number} bounds.minLon - Minimum longitude
  * @param {number} bounds.maxLon - Maximum longitude
+ * @param {number} limit - Maximum number of aircraft to fetch (default: 50)
  * @returns {Promise<Object>} GeoJSON FeatureCollection with aircraft data and rate limit info
  */
-export async function fetchAirspaceRegion(bounds) {
+export async function fetchAirspaceRegion(bounds, limit = 50) {
     try {
         const {
             minLat, maxLat, minLon, maxLon
@@ -103,7 +104,8 @@ export async function fetchAirspaceRegion(bounds) {
             min_lat: minLat,
             max_lat: maxLat,
             min_lon: minLon,
-            max_lon: maxLon
+            max_lon: maxLon,
+            limit
         });
 
         const response = await fetch(`${API_BASE_URL}/api/v1/airspace/region?${params}`);
@@ -248,7 +250,7 @@ export function transformAircraftData(geojsonData) {
         return [];
     }
 
-    return geojsonData.features.map((feature, index) => {
+    return geojsonData.features.map((feature) => {
         const props = feature.properties;
         const coords = feature.geometry.coordinates; // [longitude, latitude]
 
@@ -264,7 +266,8 @@ export function transformAircraftData(geojsonData) {
         const destinationPosition = [destLat, destLon];
 
         return {
-            id: `${props.icao24}-${index}`,
+            // Use icao24 as stable unique identifier
+            id: props.icao24,
             name: props.callsign !== 'N/A' ? props.callsign : props.icao24.toUpperCase(),
             airline: extractAirlineCode(props.callsign),
             from: props.origin_country || 'Unknown',

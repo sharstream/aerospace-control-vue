@@ -31,7 +31,9 @@ export const useFlightsStore = defineStore('flights', {
             retryAfterSeconds: null
         },
         countdownSeconds: null,
-        countdownInterval: null
+        countdownInterval: null,
+        // Testing/development setting - limit number of aircraft to fetch
+        aircraftLimit: 50 // Set to 1 for single aircraft testing
     }),
 
     getters: {
@@ -57,7 +59,10 @@ export const useFlightsStore = defineStore('flights', {
         isUsingRealData: state => state.useRealData,
 
         // Get API connection status
-        getApiStatus: state => state.apiStatus
+        getApiStatus: state => state.apiStatus,
+
+        // Get current aircraft limit
+        getAircraftLimit: state => state.aircraftLimit
     },
 
     actions: {
@@ -171,12 +176,13 @@ export const useFlightsStore = defineStore('flights', {
 
             try {
                 // Fetch aircraft specifically in Georgia/Atlanta bounding box
+                // Use configurable limit (default 50, set to 1 for single aircraft testing)
                 const responseData = await fetchAirspaceRegion({
                     minLat: BACKEND_BBOX.lamin,
                     maxLat: BACKEND_BBOX.lamax,
                     minLon: BACKEND_BBOX.lomin,
                     maxLon: BACKEND_BBOX.lomax
-                });
+                }, this.aircraftLimit);
                 const transformedFlights = transformAircraftData(responseData);
 
                 // Preserve progress values for smooth animation
@@ -294,6 +300,11 @@ export const useFlightsStore = defineStore('flights', {
             if (this.useRealData) {
                 this.toggleDataSource();
             }
+        },
+
+        // Set aircraft limit for testing/development
+        setAircraftLimit(limit) {
+            this.aircraftLimit = limit;
         },
 
         // Clean up intervals on store disposal

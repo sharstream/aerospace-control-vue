@@ -14,14 +14,19 @@
 
     <!-- Map Controls and Legend (only visible when Live Map tab is active) -->
     <template v-if="activeView === 'map'">
-      <MapControls @control-action="handleMapControl" />
+      <MapControls
+        key="map-controls"
+        @control-action="handleMapControl"
+      />
       <AirspaceLegend
+        key="airspace-legend"
         :airlines="airlines"
         :flightsTableCollapsed="flightsTableCollapsed"
         :bottomNavCollapsed="bottomNavCollapsed"
       />
       <FlightsDataTable
         ref="flightsDataTable"
+        key="flights-table"
         :flights="flights"
         :airlines="airlines"
         :bottomNavCollapsed="bottomNavCollapsed"
@@ -37,6 +42,7 @@
     <!-- Dashboard View Overlay -->
     <DashboardModule
       v-if="activeView === 'dashboard'"
+      key="dashboard"
       :flights="flights"
       :airlines="airlines"
       :aircraftModels="aircraftModels"
@@ -46,6 +52,7 @@
     <!-- Flights View Overlay -->
     <FlightsModule
       v-if="activeView === 'flights'"
+      key="flights"
       :flights="flights"
       :airlines="airlines"
     />
@@ -53,6 +60,7 @@
     <!-- Weather Module -->
     <WeatherModule
       v-if="activeView === 'weather'"
+      key="weather"
       :weatherHazards="weatherHazards"
       :flights="flights"
     />
@@ -60,6 +68,7 @@
     <!-- Analytics Module -->
     <AnalyticsModule
       v-if="activeView === 'analytics'"
+      key="analytics"
       :flights="flights"
       :airlines="airlines"
     />
@@ -67,6 +76,7 @@
     <!-- Settings Module -->
     <SettingsModule
       v-if="activeView === 'settings'"
+      key="settings"
     />
 
     <!-- AI Chat Panel -->
