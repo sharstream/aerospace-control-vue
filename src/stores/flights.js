@@ -2,6 +2,16 @@ import { defineStore } from 'pinia';
 import { flightData, airlines, aircraftModels } from '@shared/data';
 import { fetchAirspaceData, transformAircraftData } from '@/services/api';
 
+/*
+| Credit cost analysis 
+|--------------------------------------------------------------- |
+| Scenario        | Daily Usage | Credits/Day | Days Until Limit |
+|-----------------|-------------|-------------|----------------- |
+| 24/7 Monitoring | 24 hours    | 1,920       | 2.08 days ⚠️     |
+| Business Hours  | 8 hours     | 640         | 6.25 days ✅     |
+| Part-Time       | 4 hours     | 320         | 12.5 days ✅     |
+| Minimal         | 2 hours     | 160         | 25 days ✅       |
+*/
 export const useFlightsStore = defineStore('flights', {
     state: () => ({
         flights: [...flightData],
@@ -243,11 +253,11 @@ export const useFlightsStore = defineStore('flights', {
                     await this.fetchRealTimeData();
 
                     // If fetch succeeded, set up polling interval (10 seconds)
-                    // if (this.apiStatus === 'connected' && !this.refreshInterval) {
-                    //     this.refreshInterval = setInterval(() => {
-                    //         this.fetchRealTimeData();
-                    //     }, 10000); // 10 seconds
-                    // }
+                    if (this.apiStatus === 'connected' && !this.refreshInterval) {
+                        this.refreshInterval = setInterval(() => {
+                            this.fetchRealTimeData();
+                        }, 10000); // 10 seconds
+                    }
                 } catch (error) {
                     // If initial fetch fails, revert to mock data
                     this.useRealData = false;
