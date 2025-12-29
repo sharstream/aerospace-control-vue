@@ -1,8 +1,10 @@
 <template>
-  <div
-    ref="mapContainer"
-    class="map-container"
-  ></div>
+  <div class="map-module">
+    <div
+      ref="mapContainer"
+      class="map-container"
+    ></div>
+  </div>
 </template>
 
 <script>
@@ -17,7 +19,10 @@ import {
 } from 'leaflet';
 import { airlines } from '@shared/data';
 import { calculateBearing } from '@shared/utils/calculations';
+import { getAircraftImage, getAircraftFamily } from '@shared/utils/aircraft-images';
 import { GEORGIA_BBOX, ATLANTA_CENTER } from '@/config/constants';
+import { TrajectoryRenderer } from './TrajectoryRenderer';
+import { TrajectoryTracker } from '@/services/aircraft-tracker';
 
 export default {
   name: 'MapModule',
@@ -29,16 +34,23 @@ export default {
     weatherHazards: {
       type: Array,
       default: () => []
+    },
+    selectedFlight: {
+      type: Object,
+      default: null
     }
   },
-  emits: ['flight-click'],
+  emits: ['flight-click', 'tracking-started', 'tracking-stopped'],
   data() {
     return {
       map: null,
       flightMarkers: {},
       flightPaths: {},
       weatherCircles: [],
-      resizeHandler: null
+      resizeHandler: null,
+      trajectoryRenderer: null,
+      aircraftTracker: null,
+      trackedAircraft: new Set()
     };
   },
   watch: {
@@ -55,10 +67,22 @@ export default {
     this.renderWeather();
   },
   beforeUnmount() {
+    // Clean up tracking
+    if (this.aircraftTracker) {
+      this.aircraftTracker.stopAllTracking();
+    }
+
+    // Clean up trajectory renderer
+    if (this.trajectoryRenderer) {
+      this.trajectoryRenderer.destroy();
+    }
+
     // Clean up event listeners
     if (this.resizeHandler) {
       window.removeEventListener('resize', this.resizeHandler);
     }
+
+    // Clean up map
     if (this.map) {
       this.map.remove();
     }
@@ -103,6 +127,88 @@ export default {
         }
       };
       window.addEventListener('resize', this.resizeHandler);
+
+      // Initialize trajectory renderer
+      this.trajectoryRenderer = new TrajectoryRenderer(this.map, {
+        weight: 3,
+        opacity: 0.7,
+        useCanvas: true
+      });
+
+      // Initialize aircraft tracker with trajectory update callback
+      this.aircraftTracker = new TrajectoryTracker({
+        pollInterval: 45000, // 45 seconds
+        maxPoints: 1000,
+        onUpdate: this.handleTrajectoryUpdate
+      });
+    },
+
+    /**
+     * Handle trajectory updates from aircraft tracker
+     * @param {string} icao24 - Aircraft ICAO24 address
+     * @param {Object} _waypoint - New waypoint data (unused)
+     * @param {Array} trajectory - Full trajectory array
+     */
+    handleTrajectoryUpdate(icao24, _waypoint, trajectory) {
+      // Render/update trajectory on map (OpenSky-style solid red line)
+      this.trajectoryRenderer.renderTrajectory(icao24, trajectory);
+    },
+
+    /**
+     * Start tracking selected aircraft
+     * @param {Object} flight - Flight object with icao24
+     */
+    async startTrackingAircraft(flight) {
+      if (!flight.icao24) {
+        return;
+      }
+
+      if (this.trackedAircraft.has(flight.icao24)) {
+        return;
+      }
+
+      try {
+        await this.aircraftTracker.startTracking(flight.icao24);
+        this.trackedAircraft.add(flight.icao24);
+
+        // Highlight the trajectory
+        this.trajectoryRenderer.highlightTrajectory(flight.icao24, true);
+
+        this.$emit('tracking-started', flight);
+
+        // Force Vue to detect the Set change
+        this.$forceUpdate();
+      } catch (error) {
+        console.error(`MapModule: Failed to start tracking ${flight.icao24}:`, error);
+      }
+    },
+
+    /**
+     * Stop tracking aircraft
+     * @param {string} icao24 - Aircraft ICAO24 address
+     */
+    stopTrackingAircraft(icao24) {
+      if (!this.trackedAircraft.has(icao24)) {
+        return;
+      }
+
+      this.aircraftTracker.stopTracking(icao24);
+      this.trajectoryRenderer.removeTrajectory(icao24);
+      this.trackedAircraft.delete(icao24);
+
+      this.$emit('tracking-stopped', icao24);
+
+      // Force Vue to detect the Set change
+      this.$forceUpdate();
+    },
+
+    /**
+     * Clear all tracked aircraft and trajectories
+     */
+    clearAllTracking() {
+      this.aircraftTracker.stopAllTracking();
+      this.trajectoryRenderer.clearAllTrajectories();
+      this.trackedAircraft.clear();
     },
 
     renderFlights() {
@@ -117,46 +223,94 @@ export default {
 
         this.flightPaths[flight.name] = pathLine;
 
-        // Create flight marker with popup
+        // Create flight marker with popup using SVG aircraft icon
         const airline = airlines[flight.airline];
+        const isTracked = this.trajectoryRenderer.hasTrajectory(flight.icao24);
         const markerIcon = new DivIcon({
-          className: 'plane-icon',
-          html: `<div class="plane-marker ${flight.bottleneck ? 'bottleneck' : ''}"
-                      style="background: ${airline?.color || '#4a9dd7'}">
-                   ✈️
-                 </div>`,
-          iconSize: [30, 30],
-          iconAnchor: [15, 15]
+          className: `aircraft-marker-container${isTracked ? ' tracked' : ''}`,
+          html: this.createAircraftIcon(airline?.color || '#4a9dd7', flight.bottleneck),
+          iconSize: [32, 32],
+          iconAnchor: [16, 16]
         });
 
+        // Enhanced popup with OpenSky-style spatial data and aircraft image
+        const aircraftType = flight.aircraft || 'Unknown';
+        const aircraftImage = getAircraftImage(aircraftType);
+        const aircraftFamily = getAircraftFamily(aircraftType);
+
         const popupContent = `
-          <div class="flight-popup">
+          <div class="flight-popup enhanced">
             <div class="popup-header" style="background: ${airline?.color || '#4a9dd7'}">
               <span class="popup-logo">${airline?.logo}</span>
-              <span class="popup-flight-number">${flight.name}</span>
+              <div class="popup-header-info">
+                <span class="popup-flight-number">${flight.name}</span>
+                <span class="popup-icao24">${flight.icao24 || 'N/A'}</span>
+              </div>
             </div>
+
+            <!-- Aircraft Image -->
+            <div class="popup-aircraft-image">
+              <img src="${aircraftImage}" alt="${aircraftFamily}" />
+              <div class="aircraft-type-label">${aircraftFamily}</div>
+            </div>
+
             <div class="popup-content">
               <div class="popup-route">
                 <span class="popup-airport">${flight.from}</span>
                 <span class="popup-arrow">→</span>
                 <span class="popup-airport">${flight.to}</span>
               </div>
-              <div class="popup-details">
-                <div class="popup-detail">
-                  <span class="popup-label">Status:</span>
-                  <span class="popup-value status-${flight.statusClass}">${flight.status}</span>
+
+              <!-- SPATIAL Section -->
+              <div class="popup-section">
+                <div class="section-header">SPATIAL</div>
+                <div class="section-grid">
+                  <div class="data-row">
+                    <span class="label">Groundspeed:</span>
+                    <span class="value">${flight.velocity || 'N/A'}</span>
+                  </div>
+                  <div class="data-row">
+                    <span class="label">Altitude:</span>
+                    <span class="value">${flight.altitude || 'N/A'}</span>
+                  </div>
+                  <div class="data-row">
+                    <span class="label">Vert. Rate:</span>
+                    <span class="value">${flight.vertical_rate || 'N/A'}</span>
+                  </div>
+                  <div class="data-row">
+                    <span class="label">Track:</span>
+                    <span class="value">${flight.heading || 'N/A'}</span>
+                  </div>
                 </div>
-                <div class="popup-detail">
-                  <span class="popup-label">Aircraft:</span>
-                  <span class="popup-value">${flight.aircraft}</span>
+              </div>
+
+              <!-- SIGNAL Section -->
+              <div class="popup-section">
+                <div class="section-header">SIGNAL</div>
+                <div class="section-grid">
+                  <div class="data-row">
+                    <span class="label">Source:</span>
+                    <span class="value">ADS-B</span>
+                  </div>
+                  <div class="data-row">
+                    <span class="label">Category:</span>
+                    <span class="value">${flight.category || 'N/A'}</span>
+                  </div>
                 </div>
-                <div class="popup-detail">
-                  <span class="popup-label">Altitude:</span>
-                  <span class="popup-value">${flight.altitude}</span>
-                </div>
-                <div class="popup-detail">
-                  <span class="popup-label">Passengers:</span>
-                  <span class="popup-value">${flight.passengers}</span>
+              </div>
+
+              <!-- STATUS Section -->
+              <div class="popup-section">
+                <div class="section-header">STATUS</div>
+                <div class="section-grid">
+                  <div class="data-row">
+                    <span class="label">Flight:</span>
+                    <span class="value status-${flight.statusClass}">${flight.status}</span>
+                  </div>
+                  <div class="data-row">
+                    <span class="label">Aircraft:</span>
+                    <span class="value">${flight.aircraft || 'Unknown'}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -167,10 +321,17 @@ export default {
           .addTo(this.map)
           .bindPopup(popupContent, {
             className: 'flight-popup-container',
-            maxWidth: 300,
+            maxWidth: 350,
+            minWidth: 320,
             closeButton: true
           })
-          .on('click', () => this.$emit('flight-click', flight));
+          .on('click', () => {
+            // Emit flight-click event
+            this.$emit('flight-click', flight);
+
+            // Start tracking this aircraft
+            this.startTrackingAircraft(flight);
+          });
 
         this.flightMarkers[flight.name] = marker;
       });
@@ -195,9 +356,9 @@ export default {
         marker.setLatLng([lat, lng]);
         const iconElement = marker.getElement();
         if (iconElement) {
-          const planeMarker = iconElement.querySelector('.plane-marker');
-          if (planeMarker) {
-            planeMarker.style.transform = `rotate(${bearing}deg)`;
+          const aircraftIcon = iconElement.querySelector('.aircraft-icon svg');
+          if (aircraftIcon) {
+            aircraftIcon.style.transform = `rotate(${bearing}deg)`;
           }
         }
       });
@@ -215,13 +376,48 @@ export default {
 
         this.weatherCircles.push(circle);
       });
+    },
+
+    /**
+     * Pan map to aircraft location and zoom in
+     * @param {number} lat - Latitude
+     * @param {number} lng - Longitude
+     * @param {number} zoom - Zoom level (default 11)
+     */
+    panToAircraft(lat, lng, zoom = 11) {
+      if (this.map) {
+        this.map.setView([lat, lng], zoom, {
+          animate: true,
+          duration: 1.0
+        });
+      }
+    },
+
+    /**
+     * Create SVG aircraft icon (OpenSky-style)
+     * @param {string} color - Aircraft color
+     * @param {boolean} isBottleneck - Whether aircraft has bottleneck
+     * @returns {string} SVG HTML string
+     */
+    createAircraftIcon(color, isBottleneck = false) {
+      const pulseClass = isBottleneck ? 'bottleneck' : '';
+      return `
+        <div class="aircraft-icon ${pulseClass}">
+          <svg viewBox="0 0 24 24" width="24" height="24" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));">
+            <path fill="${color}" d="M12 2L4 7v6c0 5.55 3.84 10.74 9 12c5.16-1.26 9-6.45 9-12V7l-8-5z"/>
+            <path fill="#ffffff" d="M12 4l6 4v5c0 4.17-2.88 8.07-6 9c-3.12-.93-6-4.83-6-9V8l6-4z" opacity="0.9"/>
+            <path fill="${color}" d="M12 6l-4 3v4c0 2.76 1.92 5.38 4 6c2.08-.62 4-3.24 4-6V9l-4-3z"/>
+            <circle cx="12" cy="12" r="2" fill="#ffffff"/>
+          </svg>
+        </div>
+      `;
     }
   }
 };
 </script>
 
 <style scoped>
-.map-container {
+.map-module {
   position: absolute;
   top: 0;
   left: 0;
@@ -230,22 +426,32 @@ export default {
   z-index: 1;
 }
 
-:deep(.plane-marker) {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
+.map-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+/* Aircraft SVG Icon Styles */
+:deep(.aircraft-icon) {
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
   cursor: pointer;
   transition: transform 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
-:deep(.plane-marker.bottleneck) {
-  background: #ef4444 !important;
+:deep(.aircraft-icon.bottleneck) {
   animation: pulse-red 2s infinite;
+}
+
+:deep(.aircraft-marker-container) {
+  background: transparent !important;
+  border: none !important;
 }
 
 @keyframes pulse-red {
@@ -286,9 +492,53 @@ export default {
   font-size: 24px;
 }
 
+:deep(.popup-header-info) {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
 :deep(.popup-flight-number) {
   color: #fff;
   font-weight: 700;
+  font-size: 16px;
+}
+
+:deep(.popup-icao24) {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Aircraft Image Section */
+:deep(.popup-aircraft-image) {
+  position: relative;
+  width: 100%;
+  height: 140px;
+  overflow: hidden;
+  background: #0a0a0a;
+}
+
+:deep(.popup-aircraft-image img) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.9;
+}
+
+:deep(.aircraft-type-label) {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(4px);
 }
 
 :deep(.popup-content) {
@@ -355,5 +605,102 @@ export default {
 
 :deep(.flight-popup-container .leaflet-popup-tip) {
   background: #1a1a1a;
+}
+
+/* Enhanced Popup Sections */
+:deep(.popup-section) {
+  margin-top: 16px;
+  border-top: 1px solid #2a2a2a;
+  padding-top: 12px;
+}
+
+:deep(.section-header) {
+  font-size: 10px;
+  font-weight: 700;
+  color: #4a9dd7;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+:deep(.section-grid) {
+  display: grid;
+  gap: 8px;
+}
+
+:deep(.data-row) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+:deep(.data-row .label) {
+  color: #888;
+  font-weight: 600;
+}
+
+:deep(.data-row .value) {
+  color: #e0e0e0;
+  font-weight: 600;
+  text-align: right;
+}
+
+/* Trajectory Path Styles - OpenSky-style solid red line */
+:deep(.trajectory-path) {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+:deep(.trajectory-path:hover) {
+  filter: brightness(1.2);
+}
+
+/* Tracked Aircraft Circular Highlight (OpenSky-style) */
+:deep(.aircraft-marker-container.tracked) {
+  position: relative;
+}
+
+:deep(.aircraft-marker-container.tracked::before) {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(200, 69, 87, 0.3) 0%, rgba(200, 69, 87, 0.1) 50%, transparent 70%);
+  border: 2px solid rgba(200, 69, 87, 0.6);
+  animation: pulse-tracked 2s ease-in-out infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes pulse-tracked {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.15);
+    opacity: 0.5;
+  }
+}
+
+/* Trajectory Tooltip Styles */
+:deep(.trajectory-tooltip) {
+  background: rgba(26, 26, 26, 0.95);
+  border: 1px solid #4a9dd7;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+:deep(.trajectory-tooltip::before) {
+  border-top-color: #4a9dd7;
 }
 </style>

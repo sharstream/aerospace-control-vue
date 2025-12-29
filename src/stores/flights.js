@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia';
 import { flightData, airlines, aircraftModels } from '@shared/data';
-import { fetchAirspaceData, transformAircraftData } from '@/services/api';
+import { fetchAirspaceRegion, transformAircraftData } from '@/services/api';
+import { BACKEND_BBOX } from '@/config/constants';
 
 /*
-| Credit cost analysis 
+| Credit cost analysis
 |--------------------------------------------------------------- |
 | Scenario        | Daily Usage | Credits/Day | Days Until Limit |
 |-----------------|-------------|-------------|----------------- |
@@ -169,7 +170,13 @@ export const useFlightsStore = defineStore('flights', {
             this.errorType = null;
 
             try {
-                const responseData = await fetchAirspaceData(50);
+                // Fetch aircraft specifically in Georgia/Atlanta bounding box
+                const responseData = await fetchAirspaceRegion({
+                    minLat: BACKEND_BBOX.lamin,
+                    maxLat: BACKEND_BBOX.lamax,
+                    minLon: BACKEND_BBOX.lomin,
+                    maxLon: BACKEND_BBOX.lomax
+                });
                 const transformedFlights = transformAircraftData(responseData);
 
                 // Preserve progress values for smooth animation

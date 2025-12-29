@@ -122,7 +122,7 @@ export default {
 <style scoped>
 .map-controls {
   position: fixed;
-  left: 24px;
+  right: 24px;
   top: 80px;
   display: flex;
   flex-direction: column;
