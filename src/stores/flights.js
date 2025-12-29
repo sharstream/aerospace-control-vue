@@ -1,7 +1,17 @@
 import { defineStore } from 'pinia';
 import { flightData, airlines, aircraftModels } from '@shared/data';
-import { fetchAirspaceData, transformAircraftData, checkApiHealth } from '@/services/api';
+import { fetchAirspaceData, transformAircraftData } from '@/services/api';
 
+/*
+| Credit cost analysis 
+|--------------------------------------------------------------- |
+| Scenario        | Daily Usage | Credits/Day | Days Until Limit |
+|-----------------|-------------|-------------|----------------- |
+| 24/7 Monitoring | 24 hours    | 1,920       | 2.08 days ⚠️     |
+| Business Hours  | 8 hours     | 640         | 6.25 days ✅     |
+| Part-Time       | 4 hours     | 320         | 12.5 days ✅     |
+| Minimal         | 2 hours     | 160         | 25 days ✅       |
+*/
 export const useFlightsStore = defineStore('flights', {
     state: () => ({
         flights: [...flightData],
@@ -116,22 +126,11 @@ export const useFlightsStore = defineStore('flights', {
             }
         },
 
-        // Check API health status
-        async checkApiConnection() {
-            try {
-                const health = await checkApiHealth();
-                this.apiStatus = health.status === 'operational' ? 'connected' : 'error';
-                return true;
-            } catch (error) {
-                this.apiStatus = 'disconnected';
-                console.error('API connection check failed:', error);
-                return false;
-            }
-        },
+        // Note: checkApiConnection() removed - no longer needed
+        // Health checks happen implicitly via fetchRealTimeData() error handling
 
         // Start countdown timer for rate limit retry
         startRateLimitCountdown(seconds) {
-            debugger;
             // Clear existing countdown if any
             this.stopRateLimitCountdown();
 
@@ -161,7 +160,6 @@ export const useFlightsStore = defineStore('flights', {
 
         // Fetch real-time aircraft data from backend
         async fetchRealTimeData() {
-            debugger;
             if (!this.useRealData) {
                 return;
             }
@@ -249,16 +247,23 @@ export const useFlightsStore = defineStore('flights', {
             this.useRealData = !this.useRealData;
 
             if (this.useRealData) {
-                // Check API connection first
-                const isConnected = await this.checkApiConnection();
+                try {
+                    // Fetch initial data (no separate health check needed - fetchRealTimeData will fail if backend is down)
+                    // This saves 1 API credit per toggle
+                    await this.fetchRealTimeData();
 
-                if (!isConnected) {
+                    // If fetch succeeded, set up polling interval (10 seconds)
+                    if (this.apiStatus === 'connected' && !this.refreshInterval) {
+                        this.refreshInterval = setInterval(() => {
+                            this.fetchRealTimeData();
+                        }, 10000); // 10 seconds
+                    }
+                } catch (error) {
+                    // If initial fetch fails, revert to mock data
                     this.useRealData = false;
+                    this.flights = [...flightData];
                     throw new Error('Cannot connect to SkySentinel API. Please ensure the backend is running.');
                 }
-
-                // Fetch initial data
-                await this.fetchRealTimeData();
             } else {
                 // Stop refresh and revert to mock data
                 if (this.refreshInterval) {
