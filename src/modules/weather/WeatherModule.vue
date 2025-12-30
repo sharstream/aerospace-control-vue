@@ -290,7 +290,13 @@ export default {
         })
         .slice(0, 5)
         .map((f) => {
-          const airline = airlines[f.airline];
+          // Get airline or use default fallback for unknown airlines
+          const airline = airlines[f.airline] || {
+            name: 'Unknown Carrier',
+            logo: '✈️',
+            color: '#4a9dd7'
+          };
+
           let impact;
           if (f.bottleneck) {
             impact = 'high';

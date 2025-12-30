@@ -141,11 +141,18 @@ export function getSystemContext(flightData, airlines) {
     const bottleneckFlights = flightData.filter(f => f.bottleneck).length;
     const activeAirlines = Object.keys(airlines).length;
 
-  // Calculate average altitude
-    const avgAltitude = Math.round(flightData.reduce((sum, f) => {
-        const alt = parseInt(f.altitude.replace(/[^\d]/g, ''), 10);
-        return sum + alt;
-    }, 0) / totalFlights);
+  // Calculate average altitude - safely handle invalid values
+    const validAltitudes = flightData
+        .map((f) => {
+            if (!f.altitude || f.altitude === 'N/A') return null;
+            const alt = parseInt(String(f.altitude).replace(/[^\d]/g, ''), 10);
+            return Number.isNaN(alt) ? null : alt;
+        })
+        .filter(alt => alt !== null && alt > 0);
+
+    const avgAltitude = validAltitudes.length > 0
+        ? Math.round(validAltitudes.reduce((sum, alt) => sum + alt, 0) / validAltitudes.length)
+        : 0;
 
   // Get most congested route
     const routeCounts = {};
@@ -155,8 +162,11 @@ export function getSystemContext(flightData, airlines) {
     });
     const busiestRoute = Object.entries(routeCounts).sort((a, b) => b[1] - a[1])[0];
 
-  // Calculate total passengers
-    const totalPassengers = flightData.reduce((sum, f) => sum + (f.passengers || 0), 0);
+  // Calculate total passengers - safely handle non-numeric values
+    const totalPassengers = flightData.reduce((sum, f) => {
+        const passengers = typeof f.passengers === 'number' ? f.passengers : 0;
+        return sum + passengers;
+    }, 0);
 
     return {
         totalFlights,

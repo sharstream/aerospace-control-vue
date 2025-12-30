@@ -319,14 +319,26 @@ export default {
       return this.flights.filter(f => f.statusClass === 'delayed');
     },
     totalPassengers() {
-      return this.flights.reduce((sum, f) => sum + f.passengers, 0);
+      return this.flights.reduce((sum, f) => {
+        // Parse passenger count safely - handle string values like '--'
+        const passengers = typeof f.passengers === 'number' ? f.passengers : 0;
+        return sum + passengers;
+      }, 0);
     },
     avgAltitude() {
-      const total = this.flights.reduce((sum, f) => {
-        const alt = parseInt(f.altitude.replace(/[^\d]/g, ''), 10);
-        return sum + alt;
-      }, 0);
-      return Math.round(total / this.flights.length);
+      // Filter and parse valid altitudes
+      const validAltitudes = this.flights
+        .map((f) => {
+          if (!f.altitude || f.altitude === 'N/A') return null;
+          const alt = parseInt(String(f.altitude).replace(/[^\d]/g, ''), 10);
+          return Number.isNaN(alt) ? null : alt;
+        })
+        .filter(alt => alt !== null && alt > 0);
+
+      if (validAltitudes.length === 0) return 0;
+
+      const total = validAltitudes.reduce((sum, alt) => sum + alt, 0);
+      return Math.round(total / validAltitudes.length);
     },
     onTimePercentage() {
       return Math.round((this.onTimeFlights / this.flights.length) * 100);
@@ -336,7 +348,12 @@ export default {
         const airlineFlights = this.flights.filter(f => f.airline === code);
         const onTime = airlineFlights.filter(f => f.statusClass === 'on-time').length;
         const delayed = airlineFlights.filter(f => f.statusClass === 'delayed').length;
-        const passengers = airlineFlights.reduce((sum, f) => sum + f.passengers, 0);
+
+        // Safely calculate total passengers
+        const passengers = airlineFlights.reduce((sum, f) => {
+          const count = typeof f.passengers === 'number' ? f.passengers : 0;
+          return sum + count;
+        }, 0);
 
         return {
           code,
@@ -408,7 +425,8 @@ export default {
       const cabinData = {};
       this.flights.forEach((flight) => {
         const hash = flight.name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-        cabinData[flight.name] = flight.passengers + (hash % 20) + 10;
+        const passengers = typeof flight.passengers === 'number' ? flight.passengers : 150; // Default for real-time
+        cabinData[flight.name] = passengers + (hash % 20) + 10;
       });
       this.cabinSeatsCache = cabinData;
     },
@@ -423,11 +441,13 @@ export default {
       this.expandedFlight = this.expandedFlight === flightName ? null : flightName;
     },
     getCabinSeats(flight) {
-      return this.cabinSeatsCache[flight.name] || flight.passengers + 15;
+      const passengers = typeof flight.passengers === 'number' ? flight.passengers : 150;
+      return this.cabinSeatsCache[flight.name] || passengers + 15;
     },
     getCabinOccupancy(flight) {
       const totalSeats = this.getCabinSeats(flight);
-      return ((flight.passengers / totalSeats) * 100).toFixed(1);
+      const passengers = typeof flight.passengers === 'number' ? flight.passengers : 150;
+      return ((passengers / totalSeats) * 100).toFixed(1);
     },
     getFlightSystems(flight) {
       // Return cached systems for this flight
