@@ -1,62 +1,58 @@
 /**
  * Aircraft Image Utility
- * Maps aircraft types to image URLs
+ * Maps aircraft types to real aircraft photos from free sources
  *
- * Using base64 SVG images for reliable display without external dependencies
- * In production, replace with actual aircraft photos
+ * Photo sources: Unsplash, Pexels (free for commercial use)
  */
 
-/**
- * Generate SVG data URI for aircraft placeholder
- * @param {string} color - Background color
- * @param {string} text - Aircraft type text
- * @returns {string} Data URI
- */
-function generateAircraftSVG(color, text) {
-  const svg = `
-    <svg width="300" height="200" xmlns="http://www.w3.org/2000/svg">
-      <rect width="300" height="200" fill="${color}"/>
-      <text x="150" y="100" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="white" text-anchor="middle" dominant-baseline="middle">${text}</text>
-      <path d="M150 60 L160 70 L160 100 L155 110 L155 120 L145 120 L145 110 L140 100 L140 70 Z" fill="white" opacity="0.8"/>
-    </svg>
-  `.trim();
-  return `data:image/svg+xml;base64,${btoa(svg)}`;
-}
-
-// Aircraft type to image mapping
+// Aircraft type to image mapping with real photos
 const AIRCRAFT_IMAGES = {
-  // Boeing aircraft
-  B737: generateAircraftSVG('#0066cc', 'Boeing 737'),
-  B738: generateAircraftSVG('#0066cc', 'Boeing 737-800'),
-  B739: generateAircraftSVG('#0066cc', 'Boeing 737-900'),
-  B752: generateAircraftSVG('#0066cc', 'Boeing 757-200'),
-  B753: generateAircraftSVG('#0066cc', 'Boeing 757-300'),
-  B762: generateAircraftSVG('#0066cc', 'Boeing 767-200'),
-  B763: generateAircraftSVG('#0066cc', 'Boeing 767-300'),
-  B772: generateAircraftSVG('#0066cc', 'Boeing 777-200'),
-  B773: generateAircraftSVG('#0066cc', 'Boeing 777-300'),
-  B77W: generateAircraftSVG('#0066cc', 'Boeing 777-300ER'),
-  B788: generateAircraftSVG('#0066cc', 'Boeing 787-8'),
-  B789: generateAircraftSVG('#0066cc', 'Boeing 787-9'),
+  // Boeing 737 Family
+  B737: 'https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=800&h=600&fit=crop',
+  B738: 'https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=800&h=600&fit=crop',
+  B739: 'https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=800&h=600&fit=crop',
 
-  // Airbus aircraft
-  A319: generateAircraftSVG('#cc0000', 'Airbus A319'),
-  A320: generateAircraftSVG('#cc0000', 'Airbus A320'),
-  A321: generateAircraftSVG('#cc0000', 'Airbus A321'),
-  A332: generateAircraftSVG('#cc0000', 'Airbus A330-200'),
-  A333: generateAircraftSVG('#cc0000', 'Airbus A330-300'),
-  A359: generateAircraftSVG('#cc0000', 'Airbus A350-900'),
-  A35K: generateAircraftSVG('#cc0000', 'Airbus A350-1000'),
-  A388: generateAircraftSVG('#cc0000', 'Airbus A380'),
+  // Boeing 757
+  B752: 'https://images.unsplash.com/photo-1583445095369-9c651e7e5d34?w=800&h=600&fit=crop',
+  B753: 'https://images.unsplash.com/photo-1583445095369-9c651e7e5d34?w=800&h=600&fit=crop',
 
-  // Regional jets
-  CRJ9: generateAircraftSVG('#006600', 'CRJ-900'),
-  E170: generateAircraftSVG('#006600', 'Embraer E170'),
-  E175: generateAircraftSVG('#006600', 'Embraer E175'),
-  E190: generateAircraftSVG('#006600', 'Embraer E190'),
+  // Boeing 767
+  B762: 'https://images.unsplash.com/photo-1569629743817-70d8db6c323b?w=800&h=600&fit=crop',
+  B763: 'https://images.unsplash.com/photo-1569629743817-70d8db6c323b?w=800&h=600&fit=crop',
 
-  // Default fallback
-  UNKNOWN: generateAircraftSVG('#666666', 'Aircraft')
+  // Boeing 777 Family
+  B772: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&h=600&fit=crop',
+  B773: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&h=600&fit=crop',
+  B77W: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&h=600&fit=crop',
+
+  // Boeing 787 Dreamliner
+  B788: 'https://images.unsplash.com/photo-1474302770737-173ee21bab63?w=800&h=600&fit=crop',
+  B789: 'https://images.unsplash.com/photo-1474302770737-173ee21bab63?w=800&h=600&fit=crop',
+
+  // Airbus A320 Family
+  A319: 'https://images.unsplash.com/photo-1556388158-158ea5ccacbd?w=800&h=600&fit=crop',
+  A320: 'https://images.unsplash.com/photo-1556388158-158ea5ccacbd?w=800&h=600&fit=crop',
+  A321: 'https://images.unsplash.com/photo-1556388158-158ea5ccacbd?w=800&h=600&fit=crop',
+
+  // Airbus A330 Family
+  A332: 'https://images.unsplash.com/photo-1583604310111-9b707b1d0d80?w=800&h=600&fit=crop',
+  A333: 'https://images.unsplash.com/photo-1583604310111-9b707b1d0d80?w=800&h=600&fit=crop',
+
+  // Airbus A350
+  A359: 'https://images.unsplash.com/photo-1562832135-14a35d25edef?w=800&h=600&fit=crop',
+  A35K: 'https://images.unsplash.com/photo-1562832135-14a35d25edef?w=800&h=600&fit=crop',
+
+  // Airbus A380
+  A388: 'https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=800&h=600&fit=crop',
+
+  // Regional Jets
+  CRJ9: 'https://images.unsplash.com/photo-1464037866556-6812c9d1c72e?w=800&h=600&fit=crop',
+  E170: 'https://images.unsplash.com/photo-1464037866556-6812c9d1c72e?w=800&h=600&fit=crop',
+  E175: 'https://images.unsplash.com/photo-1464037866556-6812c9d1c72e?w=800&h=600&fit=crop',
+  E190: 'https://images.unsplash.com/photo-1464037866556-6812c9d1c72e?w=800&h=600&fit=crop',
+
+  // Default fallback - generic commercial aircraft
+  UNKNOWN: 'https://images.unsplash.com/photo-1569629743817-70d8db6c323b?w=800&h=600&fit=crop'
 };
 
 /**
