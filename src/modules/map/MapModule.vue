@@ -49,7 +49,8 @@ export default {
       resizeHandler: null,
       trajectoryRenderer: null,
       aircraftTracker: null,
-      trackedAircraft: new Set()
+      trackedAircraft: new Set(),
+      followingIcao24: null // Track which aircraft the camera is locked to
     };
   },
   watch: {
@@ -142,11 +143,18 @@ export default {
       };
       window.addEventListener('resize', this.resizeHandler);
 
-      // Initialize trajectory renderer
+      // Break follow lock when user manually drags the map
+      this.map.on('dragstart', () => {
+        if (this.followingIcao24) {
+          console.log(`🔓 Follow mode disengaged for ${this.followingIcao24} (user initiated drag)`);
+          this.followingIcao24 = null;
+        }
+      });
+
+      // Initialize trajectory renderer (uses SVG for better zoom handling)
       this.trajectoryRenderer = new TrajectoryRenderer(this.map, {
         weight: 3,
-        opacity: 0.7,
-        useCanvas: true
+        opacity: 0.7
       });
 
       // Initialize aircraft tracker with trajectory update callback
@@ -182,11 +190,26 @@ export default {
       }
 
       try {
+        // Clear all existing tracks to maintain single-target focus (reduces visual noise)
+        this.clearAllTracking();
+
+        // Start tracking the selected aircraft
         await this.aircraftTracker.startTracking(flight.icao24);
         this.trackedAircraft.add(flight.icao24);
 
         // Highlight the trajectory
         this.trajectoryRenderer.highlightTrajectory(flight.icao24, true);
+
+        // Engage follow mode - lock camera to this aircraft
+        this.followingIcao24 = flight.icao24;
+
+        // Immediately pan to aircraft location
+        const currentPos = flight.path[0];
+        if (currentPos) {
+          this.panToAircraft(currentPos[0], currentPos[1], 11);
+        }
+
+        console.log(`🎯 Follow mode engaged for ${flight.icao24}`);
 
         this.$emit('tracking-started', flight);
 
@@ -209,6 +232,12 @@ export default {
       this.aircraftTracker.stopTracking(icao24);
       this.trajectoryRenderer.removeTrajectory(icao24);
       this.trackedAircraft.delete(icao24);
+
+      // Disengage follow mode if this was the followed aircraft
+      if (this.followingIcao24 === icao24) {
+        this.followingIcao24 = null;
+        console.log(`🔓 Follow mode disengaged for ${icao24} (tracking stopped)`);
+      }
 
       this.$emit('tracking-stopped', icao24);
 
@@ -448,6 +477,18 @@ export default {
           if (aircraftIcon) {
             aircraftIcon.style.transform = `rotate(${bearing}deg)`;
           }
+        }
+
+        // If this aircraft is being tracked, add position to trajectory renderer
+        if (this.trackedAircraft.has(flight.icao24)) {
+          this.trajectoryRenderer.addPoint(flight.icao24, [lat, lng]);
+        }
+
+        // If this aircraft is being followed, update map view to keep it centered
+        if (this.followingIcao24 === flight.icao24 && this.map && this.map._loaded && !this.map._zooming && !this.map._animatingZoom) {
+          // Use animate: false for smooth, jitter-free following during continuous updates
+          // Skip during zoom animations to avoid Leaflet projection errors
+          this.map.setView([lat, lng], this.map.getZoom(), { animate: false });
         }
       } catch (error) {
         // Silently catch errors during position updates to prevent crashes
