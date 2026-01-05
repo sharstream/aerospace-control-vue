@@ -290,7 +290,7 @@ export function replacePlaceholders(label, replacements = {}) {
   if (!label || typeof label !== 'string') return label;
 
   let result = label;
-  Object.keys(replacements).forEach(key => {
+  Object.keys(replacements).forEach((key) => {
     const placeholder = `{${key}}`;
     result = result.replace(new RegExp(placeholder, 'g'), replacements[key]);
   });

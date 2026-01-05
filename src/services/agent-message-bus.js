@@ -1,17 +1,18 @@
 /**
  * Agent Message Bus Client
  * Enables multiple AI agents to coordinate via WebSocket
- * 
+ *
  * Implements peer-to-peer message pattern for multi-agent collaboration
  * on complex aerospace monitoring tasks.
  */
 
+/* eslint-disable no-underscore-dangle */
 export class AgentMessageBusClient {
   constructor(agentId, capabilities = []) {
     this.agentId = agentId;
     this.capabilities = capabilities;
     this.ws = null;
-    this.subscriptions = new Map();  // topic -> callback
+    this.subscriptions = new Map(); // topic -> callback
     this.connected = false;
     this.reconnectAttempts = 0;
     this.maxReconnectAttempts = 5;
@@ -19,14 +20,14 @@ export class AgentMessageBusClient {
 
   /**
    * Connect to message bus
-   * 
+   *
    * @param {string} wsUrl - Optional WebSocket URL override
    * @returns {Promise<boolean>} Connection success
    */
   connect(wsUrl = null) {
     return new Promise((resolve, reject) => {
       const url = wsUrl || `${import.meta.env.VITE_WS_URL || 'ws://localhost:8000'}/ws/agents/${this.agentId}`;
-      
+
       try {
         this.ws = new WebSocket(url);
 
@@ -74,13 +75,13 @@ export class AgentMessageBusClient {
       return;
     }
 
-    const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 30000);
+    const delay = Math.min(1000 * 2 ** this.reconnectAttempts, 30000);
     this.reconnectAttempts++;
 
     console.log(`Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
 
     setTimeout(() => {
-      this.connect().catch(error => {
+      this.connect().catch((error) => {
         console.error('Reconnection failed:', error);
       });
     }, delay);
@@ -88,14 +89,14 @@ export class AgentMessageBusClient {
 
   /**
    * Subscribe to topics
-   * 
+   *
    * @param {string|Array<string>} topics - Topic name(s)
    * @param {Function} callback - Message handler
    */
   subscribe(topics, callback) {
     const topicArray = Array.isArray(topics) ? topics : [topics];
 
-    topicArray.forEach(topic => {
+    topicArray.forEach((topic) => {
       this.subscriptions.set(topic, callback);
     });
 
@@ -109,13 +110,13 @@ export class AgentMessageBusClient {
 
   /**
    * Unsubscribe from topics
-   * 
+   *
    * @param {string|Array<string>} topics - Topic name(s)
    */
   unsubscribe(topics) {
     const topicArray = Array.isArray(topics) ? topics : [topics];
 
-    topicArray.forEach(topic => {
+    topicArray.forEach((topic) => {
       this.subscriptions.delete(topic);
     });
 
@@ -129,7 +130,7 @@ export class AgentMessageBusClient {
 
   /**
    * Publish message to topic
-   * 
+   *
    * @param {string} topic - Topic name
    * @param {Object} message - Message data
    */
@@ -148,7 +149,7 @@ export class AgentMessageBusClient {
 
   /**
    * Request collaboration from agents with specific capability
-   * 
+   *
    * @param {string} capability - Required capability
    * @param {Object} context - Collaboration context
    * @returns {Promise<Object>} Collaboration request result
@@ -169,7 +170,7 @@ export class AgentMessageBusClient {
       // Store callback for response
       const timeout = setTimeout(() => {
         reject(new Error('Collaboration request timeout'));
-      }, 30000);  // 30 second timeout
+      }, 30000); // 30 second timeout
 
       // Subscribe to collaboration responses
       this.subscribe('collaboration_response', (data) => {
@@ -181,7 +182,7 @@ export class AgentMessageBusClient {
 
   /**
    * Send direct message to specific agent
-   * 
+   *
    * @param {string} recipientId - Target agent ID
    * @param {Object} message - Message data
    * @returns {Promise<void>}
@@ -200,7 +201,7 @@ export class AgentMessageBusClient {
 
   /**
    * Get list of connected agents
-   * 
+   *
    * @returns {Promise<Array>} List of connected agents
    */
   getConnectedAgents() {
@@ -236,7 +237,7 @@ export class AgentMessageBusClient {
 
   /**
    * Handle incoming message
-   * 
+   *
    * @param {Object} message - Message from server
    */
   _handleMessage(message) {
@@ -267,7 +268,7 @@ export class AgentMessageBusClient {
 
   /**
    * Send message through WebSocket
-   * 
+   *
    * @param {Object} data - Data to send
    */
   _send(data) {
@@ -293,11 +294,10 @@ export class AgentMessageBusClient {
 
   /**
    * Check if connected
-   * 
+   *
    * @returns {boolean} Connection status
    */
   isConnected() {
     return this.connected && this.ws && this.ws.readyState === WebSocket.OPEN;
   }
 }
-

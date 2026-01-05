@@ -1,7 +1,7 @@
 /**
  * MCP Client for connecting to SkySentinel FastMCP server
  * Implements progressive tool disclosure for context efficiency
- * 
+ *
  * Reduces initial context consumption by ~95% by loading tools on-demand
  * based on conversation content.
  */
@@ -18,7 +18,7 @@ export class MCPClient {
 
   /**
    * Initialize MCP connection and fetch initial tool catalog
-   * 
+   *
    * @returns {Promise<Object>} Connection result with tool count
    */
   async connect() {
@@ -28,16 +28,16 @@ export class MCPClient {
           'X-Session-ID': this.sessionId
         }
       });
-      
+
       if (!response.ok) {
         throw new Error(`MCP connection failed: ${response.status}`);
       }
-      
+
       const data = await response.json();
-      this.availableTools = data.tools;  // Lightweight tool catalog
-      this.availableSkills = data.skills;  // Skill descriptions only
+      this.availableTools = data.tools; // Lightweight tool catalog
+      this.availableSkills = data.skills; // Skill descriptions only
       this.connected = true;
-      
+
       return {
         success: true,
         toolCount: this.availableTools.length,
@@ -56,7 +56,7 @@ export class MCPClient {
   /**
    * Request specific tools/skills based on conversation context
    * Backend analyzes context and returns only relevant items
-   * 
+   *
    * @param {Array} conversationHistory - List of {role, content} messages
    * @returns {Promise<Object>} Tools and skills payload
    */
@@ -65,7 +65,7 @@ export class MCPClient {
       console.warn('MCP not connected, attempting reconnection...');
       await this.connect();
     }
-    
+
     try {
       const response = await fetch(`${MCP_SERVER_URL}/tools/inject`, {
         method: 'POST',
@@ -75,21 +75,21 @@ export class MCPClient {
         },
         body: JSON.stringify({ conversation: conversationHistory })
       });
-      
+
       if (!response.ok) {
         throw new Error(`Tool injection failed: ${response.status}`);
       }
-      
+
       const toolsPayload = await response.json();
-      
+
       console.log('✓ Tools injected:', {
         tools: toolsPayload.tools.length,
         skills: toolsPayload.skills.length,
         efficiency: toolsPayload.metadata.context_efficiency
       });
-      
+
       // Backend analyzed context and returned relevant tools/skills
-      return toolsPayload;  // { tools: [...], skills: [...], metadata: {...} }
+      return toolsPayload; // { tools: [...], skills: [...], metadata: {...} }
     } catch (error) {
       console.error('Tool injection failed:', error);
       return { tools: [], skills: [], metadata: {} };
@@ -98,7 +98,7 @@ export class MCPClient {
 
   /**
    * Execute tool on backend
-   * 
+   *
    * @param {string} toolName - Name of tool to execute
    * @param {Object} parameters - Tool parameters
    * @returns {Promise<Object>} Tool execution result
@@ -107,7 +107,7 @@ export class MCPClient {
     if (!this.connected) {
       throw new Error('MCP not connected');
     }
-    
+
     try {
       const response = await fetch(`${MCP_SERVER_URL}/tools/execute`, {
         method: 'POST',
@@ -117,16 +117,16 @@ export class MCPClient {
         },
         body: JSON.stringify({ tool: toolName, params: parameters })
       });
-      
+
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.detail || `Tool execution failed: ${response.status}`);
       }
-      
+
       const result = await response.json();
-      
+
       console.log(`✓ Tool executed: ${toolName}`);
-      
+
       return result;
     } catch (error) {
       console.error(`Tool execution failed: ${toolName}`, error);
@@ -136,7 +136,7 @@ export class MCPClient {
 
   /**
    * Get full skill instructions (lazy-loaded)
-   * 
+   *
    * @param {string} skillId - Skill identifier
    * @returns {Promise<Object>} Complete skill with instructions
    */
@@ -144,22 +144,22 @@ export class MCPClient {
     if (!this.connected) {
       throw new Error('MCP not connected');
     }
-    
+
     try {
       const response = await fetch(`${MCP_SERVER_URL}/skills/${skillId}`, {
         headers: {
           'X-Session-ID': this.sessionId
         }
       });
-      
+
       if (!response.ok) {
         throw new Error(`Skill retrieval failed: ${response.status}`);
       }
-      
+
       const skill = await response.json();
-      
+
       console.log(`✓ Skill loaded: ${skill.name} (${skill.context_tokens} tokens)`);
-      
+
       return skill;
     } catch (error) {
       console.error(`Skill retrieval failed: ${skillId}`, error);
@@ -169,17 +169,18 @@ export class MCPClient {
 
   /**
    * Get MCP server status
-   * 
+   *
    * @returns {Promise<Object>} Server status and capabilities
    */
+  // eslint-disable-next-line class-methods-use-this
   async getStatus() {
     try {
       const response = await fetch(`${MCP_SERVER_URL}/status`);
-      
+
       if (!response.ok) {
         throw new Error(`Status check failed: ${response.status}`);
       }
-      
+
       const status = await response.json();
       return status;
     } catch (error) {
@@ -200,7 +201,7 @@ export class MCPClient {
 
   /**
    * Check if client is connected
-   * 
+   *
    * @returns {boolean} Connection status
    */
   isConnected() {
@@ -209,7 +210,7 @@ export class MCPClient {
 
   /**
    * Get available tools catalog (lightweight)
-   * 
+   *
    * @returns {Array} Available tools
    */
   getAvailableTools() {
@@ -218,11 +219,10 @@ export class MCPClient {
 
   /**
    * Get available skills catalog (lightweight)
-   * 
+   *
    * @returns {Array} Available skills
    */
   getAvailableSkills() {
     return this.availableSkills;
   }
 }
-

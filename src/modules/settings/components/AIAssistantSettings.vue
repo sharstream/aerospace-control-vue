@@ -5,11 +5,11 @@
         <h2 class="card-title">{{ $Labels.aiAssistant.title }}</h2>
         <div class="session-toggle">
           <label class="toggle-label">
-            <input 
-              type="checkbox" 
-              v-model="sessionEnabled" 
-              @change="toggleSession"
+            <input
+              v-model="sessionEnabled"
+              type="checkbox"
               class="toggle-input"
+              @change="toggleSession"
             />
             <span class="toggle-slider"></span>
             <span class="toggle-text">{{ sessionEnabled ? $Labels.aiAssistant.enabled : $Labels.aiAssistant.disabled }}</span>
@@ -23,8 +23,8 @@
 
       <!-- Provider selection - Always visible -->
       <div class="provider-tabs">
-        <button 
-          v-for="provider in providers" 
+        <button
+          v-for="provider in providers"
           :key="provider.id"
           :class="['provider-tab', { active: activeProvider === provider.id }]"
           @click="activeProvider = provider.id"
@@ -38,22 +38,30 @@
       <div class="api-key-section">
         <label class="input-label">{{ $replacePlaceholders($Labels.aiAssistant.apiKey.label, { provider: providerConfig.name }) }}</label>
         <div class="api-key-input-wrapper">
-          <input 
+          <input
+            v-model="apiKey"
             :type="showApiKey ? 'text' : 'password'"
-            v-model="apiKey" 
             :placeholder="$Labels.aiAssistant.apiKey.placeholder"
             class="api-key-input"
           />
-          <button 
-            @click="showApiKey = !showApiKey"
+          <button
             class="visibility-toggle"
             type="button"
+            @click="showApiKey = !showApiKey"
           >
-            <svg v-if="!showApiKey" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+            <svg
+              v-if="!showApiKey"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
             </svg>
-            <svg v-else viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/>
+            <svg
+              v-else
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z" />
             </svg>
           </button>
         </div>
@@ -62,19 +70,31 @@
 
       <!-- Button Group - Always visible -->
       <div class="button-group">
-        <button @click="saveConfiguration" class="save-btn">
+        <button
+          class="save-btn"
+          @click="saveConfiguration"
+        >
           {{ $Labels.aiAssistant.buttons.saveConfiguration }}
         </button>
-        <button 
-          @click="testConnection" 
+        <button
           :disabled="testing || !apiKey"
           class="test-btn"
+          @click="testConnection"
         >
           <span v-if="!testing">{{ $Labels.aiAssistant.buttons.testConnection }}</span>
-          <span v-else class="testing-spinner">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" opacity=".3"/>
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10v-2c-4.41 0-8-3.59-8-8s3.59-8 8-8V2z"/>
+          <span
+            v-else
+            class="testing-spinner"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"
+                opacity=".3"
+              />
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10v-2c-4.41 0-8-3.59-8-8s3.59-8 8-8V2z" />
             </svg>
             {{ $Labels.aiAssistant.buttons.testing }}
           </span>
@@ -84,7 +104,10 @@
       <!-- Test Result removed - now using toast notifications -->
 
       <!-- Session Info - Only shown when enabled -->
-      <div v-if="sessionEnabled" class="session-info">
+      <div
+        v-if="sessionEnabled"
+        class="session-info"
+      >
         <div class="info-grid">
           <div class="info-item">
             <span class="info-label">{{ $Labels.aiAssistant.session.sessionIdLabel }}</span>
@@ -105,7 +128,10 @@
       </div>
 
       <!-- Features info - Only shown when disabled -->
-      <div v-if="!sessionEnabled" class="features-info">
+      <div
+        v-if="!sessionEnabled"
+        class="features-info"
+      >
         <p class="features-intro">{{ $Labels.aiAssistant.features.intro }}</p>
         <ul class="features-list">
           <li>{{ $Labels.aiAssistant.features.flightAnalysis }}</li>
@@ -150,9 +176,7 @@ export default {
       { id: 'google', name: 'Google Gemini', icon: '✨' }
     ];
 
-    const providerConfig = computed(() =>
-      providers.find(p => p.id === activeProvider.value)
-    );
+    const providerConfig = computed(() => providers.find(p => p.id === activeProvider.value));
 
     const toggleSession = async () => {
       if (sessionEnabled.value) {
@@ -176,7 +200,7 @@ export default {
       try {
         // Encrypt API key
         const encrypted = await encryptData(apiKey.value);
-        
+
         // Create session on backend
         const response = await fetch('http://localhost:8000/api/v1/ai-session/create', {
           method: 'POST',
@@ -186,17 +210,17 @@ export default {
             encrypted_api_key: encrypted
           })
         });
-        
+
         if (!response.ok) {
           throw new Error('Failed to create session');
         }
-        
+
         const data = await response.json();
         sessionId.value = data.session_id;
-        
+
         // Store session ID
         localStorage.setItem('ai_session_id', sessionId.value);
-        
+
         // Connect to MCP server
         mcpClient.value = new MCPClient(sessionId.value);
         const result = await mcpClient.value.connect();
@@ -229,13 +253,13 @@ export default {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ enabled: false })
           });
-          
+
           // Disconnect MCP client
           if (mcpClient.value) {
             mcpClient.value.disconnect();
           }
         }
-        
+
         mcpClient.value = null;
         mcpConnected.value = false;
         sessionId.value = null;
@@ -271,7 +295,9 @@ export default {
 
       try {
         // Simple validation test - in production, this would call the actual provider API
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        await new Promise((resolve) => {
+          setTimeout(resolve, 1500);
+        });
 
         const message = `${$Labels.aiAssistant.testResults.successPrefix} ${providerConfig.value.name}`;
         showSuccess(message, 'Connection Test');
@@ -287,22 +313,22 @@ export default {
       // Load saved configuration
       const savedKey = localStorage.getItem(`ai_key_${activeProvider.value}`);
       if (savedKey) {
-        decryptData(savedKey).then(decrypted => {
+        decryptData(savedKey).then((decrypted) => {
           apiKey.value = decrypted;
-        }).catch(error => {
+        }).catch((error) => {
           console.error('Failed to decrypt saved key:', error);
         });
       }
-      
+
       // Check for existing session
       const savedSessionId = localStorage.getItem('ai_session_id');
       if (savedSessionId) {
         sessionId.value = savedSessionId;
         sessionEnabled.value = true;
-        
+
         // Try to reconnect
         mcpClient.value = new MCPClient(savedSessionId);
-        mcpClient.value.connect().then(result => {
+        mcpClient.value.connect().then((result) => {
           mcpConnected.value = result.success;
           toolCount.value = result.toolCount || 0;
         });
@@ -781,10 +807,9 @@ export default {
   .provider-tabs {
     grid-template-columns: 1fr;
   }
-  
+
   .info-grid {
     grid-template-columns: 1fr;
   }
 }
 </style>
-

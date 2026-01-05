@@ -485,6 +485,7 @@ export default {
         }
 
         // If this aircraft is being followed, update map view to keep it centered
+        // eslint-disable-next-line no-underscore-dangle
         if (this.followingIcao24 === flight.icao24 && this.map && this.map._loaded && !this.map._zooming && !this.map._animatingZoom) {
           // Use animate: false for smooth, jitter-free following during continuous updates
           // Skip during zoom animations to avoid Leaflet projection errors

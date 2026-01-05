@@ -7,7 +7,10 @@
       <div class="ai-title">
         <h2>Commander Atlas</h2>
         <p>Aviation Systems Expert | Airfare Engineer | AI Co-Pilot</p>
-        <p class="mcp-status" :class="{ connected: mcpConnected }">
+        <p
+          class="mcp-status"
+          :class="{ connected: mcpConnected }"
+        >
           {{ mcpStatusText }}
         </p>
       </div>
@@ -145,10 +148,10 @@ export default {
       mcpClient: null,
       messageBus: null,
       mcpConnected: false,
-      mcpToolCount: 0,           // Total tools available from MCP server
-      conversationHistory: [],  // Track conversation for context analysis
-      injectedTools: [],         // Currently loaded tools for this conversation
-      injectedSkills: []         // Currently loaded skills for this conversation
+      mcpToolCount: 0, // Total tools available from MCP server
+      conversationHistory: [], // Track conversation for context analysis
+      injectedTools: [], // Currently loaded tools for this conversation
+      injectedSkills: [] // Currently loaded skills for this conversation
     };
   },
   computed: {
@@ -168,12 +171,12 @@ export default {
 
       return `${base}px`;
     },
-    
+
     mcpStatusText() {
       if (!this.mcpConnected) {
         return 'MCP: Offline (using simulated responses)';
       }
-      
+
       // Show available tools count, and injected count if any tools are loaded
       if (this.injectedTools.length > 0) {
         return `MCP: Online (${this.injectedTools.length}/${this.mcpToolCount} tools active)`;
@@ -181,11 +184,11 @@ export default {
       return `MCP: Online (${this.mcpToolCount} tools available)`;
     }
   },
-  
+
   mounted() {
     this.initializeMCPClient();
   },
-  
+
   beforeUnmount() {
     if (this.mcpClient) {
       this.mcpClient.disconnect();
@@ -211,20 +214,20 @@ export default {
         console.log('No active AI session - MCP features disabled');
         return;
       }
-      
+
       try {
         // Initialize MCP client
         this.mcpClient = new MCPClient(sessionId);
         const result = await this.mcpClient.connect();
-        
+
         if (result.success) {
           this.mcpConnected = true;
           this.mcpToolCount = result.toolCount || 0;
-          
+
           // Initialize message bus for multi-agent coordination
           this.messageBus = new AgentMessageBusClient('chat-agent', ['general']);
           await this.messageBus.connect();
-          
+
           // Subscribe to collaboration requests
           this.messageBus.subscribe('collaboration_request', this.handleCollaborationRequest);
         }
@@ -233,7 +236,7 @@ export default {
         this.mcpConnected = false;
       }
     },
-    
+
     handleCollaborationRequest(data) {
       // Handle requests from other agents
       console.log('Collaboration request received:', data);
@@ -249,13 +252,13 @@ export default {
 
       const userMessage = this.userInput;
       this.addMessage('You', userMessage, '');
-      
+
       // Add to conversation history
       this.conversationHistory.push({
         role: 'user',
         content: userMessage
       });
-      
+
       this.userInput = '';
 
       // If MCP is connected, use backend-driven AI with progressive disclosure
@@ -273,33 +276,29 @@ export default {
         const toolsPayload = await this.mcpClient.requestTools(this.conversationHistory);
         this.injectedTools = toolsPayload.tools || [];
         this.injectedSkills = toolsPayload.skills || [];
-        
-        // Step 2: Build context window with injected tools and skills
-        const contextWindow = this.buildContextWindow();
-        
-        // Step 3: Determine which tool to execute based on query
+
+        // Step 2: Determine which tool to execute based on query
         const toolExecution = this.determineToolExecution(query.toLowerCase());
-        
+
         if (toolExecution) {
           // Execute the tool on backend
           const result = await this.mcpClient.executeTool(
             toolExecution.toolName,
             toolExecution.params
           );
-          
+
           // Format and display result
           this.displayToolResult(toolExecution.toolName, result.result);
         } else {
           // No specific tool, provide general response with skill guidance
           this.provideGeneralResponse();
         }
-        
+
         // Add assistant response to conversation history
         this.conversationHistory.push({
           role: 'assistant',
-          content: this.messages[0].content  // Most recent message
+          content: this.messages[0].content // Most recent message
         });
-        
       } catch (error) {
         console.error('MCP message processing failed:', error);
         this.addMessage(
@@ -329,7 +328,7 @@ export default {
             toolName: 'analyze_fuel_consumption',
             params: {
               flight_id: flight.id,
-              current_fuel_level: 5000,  // Would come from real data
+              current_fuel_level: 5000, // Would come from real data
               fuel_capacity: 8000,
               distance_traveled: 500,
               distance_remaining: 300,
@@ -339,7 +338,7 @@ export default {
           };
         }
       }
-      
+
       if (query.includes('pressure') || query.includes('cabin')) {
         return {
           toolName: 'detect_pressure_anomaly',
@@ -350,7 +349,7 @@ export default {
           }
         };
       }
-      
+
       if (query.includes('trajectory') || query.includes('path')) {
         const flight = this.flights[0];
         if (flight && flight.path.length > 0) {
@@ -371,7 +370,7 @@ export default {
           };
         }
       }
-      
+
       if (query.includes('status') || query.includes('systems')) {
         return {
           toolName: 'get_aircraft_status',
@@ -386,7 +385,7 @@ export default {
           }
         };
       }
-      
+
       return null;
     },
 
@@ -394,7 +393,7 @@ export default {
       let title = 'Analysis Result';
       let content = '';
       let type = 'success';
-      
+
       switch (toolName) {
         case 'analyze_fuel_consumption':
           title = 'Fuel Analysis';
@@ -410,10 +409,14 @@ export default {
             content += `\nRecommendations:\n${result.recommendations.join('\n')}`;
           }
           break;
-          
+
         case 'detect_pressure_anomaly':
           title = 'Pressure Analysis';
-          type = result.severity === 'EMERGENCY' ? 'alert' : result.severity === 'WARNING' ? 'alert' : 'success';
+          if (result.severity === 'EMERGENCY' || result.severity === 'WARNING') {
+            type = 'alert';
+          } else {
+            type = 'success';
+          }
           content = `Status: ${result.status}\n`;
           content += `Cabin pressure: ${result.cabin_pressure_psi} PSI\n`;
           content += `Expected: ${result.expected_pressure_psi} PSI\n`;
@@ -422,7 +425,7 @@ export default {
             content += `\n${result.recommendations.join('\n')}`;
           }
           break;
-          
+
         case 'predict_trajectory':
           title = 'Trajectory Prediction';
           content = `Groundspeed: ${result.groundspeed_knots} knots\n`;
@@ -431,7 +434,7 @@ export default {
           content += `Confidence: ${result.prediction_confidence}\n`;
           content += `\nPredicted waypoints: ${result.predicted_waypoints.length}`;
           break;
-          
+
         case 'get_aircraft_status':
           title = 'Aircraft Systems Status';
           type = result.overall_status === 'CRITICAL' ? 'alert' : 'success';
@@ -441,16 +444,21 @@ export default {
             content += `\nAlerts:\n${result.alerts.join('\n')}`;
           }
           break;
+
+        default:
+          title = 'Tool Result';
+          content = JSON.stringify(result, null, 2);
+          break;
       }
-      
+
       this.addMessage(title, content, type);
     },
 
     provideGeneralResponse() {
       const skillCategories = [...new Set(this.injectedSkills.map(s => s.category))];
-      
+
       let response = 'I can help you with:\n\n';
-      
+
       if (skillCategories.includes('fuel')) {
         response += '⛽ Fuel consumption analysis and range prediction\n';
       }
@@ -466,9 +474,9 @@ export default {
       if (skillCategories.includes('malfunction')) {
         response += '🔧 System malfunction detection and diagnosis\n';
       }
-      
+
       response += '\nAsk me about fuel, pressure, trajectory, or system status for detailed analysis.';
-      
+
       this.addMessage('Commander Atlas', response, 'success');
     },
 

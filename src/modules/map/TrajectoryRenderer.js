@@ -11,7 +11,7 @@
  * @see https://leafletjs.com/reference-2.0.0.html#renderer
  */
 
-import { Polyline, Canvas } from 'leaflet';
+import { Polyline } from 'leaflet';
 
 class TrajectoryRenderer {
   /**
@@ -84,22 +84,23 @@ class TrajectoryRenderer {
    */
   addPoint(icao24, position) {
     // Skip trajectory updates during zoom animations to avoid Leaflet projection errors
+    // eslint-disable-next-line no-underscore-dangle
     if (this.map._zooming || this.map._animatingZoom) {
       return;
     }
-    
+
     const existingPath = this.trajectoryPaths.get(icao24);
-    
+
     if (existingPath) {
       // Update existing trajectory by adding new point
       const latLngs = existingPath.getLatLngs();
-      
+
       // Avoid duplicate points (check if last point is same as new point)
       const lastPoint = latLngs[latLngs.length - 1];
       if (lastPoint && lastPoint.lat === position[0] && lastPoint.lng === position[1]) {
         return; // Skip duplicate
       }
-      
+
       latLngs.push(position);
       existingPath.setLatLngs(latLngs);
     } else {
@@ -114,7 +115,7 @@ class TrajectoryRenderer {
         className: 'trajectory-path',
         interactive: false
       });
-      
+
       this.trajectoryPaths.set(icao24, polyline);
       polyline.addTo(this.map);
     }

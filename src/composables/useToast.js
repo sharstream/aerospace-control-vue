@@ -103,14 +103,12 @@ export function useToast() {
    * @param {string} [title='Success'] - Optional title
    * @param {number} [duration=3000] - Auto-dismiss duration
    */
-  const showSuccess = (message, title = null, duration = 3000) => {
-    return showToast({
+  const showSuccess = (message, title = null, duration = 3000) => showToast({
       type: 'success',
       message,
       title,
       duration
     });
-  };
 
   /**
    * Show error toast (convenience method)
@@ -118,14 +116,12 @@ export function useToast() {
    * @param {string} [title='Error'] - Optional title
    * @param {number} [duration=5000] - Auto-dismiss duration (longer for errors)
    */
-  const showError = (message, title = null, duration = 5000) => {
-    return showToast({
+  const showError = (message, title = null, duration = 5000) => showToast({
       type: 'error',
       message,
       title,
       duration
     });
-  };
 
   /**
    * Show warning toast (convenience method)
@@ -133,14 +129,12 @@ export function useToast() {
    * @param {string} [title='Warning'] - Optional title
    * @param {number} [duration=4000] - Auto-dismiss duration
    */
-  const showWarning = (message, title = null, duration = 4000) => {
-    return showToast({
+  const showWarning = (message, title = null, duration = 4000) => showToast({
       type: 'warning',
       message,
       title,
       duration
     });
-  };
 
   /**
    * Show info toast (convenience method)
@@ -148,14 +142,12 @@ export function useToast() {
    * @param {string} [title='Info'] - Optional title
    * @param {number} [duration=4000] - Auto-dismiss duration
    */
-  const showInfo = (message, title = null, duration = 4000) => {
-    return showToast({
+  const showInfo = (message, title = null, duration = 4000) => showToast({
       type: 'info',
       message,
       title,
       duration
     });
-  };
 
   return {
     toasts,
