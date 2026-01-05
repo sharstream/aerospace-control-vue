@@ -1,12 +1,12 @@
 <template>
   <div class="settings-card full-width">
     <div class="card-header">
-      <h2 class="card-title">Data Source</h2>
+      <h2 class="card-title">{{ $Labels.dataSource.title }}</h2>
     </div>
 
     <div class="settings-content">
       <p class="section-description">
-        Configure real-time aircraft data from SkySentinel backend
+        {{ $Labels.dataSource.description }}
       </p>
 
       <div class="data-source-controls">

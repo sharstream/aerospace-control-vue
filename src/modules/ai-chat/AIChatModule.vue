@@ -274,8 +274,6 @@ export default {
         this.injectedTools = toolsPayload.tools || [];
         this.injectedSkills = toolsPayload.skills || [];
         
-        console.log(`Context analysis: ${this.injectedTools.length} tools, ${this.injectedSkills.length} skills injected`);
-        
         // Step 2: Build context window with injected tools and skills
         const contextWindow = this.buildContextWindow();
         

@@ -2,7 +2,7 @@
   <div class="settings-card full-width">
     <div class="card-header">
       <div class="header-content">
-        <h2 class="card-title">AI Assistant</h2>
+        <h2 class="card-title">{{ $Labels.aiAssistant.title }}</h2>
         <div class="session-toggle">
           <label class="toggle-label">
             <input 
@@ -12,14 +12,14 @@
               class="toggle-input"
             />
             <span class="toggle-slider"></span>
-            <span class="toggle-text">{{ sessionEnabled ? 'Enabled' : 'Disabled' }}</span>
+            <span class="toggle-text">{{ sessionEnabled ? $Labels.aiAssistant.enabled : $Labels.aiAssistant.disabled }}</span>
           </label>
         </div>
       </div>
     </div>
 
     <div class="settings-content">
-      <p class="section-description">Integrate with ChatGPT, Claude, and Gemini for intelligent aerospace monitoring</p>
+      <p class="section-description">{{ $Labels.aiAssistant.description }}</p>
 
       <!-- Provider selection - Always visible -->
       <div class="provider-tabs">
@@ -30,18 +30,18 @@
           @click="activeProvider = provider.id"
         >
           <span class="provider-icon">{{ provider.icon }}</span>
-          <span class="provider-name">{{ provider.name }}</span>
+          <span class="provider-name">{{ $Labels.aiAssistant.providers[provider.id] }}</span>
         </button>
       </div>
 
       <!-- API Key Input - Always visible -->
       <div class="api-key-section">
-        <label class="input-label">{{ providerConfig.name }} API Key</label>
+        <label class="input-label">{{ $replacePlaceholders($Labels.aiAssistant.apiKey.label, { provider: providerConfig.name }) }}</label>
         <div class="api-key-input-wrapper">
           <input 
             :type="showApiKey ? 'text' : 'password'"
             v-model="apiKey" 
-            placeholder="Enter your API key..."
+            :placeholder="$Labels.aiAssistant.apiKey.placeholder"
             class="api-key-input"
           />
           <button 
@@ -57,68 +57,61 @@
             </svg>
           </button>
         </div>
-        <p class="input-description">API key is encrypted and stored securely in your browser</p>
+        <p class="input-description">{{ $Labels.aiAssistant.apiKey.description }}</p>
       </div>
 
       <!-- Button Group - Always visible -->
       <div class="button-group">
         <button @click="saveConfiguration" class="save-btn">
-          Save Configuration
+          {{ $Labels.aiAssistant.buttons.saveConfiguration }}
         </button>
         <button 
           @click="testConnection" 
           :disabled="testing || !apiKey"
           class="test-btn"
         >
-          <span v-if="!testing">Test Connection</span>
+          <span v-if="!testing">{{ $Labels.aiAssistant.buttons.testConnection }}</span>
           <span v-else class="testing-spinner">
             <svg viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" opacity=".3"/>
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10v-2c-4.41 0-8-3.59-8-8s3.59-8 8-8V2z"/>
             </svg>
-            Testing...
+            {{ $Labels.aiAssistant.buttons.testing }}
           </span>
         </button>
       </div>
 
-      <!-- Test Result - Always visible when present -->
-      <div v-if="testResult" :class="['test-result', testResult.success ? 'success' : 'error']">
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path v-if="testResult.success" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-          <path v-else d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-        </svg>
-        {{ testResult.message }}
-      </div>
+      <!-- Test Result removed - now using toast notifications -->
 
       <!-- Session Info - Only shown when enabled -->
       <div v-if="sessionEnabled" class="session-info">
         <div class="info-grid">
           <div class="info-item">
-            <span class="info-label">Session ID</span>
-            <span class="info-value">{{ sessionId || 'Not created' }}</span>
+            <span class="info-label">{{ $Labels.aiAssistant.session.sessionIdLabel }}</span>
+            <span class="info-value">{{ sessionId || $Labels.aiAssistant.session.notCreated }}</span>
           </div>
           <div class="info-item">
-            <span class="info-label">MCP Status</span>
+            <span class="info-label">{{ $Labels.aiAssistant.session.mcpStatusLabel }}</span>
             <span :class="['status-badge', mcpConnected ? 'status-connected' : 'status-disconnected']">
               <span class="status-dot"></span>
-              {{ mcpConnected ? 'Connected' : 'Disconnected' }}
+              {{ mcpConnected ? $Labels.aiAssistant.session.connected : $Labels.aiAssistant.session.disconnected }}
             </span>
           </div>
           <div class="info-item">
-            <span class="info-label">Available Tools</span>
-            <span class="info-value">{{ toolCount }} aerospace monitoring tools</span>
+            <span class="info-label">{{ $Labels.aiAssistant.session.availableToolsLabel }}</span>
+            <span class="info-value">{{ $replacePlaceholders($Labels.aiAssistant.session.toolsCount, { count: toolCount }) }}</span>
           </div>
         </div>
       </div>
 
       <!-- Features info - Only shown when disabled -->
       <div v-if="!sessionEnabled" class="features-info">
-        <p class="features-intro">Once enabled, you'll have access to:</p>
+        <p class="features-intro">{{ $Labels.aiAssistant.features.intro }}</p>
         <ul class="features-list">
-          <li>✈️ Real-time flight analysis and anomaly detection</li>
-          <li>🔧 System malfunction diagnosis and recommendations</li>
-          <li>📊 Predictive trajectory analysis</li>
-          <li>⚡ Multi-agent collaboration for complex tasks</li>
+          <li>{{ $Labels.aiAssistant.features.flightAnalysis }}</li>
+          <li>{{ $Labels.aiAssistant.features.systemDiagnosis }}</li>
+          <li>{{ $Labels.aiAssistant.features.trajectoryAnalysis }}</li>
+          <li>{{ $Labels.aiAssistant.features.multiAgent }}</li>
         </ul>
       </div>
     </div>
@@ -126,9 +119,10 @@
 </template>
 
 <script>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, getCurrentInstance } from 'vue';
 import { MCPClient } from '@/services/mcp-client';
 import { encryptData, decryptData } from '@/services/encryption-service';
+import { useToast } from '@/composables/useToast';
 
 export default {
   name: 'AIAssistantSettings',
@@ -142,7 +136,13 @@ export default {
     const mcpConnected = ref(false);
     const toolCount = ref(0);
     const testing = ref(false);
-    const testResult = ref(null);
+
+    // Toast notifications
+    const { showSuccess, showError, showWarning } = useToast();
+
+    // Access global properties ($Labels, $replacePlaceholders)
+    const app = getCurrentInstance();
+    const { $Labels, $replacePlaceholders } = app.appContext.config.globalProperties;
 
     const providers = [
       { id: 'openai', name: 'OpenAI', icon: '🤖' },
@@ -150,7 +150,7 @@ export default {
       { id: 'google', name: 'Google Gemini', icon: '✨' }
     ];
 
-    const providerConfig = computed(() => 
+    const providerConfig = computed(() =>
       providers.find(p => p.id === activeProvider.value)
     );
 
@@ -158,7 +158,11 @@ export default {
       if (sessionEnabled.value) {
         // Validate API key before creating session
         if (!apiKey.value || apiKey.value.trim().length === 0) {
-          alert(`Please enter a ${providerConfig.value.name} API key before enabling AI features.`);
+          const message = $replacePlaceholders(
+            $Labels.aiAssistant.validation.apiKeyRequired,
+            { provider: providerConfig.value.name }
+          );
+          showWarning(message, $Labels.aiAssistant.title);
           sessionEnabled.value = false;
           return;
         }
@@ -198,12 +202,21 @@ export default {
         const result = await mcpClient.value.connect();
         mcpConnected.value = result.success;
         toolCount.value = result.toolCount || 0;
-        
-        console.log('✓ AI session created and MCP connected');
+
+        // Show success toast
+        showSuccess(
+          `AI session created successfully with ${toolCount.value} tools available`,
+          'Session Created'
+        );
       } catch (error) {
         console.error('Session creation failed:', error);
         sessionEnabled.value = false;
-        alert(`Failed to create AI session: ${error.message}`);
+
+        const message = $replacePlaceholders(
+          $Labels.aiAssistant.validation.sessionCreationFailed,
+          { error: error.message }
+        );
+        showError(message, $Labels.aiAssistant.title);
       }
     };
 
@@ -227,10 +240,11 @@ export default {
         mcpConnected.value = false;
         sessionId.value = null;
         localStorage.removeItem('ai_session_id');
-        
-        console.log('✓ AI session disabled');
+
+        showSuccess('AI session disabled successfully', 'Session Disabled');
       } catch (error) {
         console.error('Session disable failed:', error);
+        showError(`Failed to disable session: ${error.message}`, 'Error');
       }
     };
 
@@ -239,31 +253,31 @@ export default {
         // Save encrypted API key to localStorage
         const encrypted = await encryptData(apiKey.value);
         localStorage.setItem(`ai_key_${activeProvider.value}`, encrypted);
-        
-        alert('Configuration saved successfully');
+
+        showSuccess($Labels.aiAssistant.validation.configSaved, 'Success');
       } catch (error) {
         console.error('Save failed:', error);
-        alert(`Failed to save configuration: ${error.message}`);
+
+        const message = $replacePlaceholders(
+          $Labels.aiAssistant.validation.configSaveFailed,
+          { error: error.message }
+        );
+        showError(message, 'Error');
       }
     };
 
     const testConnection = async () => {
       testing.value = true;
-      testResult.value = null;
 
       try {
         // Simple validation test - in production, this would call the actual provider API
         await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        testResult.value = {
-          success: true,
-          message: `Successfully connected to ${providerConfig.value.name}`
-        };
+
+        const message = `${$Labels.aiAssistant.testResults.successPrefix} ${providerConfig.value.name}`;
+        showSuccess(message, 'Connection Test');
       } catch (error) {
-        testResult.value = {
-          success: false,
-          message: `Connection failed: ${error.message}`
-        };
+        const message = `${$Labels.aiAssistant.testResults.failurePrefix} ${error.message}`;
+        showError(message, 'Connection Test');
       } finally {
         testing.value = false;
       }
@@ -313,7 +327,6 @@ export default {
       mcpConnected,
       toolCount,
       testing,
-      testResult,
       toggleSession,
       saveConfiguration,
       testConnection

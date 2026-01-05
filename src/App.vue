@@ -114,6 +114,9 @@
       @change-view="changeView"
       @collapse-state-change="handleBottomNavCollapseChange"
     />
+
+    <!-- Toast Notifications -->
+    <ToastNotification />
   </div>
 </template>
 
@@ -132,6 +135,7 @@ import SettingsModule from './modules/settings/SettingsModule.vue';
 import AIChatModule from './modules/ai-chat/AIChatModule.vue';
 import BottomNavigation from './components/BottomNavigation.vue';
 import FlightsDataTable from './components/FlightsDataTable.vue';
+import ToastNotification from './components/common/ToastNotification.vue';
 import { useUsageTracking } from './composables/useUsageTracking';
 import { useFlightsStore } from './stores/flights';
 
@@ -147,6 +151,7 @@ export default {
     AnalyticsModule,
     SettingsModule,
     AIChatModule,
+    ToastNotification,
     BottomNavigation,
     FlightsDataTable
   },
