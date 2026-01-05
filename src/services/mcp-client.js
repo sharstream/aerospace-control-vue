@@ -38,11 +38,6 @@ export class MCPClient {
       this.availableSkills = data.skills;  // Skill descriptions only
       this.connected = true;
       
-      console.log('✓ MCP connected:', {
-        tools: this.availableTools.length,
-        skills: this.availableSkills.length
-      });
-      
       return {
         success: true,
         toolCount: this.availableTools.length,

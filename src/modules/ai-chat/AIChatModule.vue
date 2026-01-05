@@ -145,10 +145,10 @@ export default {
       mcpClient: null,
       messageBus: null,
       mcpConnected: false,
+      mcpToolCount: 0,           // Total tools available from MCP server
       conversationHistory: [],  // Track conversation for context analysis
-      availableTools: [],        // Cached tool catalog
-      injectedTools: [],         // Currently loaded tools
-      injectedSkills: []         // Currently loaded skills
+      injectedTools: [],         // Currently loaded tools for this conversation
+      injectedSkills: []         // Currently loaded skills for this conversation
     };
   },
   computed: {
@@ -173,7 +173,12 @@ export default {
       if (!this.mcpConnected) {
         return 'MCP: Offline (using simulated responses)';
       }
-      return `MCP: Online (${this.injectedTools.length} tools active)`;
+      
+      // Show available tools count, and injected count if any tools are loaded
+      if (this.injectedTools.length > 0) {
+        return `MCP: Online (${this.injectedTools.length}/${this.mcpToolCount} tools active)`;
+      }
+      return `MCP: Online (${this.mcpToolCount} tools available)`;
     }
   },
   
@@ -214,8 +219,7 @@ export default {
         
         if (result.success) {
           this.mcpConnected = true;
-          this.availableTools = this.mcpClient.getAvailableTools();
-          console.log(`✓ MCP connected: ${result.toolCount} tools available`);
+          this.mcpToolCount = result.toolCount || 0;
           
           // Initialize message bus for multi-agent coordination
           this.messageBus = new AgentMessageBusClient('chat-agent', ['general']);
