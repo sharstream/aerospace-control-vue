@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install)",
+      "Bash(chmod:*)",
+      "Bash(test:*)",
+      "Bash(./statusline-token-cost.js)",
+      "Bash(cat:*)"
+    ]
+  }
+}
