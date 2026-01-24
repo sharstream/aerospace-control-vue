@@ -132,7 +132,9 @@ import FlightsModule from './modules/flights/FlightsModule.vue';
 import WeatherModule from './modules/weather/WeatherModule.vue';
 import AnalyticsModule from './modules/analytics/AnalyticsModule.vue';
 import SettingsModule from './modules/settings/SettingsModule.vue';
-import AIChatModule from './modules/ai-chat/AIChatModule.vue';
+// Import dual-panel AI chat (new implementation)
+import AIChatModule from './modules/ai-chat/AIChatModuleDualPanel.vue';
+// Original single-panel version available at: './modules/ai-chat/AIChatModule.vue'
 import BottomNavigation from './components/BottomNavigation.vue';
 import FlightsDataTable from './components/FlightsDataTable.vue';
 import ToastNotification from './components/common/ToastNotification.vue';
