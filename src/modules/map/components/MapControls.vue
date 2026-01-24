@@ -126,33 +126,39 @@ export default {
   top: 80px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  background: rgba(42, 42, 42, 0.95);
+  gap: 4px;
+  background: rgba(26, 26, 26, 0.95);
   backdrop-filter: blur(12px);
-  border-radius: 8px;
-  padding: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(74, 157, 215, 0.1);
   z-index: 900;
   border: 1px solid rgba(74, 157, 215, 0.15);
 }
 
 .control-btn {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   background: transparent;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
   color: #e0e0e0;
+  position: relative;
 }
 
 .control-btn:hover {
   background: rgba(74, 157, 215, 0.15);
   color: #4a9dd7;
+  transform: scale(1.05);
+}
+
+.control-btn:active {
+  transform: scale(0.95);
 }
 
 .control-btn svg {

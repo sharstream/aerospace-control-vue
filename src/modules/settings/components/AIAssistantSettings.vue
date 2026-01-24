@@ -34,6 +34,19 @@
         </button>
       </div>
 
+      <!-- Model Selection Dropdown (Static UI) -->
+      <div class="model-selection">
+        <label class="input-label">Model</label>
+        <select class="model-dropdown">
+          <option value="gpt-4-turbo">GPT-4 Turbo - Most capable, multimodal</option>
+          <option value="gpt-4">GPT-4 - High intelligence</option>
+          <option value="gpt-3.5-turbo">GPT-3.5 Turbo - Fast and efficient</option>
+        </select>
+        <p class="input-description">
+          Select the AI model to use for this provider
+        </p>
+      </div>
+
       <!-- API Key Input - Always visible -->
       <div class="api-key-section">
         <label class="input-label">{{ $replacePlaceholders($Labels.aiAssistant.apiKey.label, { provider: providerConfig.name }) }}</label>
@@ -175,6 +188,25 @@ export default {
       { id: 'anthropic', name: 'Anthropic Claude', icon: '🧠' },
       { id: 'google', name: 'Google Gemini', icon: '✨' }
     ];
+
+    // Static model data for UI display only
+    const providerModels = {
+      openai: [
+        { id: 'gpt-4-turbo', name: 'GPT-4 Turbo', description: 'Most capable, multimodal' },
+        { id: 'gpt-4', name: 'GPT-4', description: 'High intelligence' },
+        { id: 'gpt-3.5-turbo', name: 'GPT-3.5 Turbo', description: 'Fast and efficient' }
+      ],
+      anthropic: [
+        { id: 'claude-3-opus-20240229', name: 'Claude 3 Opus', description: 'Most powerful' },
+        { id: 'claude-3-sonnet-20240229', name: 'Claude 3 Sonnet', description: 'Balanced' },
+        { id: 'claude-3-haiku-20240307', name: 'Claude 3 Haiku', description: 'Fast and compact' }
+      ],
+      google: [
+        { id: 'gemini-1.5-pro', name: 'Gemini 1.5 Pro', description: 'Most capable' },
+        { id: 'gemini-1.5-flash', name: 'Gemini 1.5 Flash', description: 'Fast and versatile' },
+        { id: 'gemini-1.0-pro', name: 'Gemini 1.0 Pro', description: 'Efficient' }
+      ]
+    };
 
     const providerConfig = computed(() => providers.find(p => p.id === activeProvider.value));
 
@@ -801,6 +833,42 @@ export default {
   font-size: 14px;
   color: #e0e0e0;
   padding-left: 8px;
+}
+
+/* Model Selection Dropdown */
+.model-selection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.model-dropdown {
+  width: 100%;
+  padding: 14px 16px;
+  background: #1f1f1f;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  color: #e0e0e0;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.model-dropdown:hover {
+  border-color: #4a7ba7;
+}
+
+.model-dropdown:focus {
+  outline: none;
+  border-color: #5b9dd1;
+  background: #252525;
+}
+
+.model-dropdown option {
+  background: #1f1f1f;
+  color: #e0e0e0;
+  padding: 10px;
 }
 
 @media (max-width: 900px) {

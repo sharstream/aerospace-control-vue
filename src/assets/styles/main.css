@@ -1,3 +1,11 @@
+/* Tailwind CSS Directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Design Tokens */
+@import './tokens.css';
+
 /* Global Reset */
 * {
   margin: 0;
@@ -197,15 +205,16 @@ body {
 }
 
 .leaflet-popup-content-wrapper {
-  background: rgba(42, 42, 42, 0.95);
+  background: rgba(26, 26, 26, 0.95);
   backdrop-filter: blur(12px);
   color: #e0e0e0;
-  border-radius: 8px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(74, 157, 215, 0.1);
+  border: 1px solid rgba(74, 157, 215, 0.15);
 }
 
 .leaflet-popup-tip {
-  background: rgba(42, 42, 42, 0.95);
+  background: rgba(26, 26, 26, 0.95);
 }
 
 .leaflet-control-zoom {
@@ -213,15 +222,18 @@ body {
 }
 
 .leaflet-control-zoom a {
-  background: rgba(42, 42, 42, 0.95) !important;
+  background: rgba(26, 26, 26, 0.95) !important;
   backdrop-filter: blur(12px);
   color: #e0e0e0 !important;
   border: 1px solid rgba(74, 157, 215, 0.15) !important;
+  border-radius: 8px !important;
+  transition: all 0.2s ease !important;
 }
 
 .leaflet-control-zoom a:hover {
-  background: rgba(74, 157, 215, 0.2) !important;
+  background: rgba(74, 157, 215, 0.15) !important;
   border-color: #4a9dd7 !important;
+  transform: scale(1.05);
 }
 
 /* Scrollbar Styling */

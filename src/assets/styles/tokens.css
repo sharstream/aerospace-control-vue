@@ -1,0 +1,7 @@
+/* Aerospace Control System - Design Tokens Aggregator */
+
+/* Import all token files */
+@import './tokens/colors.css';
+@import './tokens/spacing.css';
+@import './tokens/typography.css';
+@import './tokens/shadows.css';

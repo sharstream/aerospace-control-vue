@@ -167,13 +167,13 @@ export default {
   position: fixed;
   left: 24px;
   bottom: v-bind(bottomPosition);
-  width: 280px;
-  background: rgba(26, 38, 50, 0.98);
-  backdrop-filter: blur(16px);
+  width: 300px;
+  background: rgba(26, 26, 26, 0.95);
+  backdrop-filter: blur(12px);
   border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(74, 157, 215, 0.2);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(74, 157, 215, 0.1);
   z-index: 900;
-  border: 1px solid rgba(74, 157, 215, 0.2);
+  border: 1px solid rgba(74, 157, 215, 0.15);
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -183,12 +183,12 @@ export default {
 }
 
 .legend-header {
-  padding: 16px;
+  padding: 18px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   transition: background 0.2s ease;
 }
 
@@ -221,7 +221,7 @@ export default {
 }
 
 .legend-content {
-  padding: 16px;
+  padding: 20px;
   max-height: 500px;
   overflow-y: auto;
 }
