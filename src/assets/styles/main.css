@@ -1,10 +1,10 @@
+/* Design Tokens - Must be imported before Tailwind */
+@import './tokens.css';
+
 /* Tailwind CSS Directives */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Design Tokens */
-@import './tokens.css';
 
 /* Global Reset */
 * {
