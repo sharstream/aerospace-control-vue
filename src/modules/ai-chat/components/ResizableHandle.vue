@@ -2,17 +2,17 @@
   <div
     class="resizable-handle"
     :class="{ dragging: isDragging }"
-    @mousedown="handleMouseDown"
     role="separator"
     aria-orientation="vertical"
     aria-label="Resize panels"
     tabindex="0"
+    @mousedown="handleMouseDown"
     @keydown="handleKeyDown"
   >
     <div class="handle-indicator">
-      <div class="handle-line" />
-      <div class="handle-line" />
-      <div class="handle-line" />
+      <div class="handle-line"></div>
+      <div class="handle-line"></div>
+      <div class="handle-line"></div>
     </div>
   </div>
 </template>
@@ -20,17 +20,17 @@
 <script setup>
 import { defineProps, defineEmits } from 'vue';
 
-const props = defineProps({
-  isDragging: {
-    type: Boolean,
-    default: false
-  }
+defineProps({
+    isDragging: {
+        type: Boolean,
+        default: false
+    }
 });
 
 const emit = defineEmits(['resize', 'snap']);
 
 const handleMouseDown = (event) => {
-  emit('resize', event);
+    emit('resize', event);
 };
 
 /**
@@ -38,25 +38,25 @@ const handleMouseDown = (event) => {
  * Arrow keys adjust panel size, Enter snaps to default
  */
 const handleKeyDown = (event) => {
-  const step = 5; // Percentage step for keyboard adjustment
+    const step = 5; // Percentage step for keyboard adjustment
 
-  switch (event.key) {
-    case 'ArrowLeft':
-      event.preventDefault();
-      emit('snap', -step);
-      break;
-    case 'ArrowRight':
-      event.preventDefault();
-      emit('snap', step);
-      break;
-    case 'Enter':
-    case ' ':
-      event.preventDefault();
-      emit('snap', 35); // Reset to default 35%
-      break;
-    default:
-      break;
-  }
+    switch (event.key) {
+        case 'ArrowLeft':
+            event.preventDefault();
+            emit('snap', -step);
+            break;
+        case 'ArrowRight':
+            event.preventDefault();
+            emit('snap', step);
+            break;
+        case 'Enter':
+        case ' ':
+            event.preventDefault();
+            emit('snap', 35); // Reset to default 35%
+            break;
+        default:
+            break;
+    }
 };
 </script>
 

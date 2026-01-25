@@ -17,9 +17,9 @@
         class="loading-indicator"
       >
         <div class="loading-dots">
-          <span />
-          <span />
-          <span />
+          <span></span>
+          <span></span>
+          <span></span>
         </div>
         <span class="loading-text">Commander Atlas is thinking...</span>
       </div>
@@ -54,17 +54,17 @@ import { ref, watch, nextTick, defineProps, defineEmits } from 'vue';
 import MessageItem from './MessageItem.vue';
 
 const props = defineProps({
-  messages: {
-    type: Array,
-    default: () => []
-  },
-  isLoading: {
-    type: Boolean,
-    default: false
-  }
+    messages: {
+        type: Array,
+        default: () => []
+    },
+    isLoading: {
+        type: Boolean,
+        default: false
+    }
 });
 
-const emit = defineEmits(['show-preview']);
+defineEmits(['show-preview']);
 
 const messageContainer = ref(null);
 
@@ -72,30 +72,30 @@ const messageContainer = ref(null);
  * Auto-scroll to bottom when new messages arrive
  */
 const scrollToBottom = () => {
-  nextTick(() => {
-    if (messageContainer.value) {
-      const scrollContainer = messageContainer.value.parentElement;
-      if (scrollContainer) {
-        scrollContainer.scrollTop = scrollContainer.scrollHeight;
-      }
-    }
-  });
+    nextTick(() => {
+        if (messageContainer.value) {
+            const scrollContainer = messageContainer.value.parentElement;
+            if (scrollContainer) {
+                scrollContainer.scrollTop = scrollContainer.scrollHeight;
+            }
+        }
+    });
 };
 
 // Watch for new messages and scroll
 watch(
-  () => props.messages.length,
-  () => {
-    scrollToBottom();
-  }
+    () => props.messages.length,
+    () => {
+        scrollToBottom();
+    }
 );
 
 // Watch for loading state changes
 watch(
-  () => props.isLoading,
-  () => {
-    scrollToBottom();
-  }
+    () => props.isLoading,
+    () => {
+        scrollToBottom();
+    }
 );
 </script>
 

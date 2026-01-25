@@ -109,13 +109,13 @@
 
 <script>
 export default {
-  name: 'MapControls',
-  emits: ['control-action'],
-  methods: {
-    handleControl(action) {
-      this.$emit('control-action', action);
+    name: 'MapControls',
+    emits: ['control-action'],
+    methods: {
+        handleControl(action) {
+            this.$emit('control-action', action);
+        }
     }
-  }
 };
 </script>
 

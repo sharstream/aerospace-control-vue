@@ -139,97 +139,97 @@ import DataSourceConfiguration from '@/components/settings/DataSourceConfigurati
 import AIAssistantSettings from './components/AIAssistantSettings.vue';
 
 export default {
-  name: 'SettingsModule',
-  components: {
-    DataSourceConfiguration,
-    AIAssistantSettings
-  },
-  setup() {
-    const flightsStore = useFlightsStore();
-    const {
-      lastUpdate, apiStatus, useRealData, rateLimitInfo, countdownSeconds
-    } = storeToRefs(flightsStore);
+    name: 'SettingsModule',
+    components: {
+        DataSourceConfiguration,
+        AIAssistantSettings
+    },
+    setup() {
+        const flightsStore = useFlightsStore();
+        const {
+            lastUpdate, apiStatus, useRealData, rateLimitInfo, countdownSeconds
+        } = storeToRefs(flightsStore);
 
-    return {
-      flightsStore,
-      lastUpdate,
-      apiStatus,
-      useRealData,
-      rateLimitInfo,
-      countdownSeconds
-    };
-  },
-  data() {
-    return {
-      openaiApiKey: '',
-      showApiKey: false,
-      tracker: null,
-      usageMetrics: {
-        totalSessions: 0,
-        viewChanges: {},
-        timeSpent: {},
-        featureUsage: {
-          flightClicks: 0,
-          aiPanelOpens: 0
+        return {
+            flightsStore,
+            lastUpdate,
+            apiStatus,
+            useRealData,
+            rateLimitInfo,
+            countdownSeconds
+        };
+    },
+    data() {
+        return {
+            openaiApiKey: '',
+            showApiKey: false,
+            tracker: null,
+            usageMetrics: {
+                totalSessions: 0,
+                viewChanges: {},
+                timeSpent: {},
+                featureUsage: {
+                    flightClicks: 0,
+                    aiPanelOpens: 0
+                }
+            },
+            metricsUpdateInterval: null
+        };
+    },
+    computed: {
+        totalViewChanges() {
+            return Object.values(this.usageMetrics.viewChanges).reduce((sum, count) => sum + count, 0);
         }
-      },
-      metricsUpdateInterval: null
-    };
-  },
-  computed: {
-    totalViewChanges() {
-      return Object.values(this.usageMetrics.viewChanges).reduce((sum, count) => sum + count, 0);
-    }
-  },
-  mounted() {
-    // Initialize usage tracking
-    this.tracker = useUsageTracking();
-    this.usageMetrics = this.tracker.getMetrics();
-
-    // Update metrics periodically
-    this.metricsUpdateInterval = setInterval(() => {
-      this.usageMetrics = this.tracker.getMetrics();
-    }, 1000);
-  },
-  beforeUnmount() {
-    // Clear interval when component is destroyed
-    if (this.metricsUpdateInterval) {
-      clearInterval(this.metricsUpdateInterval);
-    }
-  },
-  methods: {
-    formatViewName(view) {
-      return view.charAt(0).toUpperCase() + view.slice(1);
     },
-
-    formatTime(milliseconds) {
-      const minutes = Math.floor(milliseconds / 60000);
-      const seconds = Math.floor((milliseconds % 60000) / 1000);
-
-      if (minutes === 0) {
-        return `${seconds}s`;
-      }
-      return `${minutes}m ${seconds}s`;
-    },
-
-    exportMetrics(format) {
-      this.tracker.exportMetrics(format);
-    },
-
-    clearMetrics() {
-      // eslint-disable-next-line no-alert, no-restricted-globals
-      if (confirm('Are you sure you want to clear all usage data? This action cannot be undone.')) {
-        this.tracker.clearMetrics();
+    mounted() {
+        // Initialize usage tracking
+        this.tracker = useUsageTracking();
         this.usageMetrics = this.tracker.getMetrics();
-      }
-    },
 
-    async toggleDataSource() {
-      if (this.flightsStore) {
-        await this.flightsStore.toggleDataSource();
-      }
+        // Update metrics periodically
+        this.metricsUpdateInterval = setInterval(() => {
+            this.usageMetrics = this.tracker.getMetrics();
+        }, 1000);
+    },
+    beforeUnmount() {
+        // Clear interval when component is destroyed
+        if (this.metricsUpdateInterval) {
+            clearInterval(this.metricsUpdateInterval);
+        }
+    },
+    methods: {
+        formatViewName(view) {
+            return view.charAt(0).toUpperCase() + view.slice(1);
+        },
+
+        formatTime(milliseconds) {
+            const minutes = Math.floor(milliseconds / 60000);
+            const seconds = Math.floor((milliseconds % 60000) / 1000);
+
+            if (minutes === 0) {
+                return `${seconds}s`;
+            }
+            return `${minutes}m ${seconds}s`;
+        },
+
+        exportMetrics(format) {
+            this.tracker.exportMetrics(format);
+        },
+
+        clearMetrics() {
+            // eslint-disable-next-line no-alert, no-restricted-globals
+            if (confirm('Are you sure you want to clear all usage data? This action cannot be undone.')) {
+                this.tracker.clearMetrics();
+                this.usageMetrics = this.tracker.getMetrics();
+            }
+        },
+
+        async toggleDataSource() {
+            if (this.flightsStore) {
+                await this.flightsStore.toggleDataSource();
+            }
+        }
     }
-  }
 };
 </script>
 

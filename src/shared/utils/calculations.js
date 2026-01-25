@@ -21,7 +21,7 @@ export function calculateBearing(lat1, lon1, lat2, lon2) {
             - Math.sin(lat1Rad) * Math.cos(lat2Rad) * Math.cos(dLon);
 
     let bearing = Math.atan2(y, x) * 180 / Math.PI;
-  // Normalize to 0-360 degrees
+    // Normalize to 0-360 degrees
     bearing = (bearing + 360) % 360;
 
     return bearing;
@@ -42,7 +42,7 @@ export function isInWeatherZone(lat, lon, weatherHazards) {
 export function generateOptimizedRoute(start, end, weatherHazards) {
     const directDistance = calculateDistance(start[0], start[1], end[0], end[1]);
 
-  // Check if direct route intersects weather zones
+    // Check if direct route intersects weather zones
     const numCheckPoints = 20;
     const hazardsOnPath = [];
 
@@ -57,7 +57,7 @@ export function generateOptimizedRoute(start, end, weatherHazards) {
         }
     }
 
-  // If no hazards, return direct route
+    // If no hazards, return direct route
     if (hazardsOnPath.length === 0) {
         return {
             path: [start, end],
@@ -67,7 +67,7 @@ export function generateOptimizedRoute(start, end, weatherHazards) {
         };
     }
 
-  // Generate waypoints to avoid hazards
+    // Generate waypoints to avoid hazards
     const waypoints = [start];
 
     for (const hazard of hazardsOnPath) {
@@ -85,15 +85,15 @@ export function generateOptimizedRoute(start, end, weatherHazards) {
 
     waypoints.push(end);
 
-  // Calculate total distance for waypoint route
+    // Calculate total distance for waypoint route
     let totalDistance = 0;
     for (let i = 0; i < waypoints.length - 1; i++) {
         totalDistance += calculateDistance(
-      waypoints[i][0],
-waypoints[i][1],
-waypoints[i + 1][0],
-waypoints[i + 1][1]
-    );
+            waypoints[i][0],
+            waypoints[i][1],
+            waypoints[i + 1][0],
+            waypoints[i + 1][1]
+        );
     }
 
     return {
@@ -117,7 +117,7 @@ export function calculateFlightMetrics(route, directDistance) {
     const optimizedFuel = route.distance * fuelConsumption;
     const directFuel = directDistance * fuelConsumption;
 
-  // Weather avoidance saves fuel by avoiding turbulence and storms
+    // Weather avoidance saves fuel by avoiding turbulence and storms
     const weatherSavings = route.weatherAvoidance ? 0.08 : 0; // 8% savings from avoiding bad weather
 
     return {
@@ -141,7 +141,7 @@ export function getSystemContext(flightData, airlines) {
     const bottleneckFlights = flightData.filter(f => f.bottleneck).length;
     const activeAirlines = Object.keys(airlines).length;
 
-  // Calculate average altitude - safely handle invalid values
+    // Calculate average altitude - safely handle invalid values
     const validAltitudes = flightData
         .map((f) => {
             if (!f.altitude || f.altitude === 'N/A') return null;
@@ -154,7 +154,7 @@ export function getSystemContext(flightData, airlines) {
         ? Math.round(validAltitudes.reduce((sum, alt) => sum + alt, 0) / validAltitudes.length)
         : 0;
 
-  // Get most congested route
+    // Get most congested route
     const routeCounts = {};
     flightData.forEach((f) => {
         const route = `${f.from}-${f.to}`;
@@ -162,7 +162,7 @@ export function getSystemContext(flightData, airlines) {
     });
     const busiestRoute = Object.entries(routeCounts).sort((a, b) => b[1] - a[1])[0];
 
-  // Calculate total passengers - safely handle non-numeric values
+    // Calculate total passengers - safely handle non-numeric values
     const totalPassengers = flightData.reduce((sum, f) => {
         const passengers = typeof f.passengers === 'number' ? f.passengers : 0;
         return sum + passengers;

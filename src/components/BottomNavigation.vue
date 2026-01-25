@@ -109,14 +109,14 @@
 import { ref, watch } from 'vue';
 
 defineProps({
-  activeView: {
-    type: String,
-    required: true
-  },
-  flightCount: {
-    type: Number,
-    default: 0
-  }
+    activeView: {
+        type: String,
+        required: true
+    },
+    flightCount: {
+        type: Number,
+        default: 0
+    }
 });
 
 const emit = defineEmits(['change-view', 'collapse-state-change']);
@@ -125,11 +125,11 @@ const collapsed = ref(false);
 
 // Watch for collapse state changes and emit
 watch(collapsed, (newVal) => {
-  emit('collapse-state-change', newVal);
+    emit('collapse-state-change', newVal);
 });
 
 function changeView(view) {
-  emit('change-view', view);
+    emit('change-view', view);
 }
 </script>
 

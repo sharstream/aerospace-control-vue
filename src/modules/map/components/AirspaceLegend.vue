@@ -115,50 +115,50 @@
 
 <script>
 export default {
-  name: 'AirspaceLegend',
-  props: {
-    airlines: {
-      type: Object,
-      required: true
+    name: 'AirspaceLegend',
+    props: {
+        airlines: {
+            type: Object,
+            required: true
+        },
+        flightsTableCollapsed: {
+            type: Boolean,
+            default: true
+        },
+        bottomNavCollapsed: {
+            type: Boolean,
+            default: false
+        }
     },
-    flightsTableCollapsed: {
-      type: Boolean,
-      default: true
+    emits: ['legend-state-change'],
+    data() {
+        return {
+            isCollapsed: true
+        };
     },
-    bottomNavCollapsed: {
-      type: Boolean,
-      default: false
-    }
-  },
-  emits: ['legend-state-change'],
-  data() {
-    return {
-      isCollapsed: true
-    };
-  },
-  computed: {
-    bottomPosition() {
-      // Base position when bottom nav is shown
-      let base = 110;
+    computed: {
+        bottomPosition() {
+            // Base position when bottom nav is shown
+            let base = 110;
 
-      // Adjust for bottom nav collapse
-      if (this.bottomNavCollapsed) {
-        base = 40;
-      }
+            // Adjust for bottom nav collapse
+            if (this.bottomNavCollapsed) {
+                base = 40;
+            }
 
-      // Move up when flights table is open
-      if (!this.flightsTableCollapsed) {
-        base += 360;
-      }
+            // Move up when flights table is open
+            if (!this.flightsTableCollapsed) {
+                base += 360;
+            }
 
-      return `${base}px`;
+            return `${base}px`;
+        }
+    },
+    watch: {
+        isCollapsed(newVal) {
+            this.$emit('legend-state-change', newVal);
+        }
     }
-  },
-  watch: {
-    isCollapsed(newVal) {
-      this.$emit('legend-state-change', newVal);
-    }
-  }
 };
 </script>
 

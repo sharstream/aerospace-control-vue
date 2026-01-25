@@ -66,7 +66,7 @@
                 r="2"
               />
             </svg>
-            <div class="line" />
+            <div class="line"></div>
             <svg
               v-if="route.waypoints && route.waypoints > 1"
               class="waypoint-icon"
@@ -291,31 +291,31 @@
 <script setup>
 import { defineProps } from 'vue';
 
-const props = defineProps({
-  data: {
-    type: Object,
-    required: true
-  }
+defineProps({
+    data: {
+        type: Object,
+        required: true
+    }
 });
 
 const formatDistance = (distance) => {
-  if (!distance) return 'N/A';
-  return `${Math.round(distance).toLocaleString()} km`;
+    if (!distance) return 'N/A';
+    return `${Math.round(distance).toLocaleString()} km`;
 };
 
 const formatTime = (time) => {
-  if (!time) return 'N/A';
-  const hours = Math.floor(time / 60);
-  const minutes = Math.round(time % 60);
-  if (hours > 0) {
-    return `${hours}h ${minutes}m`;
-  }
-  return `${minutes}m`;
+    if (!time) return 'N/A';
+    const hours = Math.floor(time / 60);
+    const minutes = Math.round(time % 60);
+    if (hours > 0) {
+        return `${hours}h ${minutes}m`;
+    }
+    return `${minutes}m`;
 };
 
 const formatFuel = (fuel) => {
-  if (!fuel) return 'N/A';
-  return `${Math.round(fuel).toLocaleString()} kg`;
+    if (!fuel) return 'N/A';
+    return `${Math.round(fuel).toLocaleString()} kg`;
 };
 </script>
 

@@ -43,64 +43,64 @@ import RateLimitStatusCard from './RateLimitStatusCard.vue';
 import DataSourceToggle from './DataSourceToggle.vue';
 
 export default {
-  name: 'DataSourceConfiguration',
-  components: {
-    BackendStatusCard,
-    RateLimitStatusCard,
-    DataSourceToggle
-  },
-  props: {
-    apiStatus: {
-      type: String,
-      required: true,
-      default: 'unknown'
+    name: 'DataSourceConfiguration',
+    components: {
+        BackendStatusCard,
+        RateLimitStatusCard,
+        DataSourceToggle
     },
-    lastUpdate: {
-      type: Date,
-      default: null
+    props: {
+        apiStatus: {
+            type: String,
+            required: true,
+            default: 'unknown'
+        },
+        lastUpdate: {
+            type: Date,
+            default: null
+        },
+        useRealData: {
+            type: Boolean,
+            required: true
+        },
+        rateLimitInfo: {
+            type: Object,
+            required: true,
+            default: () => ({
+                remaining: null,
+                retryAfterSeconds: null
+            })
+        },
+        countdownSeconds: {
+            type: Number,
+            default: null
+        },
+        maxCredits: {
+            type: Number,
+            default: 400
+        }
     },
-    useRealData: {
-      type: Boolean,
-      required: true
+    emits: ['toggle-data-source'],
+    data() {
+        return {
+            isToggling: false,
+            error: null
+        };
     },
-    rateLimitInfo: {
-      type: Object,
-      required: true,
-      default: () => ({
-        remaining: null,
-        retryAfterSeconds: null
-      })
-    },
-    countdownSeconds: {
-      type: Number,
-      default: null
-    },
-    maxCredits: {
-      type: Number,
-      default: 400
+    methods: {
+        async handleToggle() {
+            try {
+                this.isToggling = true;
+                this.error = null;
+                this.$emit('toggle-data-source');
+            } catch (error) {
+                this.error = error?.message || 'Failed to toggle data source';
+                console.error('Error toggling data source:', error);
+            } finally {
+                this.isToggling = false;
+            }
+        }
     }
-  },
-  emits: ['toggle-data-source'],
-  data() {
-    return {
-      isToggling: false,
-      error: null
-    };
-  },
-  methods: {
-    async handleToggle() {
-      try {
-        this.isToggling = true;
-        this.error = null;
-        this.$emit('toggle-data-source');
-      } catch (error) {
-        this.error = error?.message || 'Failed to toggle data source';
-        console.error('Error toggling data source:', error);
-      } finally {
-        this.isToggling = false;
-      }
-    }
-  }
 };
 </script>
 

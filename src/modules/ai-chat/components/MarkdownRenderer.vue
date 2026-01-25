@@ -2,7 +2,7 @@
   <div
     class="markdown-content"
     v-html="sanitizedHtml"
-  />
+  ></div>
 </template>
 
 <script setup>
@@ -28,52 +28,52 @@ hljs.registerLanguage('bash', bash);
 hljs.registerLanguage('sql', sql);
 
 const props = defineProps({
-  content: {
-    type: String,
-    default: ''
-  }
+    content: {
+        type: String,
+        default: ''
+    }
 });
 
 // Configure marked with syntax highlighting
 marked.setOptions({
-  highlight: (code, lang) => {
-    if (lang && hljs.getLanguage(lang)) {
-      try {
-        return hljs.highlight(code, { language: lang }).value;
-      } catch (error) {
-        console.error('Highlight.js error:', error);
-      }
-    }
-    return code;
-  },
-  breaks: true, // Convert \n to <br>
-  gfm: true // GitHub Flavored Markdown
+    highlight: (code, lang) => {
+        if (lang && hljs.getLanguage(lang)) {
+            try {
+                return hljs.highlight(code, { language: lang }).value;
+            } catch (error) {
+                console.error('Highlight.js error:', error);
+            }
+        }
+        return code;
+    },
+    breaks: true, // Convert \n to <br>
+    gfm: true // GitHub Flavored Markdown
 });
 
 const sanitizedHtml = computed(() => {
-  if (!props.content) return '';
+    if (!props.content) return '';
 
-  try {
-    // Parse markdown to HTML
-    const html = marked(props.content);
+    try {
+        // Parse markdown to HTML
+        const html = marked(props.content);
 
-    // Sanitize to prevent XSS attacks
-    return DOMPurify.sanitize(html, {
-      ALLOWED_TAGS: [
-        'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-        'p', 'br', 'strong', 'em', 'u', 's', 'del',
-        'a', 'code', 'pre', 'blockquote',
-        'ul', 'ol', 'li',
-        'table', 'thead', 'tbody', 'tr', 'th', 'td',
-        'span', 'div'
-      ],
-      ALLOWED_ATTR: ['href', 'class', 'target', 'rel'],
-      ALLOW_DATA_ATTR: false
-    });
-  } catch (error) {
-    console.error('Markdown parsing error:', error);
-    return props.content;
-  }
+        // Sanitize to prevent XSS attacks
+        return DOMPurify.sanitize(html, {
+            ALLOWED_TAGS: [
+                'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+                'p', 'br', 'strong', 'em', 'u', 's', 'del',
+                'a', 'code', 'pre', 'blockquote',
+                'ul', 'ol', 'li',
+                'table', 'thead', 'tbody', 'tr', 'th', 'td',
+                'span', 'div'
+            ],
+            ALLOWED_ATTR: ['href', 'class', 'target', 'rel'],
+            ALLOW_DATA_ATTR: false
+        });
+    } catch (error) {
+        console.error('Markdown parsing error:', error);
+        return props.content;
+    }
 });
 </script>
 

@@ -89,82 +89,82 @@
 import { computed } from 'vue';
 
 export default {
-  name: 'RateLimitStatusCard',
-  props: {
-    rateLimitInfo: {
-      type: Object,
-      required: true,
-      default: () => ({
-        remaining: null,
-        retryAfterSeconds: null
-      })
+    name: 'RateLimitStatusCard',
+    props: {
+        rateLimitInfo: {
+            type: Object,
+            required: true,
+            default: () => ({
+                remaining: null,
+                retryAfterSeconds: null
+            })
+        },
+        countdownSeconds: {
+            type: Number,
+            default: null
+        },
+        apiStatus: {
+            type: String,
+            required: true,
+            default: 'unknown'
+        },
+        maxCredits: {
+            type: Number,
+            default: 400
+        }
     },
-    countdownSeconds: {
-      type: Number,
-      default: null
-    },
-    apiStatus: {
-      type: String,
-      required: true,
-      default: 'unknown'
-    },
-    maxCredits: {
-      type: Number,
-      default: 400
+    setup(props) {
+        const creditsPercentage = computed(() => {
+            try {
+                if (props.rateLimitInfo.remaining === null) return 0;
+                const remaining = parseInt(props.rateLimitInfo.remaining, 10);
+                return Math.min((remaining / props.maxCredits) * 100, 100);
+            } catch (error) {
+                return 0;
+            }
+        });
+
+        const creditsStatusClass = computed(() => {
+            const percentage = creditsPercentage.value;
+            if (percentage > 50) return 'credits-good';
+            if (percentage > 20) return 'credits-warning';
+            return 'credits-critical';
+        });
+
+        const creditsProgressClass = computed(() => {
+            const percentage = creditsPercentage.value;
+            if (percentage > 50) return 'progress-good';
+            if (percentage > 20) return 'progress-warning';
+            return 'progress-critical';
+        });
+
+        const creditsDescription = computed(() => {
+            const percentage = creditsPercentage.value;
+            if (percentage > 70) return 'API usage is healthy';
+            if (percentage > 40) return 'Approaching rate limit';
+            if (percentage > 10) return 'Low credits remaining - use cautiously';
+            return 'Critical: Rate limit imminent';
+        });
+
+        const formatCountdown = (totalSeconds) => {
+            if (totalSeconds === null || totalSeconds <= 0) {
+                return '0:00';
+            }
+
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+
+            return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        };
+
+        return {
+            creditsPercentage,
+            creditsStatusClass,
+            creditsProgressClass,
+            creditsDescription,
+            formatCountdown
+        };
     }
-  },
-  setup(props) {
-    const creditsPercentage = computed(() => {
-      try {
-        if (props.rateLimitInfo.remaining === null) return 0;
-        const remaining = parseInt(props.rateLimitInfo.remaining, 10);
-        return Math.min((remaining / props.maxCredits) * 100, 100);
-      } catch (error) {
-        return 0;
-      }
-    });
-
-    const creditsStatusClass = computed(() => {
-      const percentage = creditsPercentage.value;
-      if (percentage > 50) return 'credits-good';
-      if (percentage > 20) return 'credits-warning';
-      return 'credits-critical';
-    });
-
-    const creditsProgressClass = computed(() => {
-      const percentage = creditsPercentage.value;
-      if (percentage > 50) return 'progress-good';
-      if (percentage > 20) return 'progress-warning';
-      return 'progress-critical';
-    });
-
-    const creditsDescription = computed(() => {
-      const percentage = creditsPercentage.value;
-      if (percentage > 70) return 'API usage is healthy';
-      if (percentage > 40) return 'Approaching rate limit';
-      if (percentage > 10) return 'Low credits remaining - use cautiously';
-      return 'Critical: Rate limit imminent';
-    });
-
-    const formatCountdown = (totalSeconds) => {
-      if (totalSeconds === null || totalSeconds <= 0) {
-        return '0:00';
-      }
-
-      const minutes = Math.floor(totalSeconds / 60);
-      const seconds = totalSeconds % 60;
-
-      return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-    };
-
-    return {
-      creditsPercentage,
-      creditsStatusClass,
-      creditsProgressClass,
-      creditsDescription,
-      formatCountdown
-    };
-  }
 };
 </script>
 

@@ -163,61 +163,61 @@
 import FlightsTrackingPill from './FlightsTrackingPill.vue';
 
 export default {
-  name: 'FlightsDataTable',
-  components: {
-    FlightsTrackingPill
-  },
-  props: {
-    flights: {
-      type: Array,
-      required: true
+    name: 'FlightsDataTable',
+    components: {
+        FlightsTrackingPill
     },
-    airlines: {
-      type: Object,
-      required: true
+    props: {
+        flights: {
+            type: Array,
+            required: true
+        },
+        airlines: {
+            type: Object,
+            required: true
+        },
+        bottomNavCollapsed: {
+            type: Boolean,
+            default: false
+        },
+        trackedAircraft: {
+            type: Array,
+            default: () => []
+        }
     },
-    bottomNavCollapsed: {
-      type: Boolean,
-      default: false
+    emits: ['view-all', 'flight-click', 'track-aircraft', 'untrack-aircraft', 'collapse-state-change'],
+    data() {
+        return {
+            collapsed: true // Default to collapsed
+        };
     },
-    trackedAircraft: {
-      type: Array,
-      default: () => []
+    computed: {
+        bottomPosition() {
+            return this.bottomNavCollapsed ? '10px' : '80px';
+        },
+        expandButtonBottom() {
+            return this.bottomNavCollapsed ? '20px' : '90px';
+        }
+    },
+    watch: {
+        collapsed(newVal) {
+            this.$emit('collapse-state-change', newVal);
+        }
+    },
+    methods: {
+        handleFlightClick(flight) {
+            this.$emit('flight-click', flight);
+        },
+        isTracked(flight) {
+            return flight.icao24 && this.trackedAircraft.includes(flight.icao24);
+        },
+        handleTrack(flight) {
+            this.$emit('track-aircraft', flight);
+        },
+        handleUntrack(flight) {
+            this.$emit('untrack-aircraft', flight);
+        }
     }
-  },
-  emits: ['view-all', 'flight-click', 'track-aircraft', 'untrack-aircraft', 'collapse-state-change'],
-  data() {
-    return {
-      collapsed: true // Default to collapsed
-    };
-  },
-  computed: {
-    bottomPosition() {
-      return this.bottomNavCollapsed ? '10px' : '80px';
-    },
-    expandButtonBottom() {
-      return this.bottomNavCollapsed ? '20px' : '90px';
-    }
-  },
-  watch: {
-    collapsed(newVal) {
-      this.$emit('collapse-state-change', newVal);
-    }
-  },
-  methods: {
-    handleFlightClick(flight) {
-      this.$emit('flight-click', flight);
-    },
-    isTracked(flight) {
-      return flight.icao24 && this.trackedAircraft.includes(flight.icao24);
-    },
-    handleTrack(flight) {
-      this.$emit('track-aircraft', flight);
-    },
-    handleUntrack(flight) {
-      this.$emit('untrack-aircraft', flight);
-    }
-  }
 };
 </script>
 

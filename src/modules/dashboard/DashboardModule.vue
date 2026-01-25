@@ -382,41 +382,41 @@ import { airports } from '@shared/data/airports';
 import { getSystemContext } from '@shared/utils/calculations';
 
 export default {
-  name: 'DashboardModule',
-  props: {
-    flights: {
-      type: Array,
-      required: true
+    name: 'DashboardModule',
+    props: {
+        flights: {
+            type: Array,
+            required: true
+        },
+        airlines: {
+            type: Object,
+            required: true
+        },
+        aircraftModels: {
+            type: Object,
+            required: true
+        },
+        selectedFlight: {
+            type: Object,
+            default: null
+        }
     },
-    airlines: {
-      type: Object,
-      required: true
+    data() {
+        return {
+            currentSelectedFlight: null,
+            airports
+        };
     },
-    aircraftModels: {
-      type: Object,
-      required: true
+    computed: {
+        systemContext() {
+            return getSystemContext(this.flights, this.airlines);
+        }
     },
-    selectedFlight: {
-      type: Object,
-      default: null
+    methods: {
+        selectFlight(flight) {
+            this.currentSelectedFlight = flight;
+        }
     }
-  },
-  data() {
-    return {
-      currentSelectedFlight: null,
-      airports
-    };
-  },
-  computed: {
-    systemContext() {
-      return getSystemContext(this.flights, this.airlines);
-    }
-  },
-  methods: {
-    selectFlight(flight) {
-      this.currentSelectedFlight = flight;
-    }
-  }
 };
 </script>
 

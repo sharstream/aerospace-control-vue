@@ -2,9 +2,9 @@
   <div class="reasoning-message-part">
     <button
       class="reasoning-toggle"
-      @click="isExpanded = !isExpanded"
       :aria-expanded="isExpanded"
       aria-controls="reasoning-content"
+      @click="isExpanded = !isExpanded"
     >
       <svg
         class="toggle-icon"
@@ -48,19 +48,17 @@ import { ref, computed, defineProps } from 'vue';
 import MarkdownRenderer from '../MarkdownRenderer.vue';
 
 const props = defineProps({
-  part: {
-    type: Object,
-    required: true,
-    validator: (value) => value.type === 'reasoning' && typeof value.content === 'string'
-  }
+    part: {
+        type: Object,
+        required: true,
+        validator: value => value.type === 'reasoning' && typeof value.content === 'string'
+    }
 });
 
 const isExpanded = ref(false);
 
 // Rough token estimation (1 token ≈ 4 characters)
-const tokenCount = computed(() => {
-  return Math.ceil(props.part.content.length / 4);
-});
+const tokenCount = computed(() => Math.ceil(props.part.content.length / 4));
 </script>
 
 <style scoped>

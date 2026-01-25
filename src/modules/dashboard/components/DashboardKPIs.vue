@@ -39,48 +39,48 @@ import DashboardCharts from './components/DashboardCharts.vue';
 import FlightList from './components/FlightList.vue';
 
 export default {
-  name: 'DashboardModule',
-  components: {
-    DashboardKPIs,
-    DashboardMetrics,
-    DashboardCharts,
-    FlightList
-  },
-  props: {
-    flights: {
-      type: Array,
-      required: true
+    name: 'DashboardModule',
+    components: {
+        DashboardKPIs,
+        DashboardMetrics,
+        DashboardCharts,
+        FlightList
     },
-    airlines: {
-      type: Object,
-      required: true
+    props: {
+        flights: {
+            type: Array,
+            required: true
+        },
+        airlines: {
+            type: Object,
+            required: true
+        },
+        aircraftModels: {
+            type: Object,
+            required: true
+        },
+        selectedFlight: {
+            type: Object,
+            default: null
+        }
     },
-    aircraftModels: {
-      type: Object,
-      required: true
+    data() {
+        return {
+            currentSelectedFlight: null
+        };
     },
-    selectedFlight: {
-      type: Object,
-      default: null
+    computed: {
+        systemContext() {
+            return getSystemContext(this.flights, this.airlines);
+        }
+    },
+    methods: {
+        selectFlight(flight) {
+            this.currentSelectedFlight = flight;
+            // Assuming parent might listen to this, but local state was used in original
+            // Keeping original behavior logic
+        }
     }
-  },
-  data() {
-    return {
-      currentSelectedFlight: null
-    };
-  },
-  computed: {
-    systemContext() {
-      return getSystemContext(this.flights, this.airlines);
-    }
-  },
-  methods: {
-    selectFlight(flight) {
-      this.currentSelectedFlight = flight;
-      // Assuming parent might listen to this, but local state was used in original
-      // Keeping original behavior logic
-    }
-  }
 };
 </script>
 

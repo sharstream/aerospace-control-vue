@@ -30,27 +30,27 @@
 
 <script>
 export default {
-  name: 'FlightsTrackingPill',
-  props: {
-    flight: {
-      type: Object,
-      required: true
+    name: 'FlightsTrackingPill',
+    props: {
+        flight: {
+            type: Object,
+            required: true
+        },
+        isTracked: {
+            type: Boolean,
+            default: false
+        }
     },
-    isTracked: {
-      type: Boolean,
-      default: false
+    emits: ['track', 'untrack'],
+    methods: {
+        handleToggle() {
+            if (this.isTracked) {
+                this.$emit('untrack', this.flight);
+            } else {
+                this.$emit('track', this.flight);
+            }
+        }
     }
-  },
-  emits: ['track', 'untrack'],
-  methods: {
-    handleToggle() {
-      if (this.isTracked) {
-        this.$emit('untrack', this.flight);
-      } else {
-        this.$emit('track', this.flight);
-      }
-    }
-  }
 };
 </script>
 

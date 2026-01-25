@@ -49,21 +49,21 @@
 
 <script>
 export default {
-  name: 'WeatherHazardCard',
-  props: {
-    hazard: {
-      type: Object,
-      required: true
-    },
-    affectedFlights: {
-      type: Array,
-      default: () => []
-    },
-    airlines: {
-      type: Object,
-      required: true
+    name: 'WeatherHazardCard',
+    props: {
+        hazard: {
+            type: Object,
+            required: true
+        },
+        affectedFlights: {
+            type: Array,
+            default: () => []
+        },
+        airlines: {
+            type: Object,
+            required: true
+        }
     }
-  }
 };
 </script>
 

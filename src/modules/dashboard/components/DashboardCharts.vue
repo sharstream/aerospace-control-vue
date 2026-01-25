@@ -69,7 +69,7 @@
 
 <script>
 export default {
-  name: 'DashboardCharts'
+    name: 'DashboardCharts'
 };
 </script>
 

@@ -8,12 +8,12 @@
 import { defineProps } from 'vue';
 import MarkdownRenderer from '../MarkdownRenderer.vue';
 
-const props = defineProps({
-  part: {
-    type: Object,
-    required: true,
-    validator: (value) => value.type === 'text' && typeof value.content === 'string'
-  }
+defineProps({
+    part: {
+        type: Object,
+        required: true,
+        validator: value => value.type === 'text' && typeof value.content === 'string'
+    }
 });
 </script>
 

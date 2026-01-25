@@ -63,22 +63,22 @@
 
 <script>
 export default {
-  name: 'FlightList',
-  props: {
-    flights: {
-      type: Array,
-      required: true
+    name: 'FlightList',
+    props: {
+        flights: {
+            type: Array,
+            required: true
+        },
+        airlines: {
+            type: Object,
+            required: true
+        },
+        airports: {
+            type: Object,
+            required: true
+        }
     },
-    airlines: {
-      type: Object,
-      required: true
-    },
-    airports: {
-      type: Object,
-      required: true
-    }
-  },
-  emits: ['select-flight']
+    emits: ['select-flight']
 };
 </script>
 

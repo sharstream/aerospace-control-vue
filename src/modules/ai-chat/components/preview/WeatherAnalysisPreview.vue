@@ -193,84 +193,84 @@
 <script setup>
 import { defineProps, h } from 'vue';
 
-const props = defineProps({
-  data: {
-    type: Object,
-    required: true
-  }
+defineProps({
+    data: {
+        type: Object,
+        required: true
+    }
 });
 
 const formatHazardType = (type) => {
-  if (!type) return 'Unknown';
-  return type.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    if (!type) return 'Unknown';
+    return type.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 };
 
 const getHazardSeverityClass = (severity) => {
-  const severityMap = {
-    'high': 'severity-high',
-    'severe': 'severity-high',
-    'critical': 'severity-high',
-    'medium': 'severity-medium',
-    'moderate': 'severity-medium',
-    'low': 'severity-low',
-    'minor': 'severity-low'
-  };
-  return severityMap[severity?.toLowerCase()] || 'severity-medium';
+    const severityMap = {
+        high: 'severity-high',
+        severe: 'severity-high',
+        critical: 'severity-high',
+        medium: 'severity-medium',
+        moderate: 'severity-medium',
+        low: 'severity-low',
+        minor: 'severity-low'
+    };
+    return severityMap[severity?.toLowerCase()] || 'severity-medium';
 };
 
 const getWeatherIcon = (type) => {
-  const iconType = type?.toLowerCase() || '';
+    const iconType = type?.toLowerCase() || '';
 
-  if (iconType.includes('storm') || iconType.includes('thunder')) {
+    if (iconType.includes('storm') || iconType.includes('thunder')) {
+        return () => h('svg', {
+            fill: 'none',
+            stroke: 'currentColor',
+            viewBox: '0 0 24 24'
+        }, h('path', {
+            'stroke-linecap': 'round',
+            'stroke-linejoin': 'round',
+            'stroke-width': '2',
+            d: 'M13 10V3L4 14h7v7l9-11h-7z'
+        }));
+    }
+
+    if (iconType.includes('turbulence') || iconType.includes('wind')) {
+        return () => h('svg', {
+            fill: 'none',
+            stroke: 'currentColor',
+            viewBox: '0 0 24 24'
+        }, h('path', {
+            'stroke-linecap': 'round',
+            'stroke-linejoin': 'round',
+            'stroke-width': '2',
+            d: 'M14 5l7 7m0 0l-7 7m7-7H3'
+        }));
+    }
+
+    if (iconType.includes('ice') || iconType.includes('snow')) {
+        return () => h('svg', {
+            fill: 'none',
+            stroke: 'currentColor',
+            viewBox: '0 0 24 24'
+        }, h('path', {
+            'stroke-linecap': 'round',
+            'stroke-linejoin': 'round',
+            'stroke-width': '2',
+            d: 'M12 2v20m0-20l-4 4m4-4l4 4M2 12h20M2 12l4-4m-4 4l4 4m14-4l-4-4m4 4l-4 4'
+        }));
+    }
+
+    // Default cloud icon
     return () => h('svg', {
-      fill: 'none',
-      stroke: 'currentColor',
-      viewBox: '0 0 24 24'
+        fill: 'none',
+        stroke: 'currentColor',
+        viewBox: '0 0 24 24'
     }, h('path', {
-      'stroke-linecap': 'round',
-      'stroke-linejoin': 'round',
-      'stroke-width': '2',
-      d: 'M13 10V3L4 14h7v7l9-11h-7z'
+        'stroke-linecap': 'round',
+        'stroke-linejoin': 'round',
+        'stroke-width': '2',
+        d: 'M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z'
     }));
-  }
-
-  if (iconType.includes('turbulence') || iconType.includes('wind')) {
-    return () => h('svg', {
-      fill: 'none',
-      stroke: 'currentColor',
-      viewBox: '0 0 24 24'
-    }, h('path', {
-      'stroke-linecap': 'round',
-      'stroke-linejoin': 'round',
-      'stroke-width': '2',
-      d: 'M14 5l7 7m0 0l-7 7m7-7H3'
-    }));
-  }
-
-  if (iconType.includes('ice') || iconType.includes('snow')) {
-    return () => h('svg', {
-      fill: 'none',
-      stroke: 'currentColor',
-      viewBox: '0 0 24 24'
-    }, h('path', {
-      'stroke-linecap': 'round',
-      'stroke-linejoin': 'round',
-      'stroke-width': '2',
-      d: 'M12 2v20m0-20l-4 4m4-4l4 4M2 12h20M2 12l4-4m-4 4l4 4m14-4l-4-4m4 4l-4 4'
-    }));
-  }
-
-  // Default cloud icon
-  return () => h('svg', {
-    fill: 'none',
-    stroke: 'currentColor',
-    viewBox: '0 0 24 24'
-  }, h('path', {
-    'stroke-linecap': 'round',
-    'stroke-linejoin': 'round',
-    'stroke-width': '2',
-    d: 'M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z'
-  }));
 };
 </script>
 

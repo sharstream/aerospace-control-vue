@@ -6,7 +6,7 @@
         <div
           class="status-indicator"
           :class="getOverallStatusClass(data.overall_status || data.overallStatus)"
-        />
+        ></div>
         <div class="status-info">
           <h4>System Status</h4>
           <span class="status-text">{{ data.overall_status || data.overallStatus || 'Unknown' }}</span>
@@ -89,7 +89,7 @@
           <div
             class="system-status-dot"
             :class="getSystemDetailStatusClass(detail.status)"
-          />
+          ></div>
           <h4>{{ formatSystemName(systemName) }}</h4>
         </div>
 
@@ -224,58 +224,50 @@
 import { computed, defineProps } from 'vue';
 
 const props = defineProps({
-  data: {
-    type: Object,
-    required: true
-  }
+    data: {
+        type: Object,
+        required: true
+    }
 });
 
-const hasPerformanceMetrics = computed(() => {
-  return props.data.uptime || props.data.responseTime || props.data.throughput || props.data.errorRate !== undefined;
-});
+const hasPerformanceMetrics = computed(() => props.data.uptime || props.data.responseTime || props.data.throughput || props.data.errorRate !== undefined);
 
-const formatSystemName = (system) => {
-  return system.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-};
+const formatSystemName = system => system.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 
-const formatMetricName = (metric) => {
-  return metric.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-};
+const formatMetricName = metric => metric.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 
 const formatMetricValue = (value) => {
-  if (typeof value === 'object') {
-    return JSON.stringify(value);
-  }
-  return String(value);
+    if (typeof value === 'object') {
+        return JSON.stringify(value);
+    }
+    return String(value);
 };
 
 const getOverallStatusClass = (status) => {
-  const normalized = status?.toString().toLowerCase();
-  if (normalized === 'normal' || normalized === 'ok' || normalized === 'operational') {
-    return 'status-ok';
-  }
-  if (normalized === 'warning' || normalized === 'degraded') {
-    return 'status-warning';
-  }
-  if (normalized === 'critical' || normalized === 'failed' || normalized === 'error') {
-    return 'status-critical';
-  }
-  return 'status-unknown';
+    const normalized = status?.toString().toLowerCase();
+    if (normalized === 'normal' || normalized === 'ok' || normalized === 'operational') {
+        return 'status-ok';
+    }
+    if (normalized === 'warning' || normalized === 'degraded') {
+        return 'status-warning';
+    }
+    if (normalized === 'critical' || normalized === 'failed' || normalized === 'error') {
+        return 'status-critical';
+    }
+    return 'status-unknown';
 };
 
-const getSystemDetailStatusClass = (status) => {
-  return getOverallStatusClass(status);
-};
+const getSystemDetailStatusClass = status => getOverallStatusClass(status);
 
 const getAlertSeverityClass = (severity) => {
-  const normalized = severity?.toLowerCase();
-  if (normalized === 'high' || normalized === 'critical') {
-    return 'alert-critical';
-  }
-  if (normalized === 'medium' || normalized === 'warning') {
-    return 'alert-warning';
-  }
-  return 'alert-info';
+    const normalized = severity?.toLowerCase();
+    if (normalized === 'high' || normalized === 'critical') {
+        return 'alert-critical';
+    }
+    if (normalized === 'medium' || normalized === 'warning') {
+        return 'alert-warning';
+    }
+    return 'alert-info';
 };
 </script>
 

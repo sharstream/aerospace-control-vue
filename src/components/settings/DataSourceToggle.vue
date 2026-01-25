@@ -53,33 +53,33 @@
 
 <script>
 export default {
-  name: 'DataSourceToggle',
-  props: {
-    useRealData: {
-      type: Boolean,
-      required: true
+    name: 'DataSourceToggle',
+    props: {
+        useRealData: {
+            type: Boolean,
+            required: true
+        },
+        isToggling: {
+            type: Boolean,
+            default: false
+        },
+        error: {
+            type: String,
+            default: null
+        }
     },
-    isToggling: {
-      type: Boolean,
-      default: false
-    },
-    error: {
-      type: String,
-      default: null
-    }
-  },
-  emits: ['toggle'],
-  setup(props, { emit }) {
-    const handleToggle = () => {
-      if (!props.isToggling) {
-        emit('toggle');
-      }
-    };
+    emits: ['toggle'],
+    setup(props, { emit }) {
+        const handleToggle = () => {
+            if (!props.isToggling) {
+                emit('toggle');
+            }
+        };
 
-    return {
-      handleToggle
-    };
-  }
+        return {
+            handleToggle
+        };
+    }
 };
 </script>
 

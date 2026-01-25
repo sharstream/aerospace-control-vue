@@ -66,39 +66,39 @@
 
 <script>
 export default {
-  name: 'DelayAnalysisTable',
-  props: {
-    delayedFlights: {
-      type: Array,
-      default: () => []
+    name: 'DelayAnalysisTable',
+    props: {
+        delayedFlights: {
+            type: Array,
+            default: () => []
+        },
+        airlines: {
+            type: Object,
+            required: true
+        },
+        airports: {
+            type: Object,
+            required: true
+        },
+        aircraftModels: {
+            type: Object,
+            required: true
+        }
     },
-    airlines: {
-      type: Object,
-      required: true
-    },
-    airports: {
-      type: Object,
-      required: true
-    },
-    aircraftModels: {
-      type: Object,
-      required: true
-    }
-  },
-  methods: {
-    getImpactClass(flight) {
-      // Determine impact based on passengers and delay severity
-      if (flight.passengers > 250) return 'impact-high';
-      if (flight.passengers > 150) return 'impact-medium';
-      return 'impact-low';
-    },
+    methods: {
+        getImpactClass(flight) {
+            // Determine impact based on passengers and delay severity
+            if (flight.passengers > 250) return 'impact-high';
+            if (flight.passengers > 150) return 'impact-medium';
+            return 'impact-low';
+        },
 
-    getImpactLabel(flight) {
-      if (flight.passengers > 250) return 'High';
-      if (flight.passengers > 150) return 'Medium';
-      return 'Low';
+        getImpactLabel(flight) {
+            if (flight.passengers > 250) return 'High';
+            if (flight.passengers > 150) return 'Medium';
+            return 'Low';
+        }
     }
-  }
 };
 </script>
 

@@ -43,7 +43,7 @@
 
     <MessageList
       :messages="messages"
-      :is-loading="isLoading"
+      :isLoading="isLoading"
       @show-preview="$emit('show-preview', $event)"
     />
 
@@ -74,23 +74,23 @@
 import { ref, defineProps, defineEmits } from 'vue';
 import MessageList from './MessageList.vue';
 
-const props = defineProps({
-  messages: {
-    type: Array,
-    default: () => []
-  },
-  mcpConnected: {
-    type: Boolean,
-    default: false
-  },
-  mcpStatusText: {
-    type: String,
-    default: 'MCP: Offline'
-  },
-  isLoading: {
-    type: Boolean,
-    default: false
-  }
+defineProps({
+    messages: {
+        type: Array,
+        default: () => []
+    },
+    mcpConnected: {
+        type: Boolean,
+        default: false
+    },
+    mcpStatusText: {
+        type: String,
+        default: 'MCP: Offline'
+    },
+    isLoading: {
+        type: Boolean,
+        default: false
+    }
 });
 
 const emit = defineEmits(['action', 'send-message', 'show-preview']);
@@ -98,10 +98,10 @@ const emit = defineEmits(['action', 'send-message', 'show-preview']);
 const inputText = ref('');
 
 const handleSend = () => {
-  if (!inputText.value.trim()) return;
+    if (!inputText.value.trim()) return;
 
-  emit('send-message', inputText.value);
-  inputText.value = '';
+    emit('send-message', inputText.value);
+    inputText.value = '';
 };
 </script>
 

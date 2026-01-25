@@ -281,60 +281,60 @@
 
 <script>
 export default {
-  name: 'FlightsModule',
-  props: {
-    flights: {
-      type: Array,
-      required: true
-    },
-    airlines: {
-      type: Object,
-      required: true
-    }
-  },
-  data() {
-    return {
-      expandedFlight: null
-    };
-  },
-  methods: {
-    toggleFlightDetails(flightName) {
-      this.expandedFlight = this.expandedFlight === flightName ? null : flightName;
-    },
-    getSystemsList(systems) {
-      // eslint-disable-next-line no-unused-vars
-      const { overall, ...systemsList } = systems;
-      return systemsList;
-    },
-    getTotalSeats(aircraft) {
-      const seatMap = {
-        A320neo: 180,
-        'B777-300ER': 332,
-        'B787-9': 290,
-        'A350-900': 325,
-        'B737-800': 175,
-        'A330-300': 277
-      };
-      return seatMap[aircraft] || 200;
-    },
-    getSeatStatus(row, col) {
-      const seed = (row * 7 + col * 11) % 10;
-      return seed < 7 ? 'occupied' : 'available';
-    },
-    getMetricClass(value) {
-      if (typeof value === 'string') {
-        if (value.includes('ONLINE') || value === 'ON') return 'normal';
-        if (value.includes('OFFLINE') || value.includes('HIGH')) return 'critical';
-        const numMatch = value.match(/(\d+)/);
-        if (numMatch && value.includes('%')) {
-          const num = parseInt(numMatch[1], 10);
-          if (num < 70) return 'critical';
-          if (num < 85) return 'warning';
+    name: 'FlightsModule',
+    props: {
+        flights: {
+            type: Array,
+            required: true
+        },
+        airlines: {
+            type: Object,
+            required: true
         }
-      }
-      return '';
+    },
+    data() {
+        return {
+            expandedFlight: null
+        };
+    },
+    methods: {
+        toggleFlightDetails(flightName) {
+            this.expandedFlight = this.expandedFlight === flightName ? null : flightName;
+        },
+        getSystemsList(systems) {
+            // eslint-disable-next-line no-unused-vars
+            const { overall, ...systemsList } = systems;
+            return systemsList;
+        },
+        getTotalSeats(aircraft) {
+            const seatMap = {
+                A320neo: 180,
+                'B777-300ER': 332,
+                'B787-9': 290,
+                'A350-900': 325,
+                'B737-800': 175,
+                'A330-300': 277
+            };
+            return seatMap[aircraft] || 200;
+        },
+        getSeatStatus(row, col) {
+            const seed = (row * 7 + col * 11) % 10;
+            return seed < 7 ? 'occupied' : 'available';
+        },
+        getMetricClass(value) {
+            if (typeof value === 'string') {
+                if (value.includes('ONLINE') || value === 'ON') return 'normal';
+                if (value.includes('OFFLINE') || value.includes('HIGH')) return 'critical';
+                const numMatch = value.match(/(\d+)/);
+                if (numMatch && value.includes('%')) {
+                    const num = parseInt(numMatch[1], 10);
+                    if (num < 70) return 'critical';
+                    if (num < 85) return 'warning';
+                }
+            }
+            return '';
+        }
     }
-  }
 };
 </script>
 

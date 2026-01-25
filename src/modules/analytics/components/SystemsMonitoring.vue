@@ -41,23 +41,23 @@
 
 <script>
 export default {
-  name: 'SystemsMonitoring',
-  props: {
-    systems: {
-      type: Array,
-      required: true
+    name: 'SystemsMonitoring',
+    props: {
+        systems: {
+            type: Array,
+            required: true
+        }
+    },
+    methods: {
+        getMetricClass(value) {
+            if (typeof value === 'string') {
+                if (value.includes('ONLINE') || value === 'ON') return 'normal';
+                if (value.includes('OFFLINE') || value.includes('HIGH')) return 'critical';
+                if (value.includes('%') && parseInt(value, 10) > 80) return 'critical';
+            }
+            return '';
+        }
     }
-  },
-  methods: {
-    getMetricClass(value) {
-      if (typeof value === 'string') {
-        if (value.includes('ONLINE') || value === 'ON') return 'normal';
-        if (value.includes('OFFLINE') || value.includes('HIGH')) return 'critical';
-        if (value.includes('%') && parseInt(value, 10) > 80) return 'critical';
-      }
-      return '';
-    }
-  }
 };
 </script>
 

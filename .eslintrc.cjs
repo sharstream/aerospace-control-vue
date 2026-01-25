@@ -15,7 +15,7 @@ module.exports = {
     },
     plugins: ['@babel'],
     rules: {
-        indent: [0],
+        indent: ['error', 4, { SwitchCase: 1 }],
         'no-restricted-syntax': [
             'error',
             {
@@ -35,7 +35,7 @@ module.exports = {
         'no-async-promise-executor': [0],
         'prefer-rest-params': [0],
         'vue/html-indent': ['error', 2],
-        'vue/script-indent': ['error', 2, { baseIndent: 0, switchCase: 1 }],
+        'vue/script-indent': ['error', 4, { baseIndent: 0, switchCase: 1 }],
         'vue/html-self-closing': ['error', {
             html: {
                 void: 'always',

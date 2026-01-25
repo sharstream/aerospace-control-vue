@@ -104,13 +104,13 @@
 
 <script>
 export default {
-  name: 'DashboardMetrics',
-  props: {
-    systemContext: {
-      type: Object,
-      required: true
+    name: 'DashboardMetrics',
+    props: {
+        systemContext: {
+            type: Object,
+            required: true
+        }
     }
-  }
 };
 </script>
 

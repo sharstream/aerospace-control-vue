@@ -13,9 +13,9 @@ import { Labels, replacePlaceholders, pluralize } from './config/labels';
 
 // Make configuration available globally
 window.SKYSENT_CONFIG = {
-  GEORGIA_BBOX,
-  ATLANTA_CENTER,
-  BBOX_AREA
+    GEORGIA_BBOX,
+    ATLANTA_CENTER,
+    BBOX_AREA
 };
 
 // Create app instance

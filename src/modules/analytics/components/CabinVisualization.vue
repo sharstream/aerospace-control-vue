@@ -100,32 +100,32 @@
 
 <script>
 export default {
-  name: 'CabinVisualization',
-  props: {
-    flight: {
-      type: Object,
-      required: true
+    name: 'CabinVisualization',
+    props: {
+        flight: {
+            type: Object,
+            required: true
+        },
+        totalSeats: {
+            type: Number,
+            required: true
+        },
+        occupancyRate: {
+            type: [Number, String],
+            required: true
+        }
     },
-    totalSeats: {
-      type: Number,
-      required: true
-    },
-    occupancyRate: {
-      type: [Number, String],
-      required: true
+    methods: {
+        getSeatClass(row, col) {
+            // Deterministic seat generation based on row and column
+            const seed = (row * 7 + col * 13) % 10;
+            return seed < 7 ? 'occupied' : 'empty';
+        },
+        isSeatOccupied(row, col) {
+            const seed = (row * 7 + col * 13) % 10;
+            return seed < 7;
+        }
     }
-  },
-  methods: {
-    getSeatClass(row, col) {
-      // Deterministic seat generation based on row and column
-      const seed = (row * 7 + col * 13) % 10;
-      return seed < 7 ? 'occupied' : 'empty';
-    },
-    isSeatOccupied(row, col) {
-      const seed = (row * 7 + col * 13) % 10;
-      return seed < 7;
-    }
-  }
 };
 </script>
 

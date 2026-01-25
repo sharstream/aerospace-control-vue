@@ -29,8 +29,8 @@
       <button
         v-if="hasPreview"
         class="preview-btn"
-        @click="handleShowPreview"
         title="View details in preview panel"
+        @click="handleShowPreview"
       >
         <svg
           fill="none"
@@ -64,8 +64,8 @@
     <button
       v-if="hasDetailedData"
       class="toggle-details"
-      @click="showDetails = !showDetails"
       :aria-expanded="showDetails"
+      @click="showDetails = !showDetails"
     >
       <svg
         class="toggle-icon"
@@ -95,44 +95,34 @@
 import { ref, computed, defineProps, defineEmits } from 'vue';
 
 const props = defineProps({
-  part: {
-    type: Object,
-    required: true,
-    validator: (value) => value.type === 'tool-result'
-  }
+    part: {
+        type: Object,
+        required: true,
+        validator: value => value.type === 'tool-result'
+    }
 });
 
 const emit = defineEmits(['show-preview']);
 
 const showDetails = ref(false);
 
-const isSuccess = computed(() => {
-  return !props.part.content.error;
-});
+const isSuccess = computed(() => !props.part.content.error);
 
-const statusClass = computed(() => {
-  return isSuccess.value ? 'success' : 'error';
-});
+const statusClass = computed(() => (isSuccess.value ? 'success' : 'error'));
 
-const statusText = computed(() => {
-  return isSuccess.value ? 'completed' : 'failed';
-});
+const statusText = computed(() => (isSuccess.value ? 'completed' : 'failed'));
 
-const hasPreview = computed(() => {
-  return props.part.content.previewType && props.part.content.data;
-});
+const hasPreview = computed(() => props.part.content.previewType && props.part.content.data);
 
-const hasDetailedData = computed(() => {
-  return props.part.content.data && Object.keys(props.part.content.data).length > 0;
-});
+const hasDetailedData = computed(() => props.part.content.data && Object.keys(props.part.content.data).length > 0);
 
 const handleShowPreview = () => {
-  if (hasPreview.value) {
-    emit('show-preview', {
-      type: props.part.content.previewType,
-      data: props.part.content.data
-    });
-  }
+    if (hasPreview.value) {
+        emit('show-preview', {
+            type: props.part.content.previewType,
+            data: props.part.content.data
+        });
+    }
 };
 </script>
 

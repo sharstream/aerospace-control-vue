@@ -81,15 +81,15 @@
 import { useToast } from '@/composables/useToast';
 
 export default {
-  name: 'ToastNotification',
-  setup() {
-    const { toasts, removeToast } = useToast();
+    name: 'ToastNotification',
+    setup() {
+        const { toasts, removeToast } = useToast();
 
-    return {
-      toasts,
-      removeToast
-    };
-  }
+        return {
+            toasts,
+            removeToast
+        };
+    }
 };
 </script>
 

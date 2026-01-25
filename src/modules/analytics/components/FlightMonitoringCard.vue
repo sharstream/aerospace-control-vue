@@ -53,37 +53,37 @@
 
 <script>
 export default {
-  name: 'FlightMonitoringCard',
-  props: {
-    flight: {
-      type: Object,
-      required: true
+    name: 'FlightMonitoringCard',
+    props: {
+        flight: {
+            type: Object,
+            required: true
+        },
+        airlines: {
+            type: Object,
+            required: true
+        },
+        systemHealth: {
+            type: Object,
+            required: false,
+            default: () => ({
+                health: 95,
+                statusClass: 'operational',
+                label: 'Operational'
+            })
+        }
     },
-    airlines: {
-      type: Object,
-      required: true
-    },
-    systemHealth: {
-      type: Object,
-      required: false,
-      default: () => ({
-        health: 95,
-        statusClass: 'operational',
-        label: 'Operational'
-      })
+    emits: ['toggle-detail'],
+    computed: {
+        airlineData() {
+            // Get airline or use default fallback for unknown airlines
+            return this.airlines[this.flight.airline] || {
+                name: 'Unknown Carrier',
+                logo: '✈️',
+                color: '#4a9dd7'
+            };
+        }
     }
-  },
-  emits: ['toggle-detail'],
-  computed: {
-    airlineData() {
-      // Get airline or use default fallback for unknown airlines
-      return this.airlines[this.flight.airline] || {
-        name: 'Unknown Carrier',
-        logo: '✈️',
-        color: '#4a9dd7'
-      };
-    }
-  }
 };
 </script>
 

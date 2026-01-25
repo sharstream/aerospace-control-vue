@@ -275,250 +275,250 @@ import CabinVisualization from './components/CabinVisualization.vue';
 import SystemsMonitoring from './components/SystemsMonitoring.vue';
 
 export default {
-  name: 'AnalyticsModule',
-  components: {
-    ReportSection,
-    WeatherHazardCard,
-    DelayAnalysisTable,
-    FlightMonitoringCard,
-    CabinVisualization,
-    SystemsMonitoring
-  },
-  props: {
-    flights: {
-      type: Array,
-      required: true
+    name: 'AnalyticsModule',
+    components: {
+        ReportSection,
+        WeatherHazardCard,
+        DelayAnalysisTable,
+        FlightMonitoringCard,
+        CabinVisualization,
+        SystemsMonitoring
     },
-    airlines: {
-      type: Object,
-      required: true
-    }
-  },
-  data() {
-    return {
-      expandedFlight: null,
-      airportsData: airports,
-      aircraftModelsData: aircraftModels,
-      weatherHazardsData: weatherHazards,
-      systemsHealthCache: {},
-      cabinSeatsCache: {},
-      flightSystemsCache: {}
-    };
-  },
-  computed: {
-    systemsHealth() {
-      return this.systemsHealthCache;
+    props: {
+        flights: {
+            type: Array,
+            required: true
+        },
+        airlines: {
+            type: Object,
+            required: true
+        }
     },
-    onTimeFlights() {
-      return this.flights.filter(f => f.statusClass === 'on-time').length;
-    },
-    delayedFlightsCount() {
-      return this.flights.filter(f => f.statusClass === 'delayed').length;
-    },
-    delayedFlights() {
-      return this.flights.filter(f => f.statusClass === 'delayed');
-    },
-    totalPassengers() {
-      return this.flights.reduce((sum, f) => {
-        // Parse passenger count safely - handle string values like '--'
-        const passengers = typeof f.passengers === 'number' ? f.passengers : 0;
-        return sum + passengers;
-      }, 0);
-    },
-    avgAltitude() {
-      // Filter and parse valid altitudes
-      const validAltitudes = this.flights
-        .map((f) => {
-          if (!f.altitude || f.altitude === 'N/A') return null;
-          const alt = parseInt(String(f.altitude).replace(/[^\d]/g, ''), 10);
-          return Number.isNaN(alt) ? null : alt;
-        })
-        .filter(alt => alt !== null && alt > 0);
-
-      if (validAltitudes.length === 0) return 0;
-
-      const total = validAltitudes.reduce((sum, alt) => sum + alt, 0);
-      return Math.round(total / validAltitudes.length);
-    },
-    onTimePercentage() {
-      return Math.round((this.onTimeFlights / this.flights.length) * 100);
-    },
-    airlineBreakdown() {
-      return Object.entries(this.airlines).map(([code, airline]) => {
-        const airlineFlights = this.flights.filter(f => f.airline === code);
-        const onTime = airlineFlights.filter(f => f.statusClass === 'on-time').length;
-        const delayed = airlineFlights.filter(f => f.statusClass === 'delayed').length;
-
-        // Safely calculate total passengers
-        const passengers = airlineFlights.reduce((sum, f) => {
-          const count = typeof f.passengers === 'number' ? f.passengers : 0;
-          return sum + count;
-        }, 0);
-
+    data() {
         return {
-          code,
-          ...airline,
-          totalFlights: airlineFlights.length,
-          onTime,
-          delayed,
-          passengers,
-          onTimeRate: airlineFlights.length > 0 ? Math.round((onTime / airlineFlights.length) * 100) : 0
+            expandedFlight: null,
+            airportsData: airports,
+            aircraftModelsData: aircraftModels,
+            weatherHazardsData: weatherHazards,
+            systemsHealthCache: {},
+            cabinSeatsCache: {},
+            flightSystemsCache: {}
         };
-      }).filter(a => a.totalFlights > 0);
-    }
-  },
-  watch: {
-    flights: {
-      handler() {
+    },
+    computed: {
+        systemsHealth() {
+            return this.systemsHealthCache;
+        },
+        onTimeFlights() {
+            return this.flights.filter(f => f.statusClass === 'on-time').length;
+        },
+        delayedFlightsCount() {
+            return this.flights.filter(f => f.statusClass === 'delayed').length;
+        },
+        delayedFlights() {
+            return this.flights.filter(f => f.statusClass === 'delayed');
+        },
+        totalPassengers() {
+            return this.flights.reduce((sum, f) => {
+                // Parse passenger count safely - handle string values like '--'
+                const passengers = typeof f.passengers === 'number' ? f.passengers : 0;
+                return sum + passengers;
+            }, 0);
+        },
+        avgAltitude() {
+            // Filter and parse valid altitudes
+            const validAltitudes = this.flights
+                .map((f) => {
+                    if (!f.altitude || f.altitude === 'N/A') return null;
+                    const alt = parseInt(String(f.altitude).replace(/[^\d]/g, ''), 10);
+                    return Number.isNaN(alt) ? null : alt;
+                })
+                .filter(alt => alt !== null && alt > 0);
+
+            if (validAltitudes.length === 0) return 0;
+
+            const total = validAltitudes.reduce((sum, alt) => sum + alt, 0);
+            return Math.round(total / validAltitudes.length);
+        },
+        onTimePercentage() {
+            return Math.round((this.onTimeFlights / this.flights.length) * 100);
+        },
+        airlineBreakdown() {
+            return Object.entries(this.airlines).map(([code, airline]) => {
+                const airlineFlights = this.flights.filter(f => f.airline === code);
+                const onTime = airlineFlights.filter(f => f.statusClass === 'on-time').length;
+                const delayed = airlineFlights.filter(f => f.statusClass === 'delayed').length;
+
+                // Safely calculate total passengers
+                const passengers = airlineFlights.reduce((sum, f) => {
+                    const count = typeof f.passengers === 'number' ? f.passengers : 0;
+                    return sum + count;
+                }, 0);
+
+                return {
+                    code,
+                    ...airline,
+                    totalFlights: airlineFlights.length,
+                    onTime,
+                    delayed,
+                    passengers,
+                    onTimeRate: airlineFlights.length > 0 ? Math.round((onTime / airlineFlights.length) * 100) : 0
+                };
+            }).filter(a => a.totalFlights > 0);
+        }
+    },
+    watch: {
+        flights: {
+            handler() {
+                this.initializeSystemsHealth();
+                this.initializeCabinData();
+                this.initializeFlightSystems();
+            }
+        }
+    },
+    mounted() {
+        // Calculate affected flights for each weather hazard
+        this.weatherHazardsData = this.weatherHazardsData.map((hazard) => {
+            const affected = this.flights.filter((flight) => {
+                // Check if flight path intersects this hazard
+                const midLat = (flight.path[0][0] + flight.path[1][0]) / 2;
+                const midLon = (flight.path[0][1] + flight.path[1][1]) / 2;
+                const dist = calculateDistance(midLat, midLon, hazard.center[0], hazard.center[1]);
+                return dist <= hazard.radius + 100;
+            });
+
+            return {
+                ...hazard,
+                affectedFlights: affected
+            };
+        });
+
+        // Initialize stable systems health data
         this.initializeSystemsHealth();
         this.initializeCabinData();
         this.initializeFlightSystems();
-      }
+    },
+    methods: {
+        initializeSystemsHealth() {
+            const health = {};
+            this.flights.forEach((flight) => {
+                // Use flight name hash as seed for consistent health values
+                const hash = flight.name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+                const healthValue = 80 + (hash % 20); // 80-100%
+                let statusClass; let
+                    label;
+                if (healthValue >= 95) {
+                    statusClass = 'operational';
+                    label = 'SYSTEMS OK';
+                } else if (healthValue >= 85) {
+                    statusClass = 'warning';
+                    label = 'MONITOR';
+                } else {
+                    statusClass = 'critical';
+                    label = 'ALERT';
+                }
+                health[flight.name] = { health: healthValue, statusClass, label };
+            });
+            this.systemsHealthCache = health;
+        },
+        initializeCabinData() {
+            const cabinData = {};
+            this.flights.forEach((flight) => {
+                const hash = flight.name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+                const passengers = typeof flight.passengers === 'number' ? flight.passengers : 150; // Default for real-time
+                cabinData[flight.name] = passengers + (hash % 20) + 10;
+            });
+            this.cabinSeatsCache = cabinData;
+        },
+        initializeFlightSystems() {
+            const systems = {};
+            this.flights.forEach((flight) => {
+                systems[flight.name] = this.generateFlightSystems(flight);
+            });
+            this.flightSystemsCache = systems;
+        },
+        toggleFlightDetail(flightName) {
+            this.expandedFlight = this.expandedFlight === flightName ? null : flightName;
+        },
+        getCabinSeats(flight) {
+            const passengers = typeof flight.passengers === 'number' ? flight.passengers : 150;
+            return this.cabinSeatsCache[flight.name] || passengers + 15;
+        },
+        getCabinOccupancy(flight) {
+            const totalSeats = this.getCabinSeats(flight);
+            const passengers = typeof flight.passengers === 'number' ? flight.passengers : 150;
+            return ((passengers / totalSeats) * 100).toFixed(1);
+        },
+        getFlightSystems(flight) {
+            // Return cached systems for this flight
+            return this.flightSystemsCache[flight.name] || [];
+        },
+        generateFlightSystems(flight) {
+            // Generate consistent system data using flight name as seed
+            const hash = flight.name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+
+            const generateSystemData = (name, icon, seedOffset) => {
+                const seed = (hash + seedOffset) % 100;
+                const health = 70 + (seed % 30); // 70-100%
+                let status; let
+                    statusClass;
+                if (health >= 90) {
+                    status = 'OPERATIONAL';
+                    statusClass = 'operational';
+                } else if (health >= 75) {
+                    status = 'WARNING';
+                    statusClass = 'warning';
+                } else {
+                    status = 'CRITICAL';
+                    statusClass = 'critical';
+                }
+                return {
+                    name, icon, status, statusClass, health
+                };
+            };
+
+            const systems = [
+                {
+                    ...generateSystemData('ELECTRICAL SYSTEM', 'd="M7 2v11h3v9l7-12h-4l4-8z"', 10),
+                    metrics: {
+                        VOLTAGE: `${(115 + (hash % 50) / 10).toFixed(1)}V`,
+                        LOAD: `${(75 + (hash % 15)).toFixed(0)}%`,
+                        'GEN 1': 'ONLINE',
+                        'GEN 2': 'ONLINE'
+                    }
+                },
+                {
+                    ...generateSystemData('HVAC SYSTEM', 'd="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"', 20),
+                    metrics: {
+                        'CABIN TEMP': `${(68 + ((hash + 50) % 80) / 10).toFixed(1)}°F`,
+                        'CABIN PRESS': `${(8 + ((hash + 30) % 20) / 10).toFixed(2)} PSI`,
+                        'PACK 1': 'ON',
+                        'PACK 2': 'ON'
+                    }
+                },
+                {
+                    ...generateSystemData('HYDRAULICS', 'd="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"', 30),
+                    metrics: {
+                        'SYSTEM A': `${(2800 + ((hash + 100) % 400)).toFixed(0)} PSI`,
+                        'SYSTEM B': `${(2800 + ((hash + 200) % 400)).toFixed(0)} PSI`,
+                        'RESERVOIR A': `${(90 + ((hash + 10) % 10)).toFixed(0)}%`,
+                        'RESERVOIR B': `${(90 + ((hash + 20) % 10)).toFixed(0)}%`
+                    }
+                },
+                {
+                    ...generateSystemData('FUEL SYSTEM', 'd="M19.77 7.23l.01-.01-3.72-3.72L15 4.56l2.11 2.11c-.94.36-1.61 1.26-1.61 2.33 0 1.38 1.12 2.5 2.5 2.5.36 0 .69-.08 1-.21v7.21c0 .55-.45 1-1 1s-1-.45-1-1V14c0-1.1-.9-2-2-2h-1V5c0-1.1-.9-2-2-2H6c-1.1 0-2 .9-2 2v16h10v-7.5h1.5v5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V9c0-.69-.28-1.32-.73-1.77z"', 40),
+                    metrics: {
+                        'TOTAL FUEL': `${(40000 + ((hash + 300) % 20000)).toFixed(0)} lbs`,
+                        'FLOW RATE': `${(5000 + ((hash + 400) % 2000)).toFixed(0)} lbs/hr`,
+                        'LEFT TANK': `${(85 + ((hash + 50) % 15)).toFixed(0)}%`,
+                        'RIGHT TANK': `${(85 + ((hash + 60) % 15)).toFixed(0)}%`
+                    }
+                }
+            ];
+
+            return systems;
+        }
     }
-  },
-  mounted() {
-    // Calculate affected flights for each weather hazard
-    this.weatherHazardsData = this.weatherHazardsData.map((hazard) => {
-      const affected = this.flights.filter((flight) => {
-        // Check if flight path intersects this hazard
-        const midLat = (flight.path[0][0] + flight.path[1][0]) / 2;
-        const midLon = (flight.path[0][1] + flight.path[1][1]) / 2;
-        const dist = calculateDistance(midLat, midLon, hazard.center[0], hazard.center[1]);
-        return dist <= hazard.radius + 100;
-      });
-
-      return {
-        ...hazard,
-        affectedFlights: affected
-      };
-    });
-
-    // Initialize stable systems health data
-    this.initializeSystemsHealth();
-    this.initializeCabinData();
-    this.initializeFlightSystems();
-  },
-  methods: {
-    initializeSystemsHealth() {
-      const health = {};
-      this.flights.forEach((flight) => {
-        // Use flight name hash as seed for consistent health values
-        const hash = flight.name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-        const healthValue = 80 + (hash % 20); // 80-100%
-        let statusClass; let
-          label;
-        if (healthValue >= 95) {
-          statusClass = 'operational';
-          label = 'SYSTEMS OK';
-        } else if (healthValue >= 85) {
-          statusClass = 'warning';
-          label = 'MONITOR';
-        } else {
-          statusClass = 'critical';
-          label = 'ALERT';
-        }
-        health[flight.name] = { health: healthValue, statusClass, label };
-      });
-      this.systemsHealthCache = health;
-    },
-    initializeCabinData() {
-      const cabinData = {};
-      this.flights.forEach((flight) => {
-        const hash = flight.name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-        const passengers = typeof flight.passengers === 'number' ? flight.passengers : 150; // Default for real-time
-        cabinData[flight.name] = passengers + (hash % 20) + 10;
-      });
-      this.cabinSeatsCache = cabinData;
-    },
-    initializeFlightSystems() {
-      const systems = {};
-      this.flights.forEach((flight) => {
-        systems[flight.name] = this.generateFlightSystems(flight);
-      });
-      this.flightSystemsCache = systems;
-    },
-    toggleFlightDetail(flightName) {
-      this.expandedFlight = this.expandedFlight === flightName ? null : flightName;
-    },
-    getCabinSeats(flight) {
-      const passengers = typeof flight.passengers === 'number' ? flight.passengers : 150;
-      return this.cabinSeatsCache[flight.name] || passengers + 15;
-    },
-    getCabinOccupancy(flight) {
-      const totalSeats = this.getCabinSeats(flight);
-      const passengers = typeof flight.passengers === 'number' ? flight.passengers : 150;
-      return ((passengers / totalSeats) * 100).toFixed(1);
-    },
-    getFlightSystems(flight) {
-      // Return cached systems for this flight
-      return this.flightSystemsCache[flight.name] || [];
-    },
-    generateFlightSystems(flight) {
-      // Generate consistent system data using flight name as seed
-      const hash = flight.name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-
-      const generateSystemData = (name, icon, seedOffset) => {
-        const seed = (hash + seedOffset) % 100;
-        const health = 70 + (seed % 30); // 70-100%
-        let status; let
-          statusClass;
-        if (health >= 90) {
-          status = 'OPERATIONAL';
-          statusClass = 'operational';
-        } else if (health >= 75) {
-          status = 'WARNING';
-          statusClass = 'warning';
-        } else {
-          status = 'CRITICAL';
-          statusClass = 'critical';
-        }
-        return {
-          name, icon, status, statusClass, health
-        };
-      };
-
-      const systems = [
-        {
-          ...generateSystemData('ELECTRICAL SYSTEM', 'd="M7 2v11h3v9l7-12h-4l4-8z"', 10),
-          metrics: {
-            VOLTAGE: `${(115 + (hash % 50) / 10).toFixed(1)}V`,
-            LOAD: `${(75 + (hash % 15)).toFixed(0)}%`,
-            'GEN 1': 'ONLINE',
-            'GEN 2': 'ONLINE'
-          }
-        },
-        {
-          ...generateSystemData('HVAC SYSTEM', 'd="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"', 20),
-          metrics: {
-            'CABIN TEMP': `${(68 + ((hash + 50) % 80) / 10).toFixed(1)}°F`,
-            'CABIN PRESS': `${(8 + ((hash + 30) % 20) / 10).toFixed(2)} PSI`,
-            'PACK 1': 'ON',
-            'PACK 2': 'ON'
-          }
-        },
-        {
-          ...generateSystemData('HYDRAULICS', 'd="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"', 30),
-          metrics: {
-            'SYSTEM A': `${(2800 + ((hash + 100) % 400)).toFixed(0)} PSI`,
-            'SYSTEM B': `${(2800 + ((hash + 200) % 400)).toFixed(0)} PSI`,
-            'RESERVOIR A': `${(90 + ((hash + 10) % 10)).toFixed(0)}%`,
-            'RESERVOIR B': `${(90 + ((hash + 20) % 10)).toFixed(0)}%`
-          }
-        },
-        {
-          ...generateSystemData('FUEL SYSTEM', 'd="M19.77 7.23l.01-.01-3.72-3.72L15 4.56l2.11 2.11c-.94.36-1.61 1.26-1.61 2.33 0 1.38 1.12 2.5 2.5 2.5.36 0 .69-.08 1-.21v7.21c0 .55-.45 1-1 1s-1-.45-1-1V14c0-1.1-.9-2-2-2h-1V5c0-1.1-.9-2-2-2H6c-1.1 0-2 .9-2 2v16h10v-7.5h1.5v5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V9c0-.69-.28-1.32-.73-1.77z"', 40),
-          metrics: {
-            'TOTAL FUEL': `${(40000 + ((hash + 300) % 20000)).toFixed(0)} lbs`,
-            'FLOW RATE': `${(5000 + ((hash + 400) % 2000)).toFixed(0)} lbs/hr`,
-            'LEFT TANK': `${(85 + ((hash + 50) % 15)).toFixed(0)}%`,
-            'RIGHT TANK': `${(85 + ((hash + 60) % 15)).toFixed(0)}%`
-          }
-        }
-      ];
-
-      return systems;
-    }
-  }
 };
 </script>
 

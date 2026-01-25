@@ -19,13 +19,13 @@
 
 <script>
 export default {
-  name: 'ReportSection',
-  props: {
-    title: {
-      type: String,
-      required: true
+    name: 'ReportSection',
+    props: {
+        title: {
+            type: String,
+            required: true
+        }
     }
-  }
 };
 </script>
 

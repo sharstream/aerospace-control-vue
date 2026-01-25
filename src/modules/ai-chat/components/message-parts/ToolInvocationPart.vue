@@ -32,8 +32,8 @@
     <button
       v-if="hasParams"
       class="params-toggle"
-      @click="showParams = !showParams"
       :aria-expanded="showParams"
+      @click="showParams = !showParams"
     >
       <svg
         class="toggle-icon"
@@ -63,27 +63,25 @@
 import { ref, computed, defineProps } from 'vue';
 
 const props = defineProps({
-  part: {
-    type: Object,
-    required: true,
-    validator: (value) => value.type === 'tool-invocation'
-  }
+    part: {
+        type: Object,
+        required: true,
+        validator: value => value.type === 'tool-invocation'
+    }
 });
 
 const showParams = ref(false);
 
-const hasParams = computed(() => {
-  return props.part.content.params && Object.keys(props.part.content.params).length > 0;
-});
+const hasParams = computed(() => props.part.content.params && Object.keys(props.part.content.params).length > 0);
 
 const formatStatus = (status) => {
-  const statusMap = {
-    'pending': 'Pending',
-    'running': 'Running',
-    'completed': 'Completed',
-    'failed': 'Failed'
-  };
-  return statusMap[status] || status;
+    const statusMap = {
+        pending: 'Pending',
+        running: 'Running',
+        completed: 'Completed',
+        failed: 'Failed'
+    };
+    return statusMap[status] || status;
 };
 </script>
 

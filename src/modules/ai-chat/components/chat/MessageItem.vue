@@ -55,9 +55,9 @@
 
       <!-- Render message parts dynamically -->
       <component
+        :is="getPartComponent(part.type)"
         v-for="(part, idx) in message.parts"
         :key="idx"
-        :is="getPartComponent(part.type)"
         :part="part"
         @show-preview="handleShowPreview"
       />
@@ -73,57 +73,53 @@ import ToolInvocationPart from '../message-parts/ToolInvocationPart.vue';
 import ToolResultPart from '../message-parts/ToolResultPart.vue';
 
 const props = defineProps({
-  message: {
-    type: Object,
-    required: true,
-    validator: (value) => {
-      return (
-        value.role &&
-        ['user', 'assistant', 'system'].includes(value.role) &&
-        Array.isArray(value.parts)
-      );
+    message: {
+        type: Object,
+        required: true,
+        validator: value => (
+            value.role
+            && ['user', 'assistant', 'system'].includes(value.role)
+            && Array.isArray(value.parts)
+        )
     }
-  }
 });
 
 const emit = defineEmits(['show-preview']);
 
 const senderName = computed(() => {
-  if (props.message.role === 'user') return 'You';
-  if (props.message.role === 'assistant') return 'Commander Atlas';
-  return 'System';
+    if (props.message.role === 'user') return 'You';
+    if (props.message.role === 'assistant') return 'Commander Atlas';
+    return 'System';
 });
 
 const formattedTime = computed(() => {
-  if (!props.message.timestamp) return '';
+    if (!props.message.timestamp) return '';
 
-  const date = new Date(props.message.timestamp);
-  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const date = new Date(props.message.timestamp);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 });
 
-const hasPreviewPart = computed(() => {
-  return props.message.parts.some((p) => p.type === 'tool-result' && p.content?.previewType);
-});
+const hasPreviewPart = computed(() => props.message.parts.some(p => p.type === 'tool-result' && p.content?.previewType));
 
 /**
  * Map part types to Vue components
  */
 const getPartComponent = (type) => {
-  const components = {
-    'text': TextMessagePart,
-    'reasoning': ReasoningMessagePart,
-    'tool-invocation': ToolInvocationPart,
-    'tool-result': ToolResultPart
-  };
+    const components = {
+        text: TextMessagePart,
+        reasoning: ReasoningMessagePart,
+        'tool-invocation': ToolInvocationPart,
+        'tool-result': ToolResultPart
+    };
 
-  return components[type] || TextMessagePart;
+    return components[type] || TextMessagePart;
 };
 
 /**
  * Handle preview request from child components
  */
 const handleShowPreview = (previewData) => {
-  emit('show-preview', previewData);
+    emit('show-preview', previewData);
 };
 </script>
 

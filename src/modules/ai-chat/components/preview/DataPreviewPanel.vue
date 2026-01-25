@@ -5,8 +5,8 @@
       <button
         v-if="hasData"
         class="clear-btn"
-        @click="$emit('clear')"
         title="Clear preview"
+        @click="$emit('clear')"
       >
         <svg
           fill="currentColor"
@@ -88,31 +88,31 @@ import RouteOptimizationPreview from './RouteOptimizationPreview.vue';
 import SystemStatusPreview from './SystemStatusPreview.vue';
 
 const props = defineProps({
-  previewType: {
-    type: String,
-    default: null
-  },
-  previewData: {
-    type: Object,
-    default: null
-  }
+    previewType: {
+        type: String,
+        default: null
+    },
+    previewData: {
+        type: Object,
+        default: null
+    }
 });
 
-const emit = defineEmits(['clear']);
+defineEmits(['clear']);
 
 const hasData = computed(() => props.previewData !== null);
 
 const previewTitle = computed(() => {
-  if (!hasData.value) return 'Data Preview';
+    if (!hasData.value) return 'Data Preview';
 
-  const titles = {
-    'flight-data': 'Flight Data',
-    'weather': 'Weather Analysis',
-    'route': 'Route Optimization',
-    'system': 'System Status'
-  };
+    const titles = {
+        'flight-data': 'Flight Data',
+        weather: 'Weather Analysis',
+        route: 'Route Optimization',
+        system: 'System Status'
+    };
 
-  return titles[props.previewType] || 'Data Preview';
+    return titles[props.previewType] || 'Data Preview';
 });
 </script>
 

@@ -20,59 +20,59 @@
 import { computed } from 'vue';
 
 export default {
-  name: 'BackendStatusCard',
-  props: {
-    apiStatus: {
-      type: String,
-      required: true,
-      default: 'unknown'
+    name: 'BackendStatusCard',
+    props: {
+        apiStatus: {
+            type: String,
+            required: true,
+            default: 'unknown'
+        },
+        lastUpdate: {
+            type: Date,
+            default: null
+        }
     },
-    lastUpdate: {
-      type: Date,
-      default: null
+    setup(props) {
+        const statusClass = computed(() => {
+            const statusMap = {
+                connected: 'status-connected',
+                disconnected: 'status-disconnected',
+                rate_limited: 'status-warning',
+                connection_error: 'status-error',
+                error: 'status-error',
+                unknown: 'status-unknown'
+            };
+            return statusMap[props.apiStatus] || 'status-unknown';
+        });
+
+        const statusText = computed(() => {
+            const textMap = {
+                connected: 'Connected',
+                disconnected: 'Disconnected',
+                rate_limited: 'Rate Limited',
+                connection_error: 'Connection Error',
+                error: 'Error',
+                unknown: 'Unknown'
+            };
+            return textMap[props.apiStatus] || 'Unknown';
+        });
+
+        const formattedLastUpdate = computed(() => {
+            try {
+                if (!props.lastUpdate) return '';
+                const date = new Date(props.lastUpdate);
+                return date.toLocaleTimeString();
+            } catch (error) {
+                return '';
+            }
+        });
+
+        return {
+            statusClass,
+            statusText,
+            formattedLastUpdate
+        };
     }
-  },
-  setup(props) {
-    const statusClass = computed(() => {
-      const statusMap = {
-        connected: 'status-connected',
-        disconnected: 'status-disconnected',
-        rate_limited: 'status-warning',
-        connection_error: 'status-error',
-        error: 'status-error',
-        unknown: 'status-unknown'
-      };
-      return statusMap[props.apiStatus] || 'status-unknown';
-    });
-
-    const statusText = computed(() => {
-      const textMap = {
-        connected: 'Connected',
-        disconnected: 'Disconnected',
-        rate_limited: 'Rate Limited',
-        connection_error: 'Connection Error',
-        error: 'Error',
-        unknown: 'Unknown'
-      };
-      return textMap[props.apiStatus] || 'Unknown';
-    });
-
-    const formattedLastUpdate = computed(() => {
-      try {
-        if (!props.lastUpdate) return '';
-        const date = new Date(props.lastUpdate);
-        return date.toLocaleTimeString();
-      } catch (error) {
-        return '';
-      }
-    });
-
-    return {
-      statusClass,
-      statusText,
-      formattedLastUpdate
-    };
-  }
 };
 </script>
 

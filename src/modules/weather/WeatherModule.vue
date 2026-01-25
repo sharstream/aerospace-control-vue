@@ -203,127 +203,127 @@
 import { airlines } from '@shared/data';
 
 export default {
-  name: 'WeatherModule',
-  props: {
-    weatherHazards: {
-      type: Array,
-      required: true
-    },
-    flights: {
-      type: Array,
-      required: true
-    }
-  },
-  data() {
-    return {
-      weatherAlerts: [
-        {
-          type: 'severe',
-          title: 'Severe Thunderstorm Warning',
-          description: 'Intense thunderstorm activity detected along major flight corridors. Lightning, strong winds, and heavy precipitation expected.',
-          location: 'Midwest Region',
-          validUntil: '18:45 UTC',
-          windSpeed: '65 kt',
-          visibility: '0.5 SM'
+    name: 'WeatherModule',
+    props: {
+        weatherHazards: {
+            type: Array,
+            required: true
         },
-        {
-          type: 'warning',
-          title: 'Tropical Storm Advisory',
-          description: 'Tropical depression intensifying near coastal routes. Moderate turbulence and crosswinds affecting approach patterns.',
-          location: 'Southeast Coast',
-          validUntil: '22:00 UTC',
-          windSpeed: '45 kt',
-          visibility: '2 SM'
-        },
-        {
-          type: 'watch',
-          title: 'Winter Storm Watch',
-          description: 'Snow and ice accumulation forecast. Possible runway conditions affecting departure clearances.',
-          location: 'Northeast Region',
-          validUntil: '06:00 UTC +1',
-          windSpeed: '25 kt',
-          visibility: '1 SM'
+        flights: {
+            type: Array,
+            required: true
         }
-      ],
-      airportForecasts: [
-        {
-          code: 'JFK', city: 'New York', temp: 72, condition: 'Thunderstorms', icon: '⛈️', wind: '15 kt NE', visibility: '3 SM', pressure: '29.82'
-        },
-        {
-          code: 'LAX', city: 'Los Angeles', temp: 85, condition: 'Partly Cloudy', icon: '⛅', wind: '8 kt W', visibility: '10 SM', pressure: '30.12'
-        },
-        {
-          code: 'ORD', city: 'Chicago', temp: 68, condition: 'Severe Storms', icon: '🌩️', wind: '25 kt SW', visibility: '2 SM', pressure: '29.65'
-        },
-        {
-          code: 'DFW', city: 'Dallas', temp: 92, condition: 'Clear', icon: '☀️', wind: '12 kt S', visibility: '10 SM', pressure: '30.05'
-        }
-      ],
-      affectedFlightsCache: []
-    };
-  },
-  computed: {
-    affectedFlightsList() {
-      return this.affectedFlightsCache;
     },
-    currentTime() {
-      return new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-    }
-  },
-  watch: {
-    flights: {
-      handler() {
-        this.updateAffectedFlights();
-      },
-      immediate: true
-    }
-  },
-  methods: {
-    updateAffectedFlights() {
-      // Generate stable affected flights list based on flight properties
-      this.affectedFlightsCache = this.flights
-        .filter((f) => {
-          if (f.bottleneck) return true;
-          // Use flight name hash as seed for consistent selection
-          const hash = f.name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-          return hash % 10 > 4; // ~60% selection rate
-        })
-        .slice(0, 5)
-        .map((f) => {
-          // Get airline or use default fallback for unknown airlines
-          const airline = airlines[f.airline] || {
-            name: 'Unknown Carrier',
-            logo: '✈️',
-            color: '#4a9dd7'
-          };
+    data() {
+        return {
+            weatherAlerts: [
+                {
+                    type: 'severe',
+                    title: 'Severe Thunderstorm Warning',
+                    description: 'Intense thunderstorm activity detected along major flight corridors. Lightning, strong winds, and heavy precipitation expected.',
+                    location: 'Midwest Region',
+                    validUntil: '18:45 UTC',
+                    windSpeed: '65 kt',
+                    visibility: '0.5 SM'
+                },
+                {
+                    type: 'warning',
+                    title: 'Tropical Storm Advisory',
+                    description: 'Tropical depression intensifying near coastal routes. Moderate turbulence and crosswinds affecting approach patterns.',
+                    location: 'Southeast Coast',
+                    validUntil: '22:00 UTC',
+                    windSpeed: '45 kt',
+                    visibility: '2 SM'
+                },
+                {
+                    type: 'watch',
+                    title: 'Winter Storm Watch',
+                    description: 'Snow and ice accumulation forecast. Possible runway conditions affecting departure clearances.',
+                    location: 'Northeast Region',
+                    validUntil: '06:00 UTC +1',
+                    windSpeed: '25 kt',
+                    visibility: '1 SM'
+                }
+            ],
+            airportForecasts: [
+                {
+                    code: 'JFK', city: 'New York', temp: 72, condition: 'Thunderstorms', icon: '⛈️', wind: '15 kt NE', visibility: '3 SM', pressure: '29.82'
+                },
+                {
+                    code: 'LAX', city: 'Los Angeles', temp: 85, condition: 'Partly Cloudy', icon: '⛅', wind: '8 kt W', visibility: '10 SM', pressure: '30.12'
+                },
+                {
+                    code: 'ORD', city: 'Chicago', temp: 68, condition: 'Severe Storms', icon: '🌩️', wind: '25 kt SW', visibility: '2 SM', pressure: '29.65'
+                },
+                {
+                    code: 'DFW', city: 'Dallas', temp: 92, condition: 'Clear', icon: '☀️', wind: '12 kt S', visibility: '10 SM', pressure: '30.05'
+                }
+            ],
+            affectedFlightsCache: []
+        };
+    },
+    computed: {
+        affectedFlightsList() {
+            return this.affectedFlightsCache;
+        },
+        currentTime() {
+            return new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        }
+    },
+    watch: {
+        flights: {
+            handler() {
+                this.updateAffectedFlights();
+            },
+            immediate: true
+        }
+    },
+    methods: {
+        updateAffectedFlights() {
+            // Generate stable affected flights list based on flight properties
+            this.affectedFlightsCache = this.flights
+                .filter((f) => {
+                    if (f.bottleneck) return true;
+                    // Use flight name hash as seed for consistent selection
+                    const hash = f.name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+                    return hash % 10 > 4; // ~60% selection rate
+                })
+                .slice(0, 5)
+                .map((f) => {
+                    // Get airline or use default fallback for unknown airlines
+                    const airline = airlines[f.airline] || {
+                        name: 'Unknown Carrier',
+                        logo: '✈️',
+                        color: '#4a9dd7'
+                    };
 
-          let impact;
-          if (f.bottleneck) {
-            impact = 'high';
-          } else {
-            // Use flight name hash for consistent impact
-            const hash = f.name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-            impact = hash % 2 === 0 ? 'medium' : 'low';
-          }
+                    let impact;
+                    if (f.bottleneck) {
+                        impact = 'high';
+                    } else {
+                        // Use flight name hash for consistent impact
+                        const hash = f.name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+                        impact = hash % 2 === 0 ? 'medium' : 'low';
+                    }
 
-          let delay;
-          if (impact === 'high') {
-            delay = '45-60 min';
-          } else if (impact === 'medium') {
-            delay = '20-30 min';
-          } else {
-            delay = '10-15 min';
-          }
+                    let delay;
+                    if (impact === 'high') {
+                        delay = '45-60 min';
+                    } else if (impact === 'medium') {
+                        delay = '20-30 min';
+                    } else {
+                        delay = '10-15 min';
+                    }
 
-          return {
-            flight: f,
-            airline,
-            impact,
-            delay
-          };
-        });
+                    return {
+                        flight: f,
+                        airline,
+                        impact,
+                        delay
+                    };
+                });
+        }
     }
-  }
 };
 </script>
 

@@ -174,7 +174,7 @@
             class="fuel-fill"
             :style="{ width: `${data.fuelPercentage}%` }"
             :class="getFuelBarClass(data.fuelPercentage)"
-          />
+          ></div>
           <span class="fuel-percentage">{{ data.fuelPercentage }}%</span>
         </div>
       </div>
@@ -195,7 +195,7 @@
           <div
             class="system-indicator"
             :class="getSystemStatusClass(status)"
-          />
+          ></div>
           <span class="system-name">{{ formatSystemName(system) }}</span>
           <span class="system-status">{{ typeof status === 'object' ? status.status : status }}</span>
         </div>
@@ -246,75 +246,71 @@
 import { computed, defineProps } from 'vue';
 
 const props = defineProps({
-  data: {
-    type: Object,
-    required: true
-  }
+    data: {
+        type: Object,
+        required: true
+    }
 });
 
-const hasAdditionalInfo = computed(() => {
-  return props.data.airline || props.data.aircraft || props.data.eta || props.data.progress !== undefined;
-});
+const hasAdditionalInfo = computed(() => props.data.airline || props.data.aircraft || props.data.eta || props.data.progress !== undefined);
 
 const formatAltitude = (altitude) => {
-  const alt = parseInt(altitude, 10);
-  return `${alt.toLocaleString()} ft`;
+    const alt = parseInt(altitude, 10);
+    return `${alt.toLocaleString()} ft`;
 };
 
 const formatSpeed = (speed) => {
-  const spd = parseInt(speed, 10);
-  return `${spd} kts`;
+    const spd = parseInt(speed, 10);
+    return `${spd} kts`;
 };
 
 const formatDistance = (distance) => {
-  const dist = parseInt(distance, 10);
-  return `${dist.toLocaleString()} km`;
+    const dist = parseInt(distance, 10);
+    return `${dist.toLocaleString()} km`;
 };
 
-const formatSystemName = (system) => {
-  return system.charAt(0).toUpperCase() + system.slice(1).replace(/_/g, ' ');
-};
+const formatSystemName = system => system.charAt(0).toUpperCase() + system.slice(1).replace(/_/g, ' ');
 
 const getStatusClass = (status) => {
-  const statusMap = {
-    'on-time': 'status-success',
-    'delayed': 'status-warning',
-    'cancelled': 'status-error',
-    'departed': 'status-info',
-    'arrived': 'status-success'
-  };
-  return statusMap[status?.toLowerCase()] || 'status-default';
+    const statusMap = {
+        'on-time': 'status-success',
+        delayed: 'status-warning',
+        cancelled: 'status-error',
+        departed: 'status-info',
+        arrived: 'status-success'
+    };
+    return statusMap[status?.toLowerCase()] || 'status-default';
 };
 
 const getFuelStatusClass = (status) => {
-  const statusMap = {
-    'NORMAL': 'fuel-normal',
-    'LOW': 'fuel-warning',
-    'CRITICAL': 'fuel-critical'
-  };
-  return statusMap[status] || 'fuel-normal';
+    const statusMap = {
+        NORMAL: 'fuel-normal',
+        LOW: 'fuel-warning',
+        CRITICAL: 'fuel-critical'
+    };
+    return statusMap[status] || 'fuel-normal';
 };
 
 const getFuelBarClass = (percentage) => {
-  if (percentage <= 20) return 'fuel-critical';
-  if (percentage <= 40) return 'fuel-warning';
-  return 'fuel-normal';
+    if (percentage <= 20) return 'fuel-critical';
+    if (percentage <= 40) return 'fuel-warning';
+    return 'fuel-normal';
 };
 
 const getSystemStatusClass = (status) => {
-  const statusValue = typeof status === 'object' ? status.status : status;
-  const normalized = statusValue?.toString().toLowerCase();
+    const statusValue = typeof status === 'object' ? status.status : status;
+    const normalized = statusValue?.toString().toLowerCase();
 
-  if (normalized === 'normal' || normalized === 'ok' || normalized === 'operational') {
-    return 'status-ok';
-  }
-  if (normalized === 'warning' || normalized === 'degraded') {
-    return 'status-warning';
-  }
-  if (normalized === 'critical' || normalized === 'failed' || normalized === 'error') {
-    return 'status-critical';
-  }
-  return 'status-unknown';
+    if (normalized === 'normal' || normalized === 'ok' || normalized === 'operational') {
+        return 'status-ok';
+    }
+    if (normalized === 'warning' || normalized === 'degraded') {
+        return 'status-warning';
+    }
+    if (normalized === 'critical' || normalized === 'failed' || normalized === 'error') {
+        return 'status-critical';
+    }
+    return 'status-unknown';
 };
 </script>
 
