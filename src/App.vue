@@ -31,6 +31,7 @@
                 :airlines="airlines"
                 :bottomNavCollapsed="bottomNavCollapsed"
                 :trackedAircraft="trackedAircraft"
+                :selectedFlight="selectedFlight"
                 @view-all="changeView('flights')"
                 @flight-click="handleFlightTableClick"
                 @track-aircraft="handleTrackAircraft"

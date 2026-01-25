@@ -1,11 +1,19 @@
 <template>
-    <div
+    <Motion
+        tag="div"
         class="ai-panel-dual"
         :class="{ visible }"
+        :initial="{ opacity: 0, y: 20, scale: 0.95 }"
+        :animate="visible ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 20, scale: 0.95 }"
+        :transition="{ type: 'spring', stiffness: 300, damping: 30 }"
     >
-        <button
+        <Motion
+            tag="button"
             class="close-fab"
             title="Close AI Assistant"
+            :whileHover="{ scale: 1.1, rotate: 90 }"
+            :whileTap="{ scale: 0.95 }"
+            :transition="{ type: 'spring', stiffness: 400, damping: 15 }"
             @click="$emit('close')"
         >
             <svg
@@ -14,7 +22,7 @@
             >
                 <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
             </svg>
-        </button>
+        </Motion>
 
         <div
             ref="panelContainer"
@@ -55,11 +63,12 @@
                 />
             </div>
         </div>
-    </div>
+    </Motion>
 </template>
 
 <script setup>
 import { ref, computed, defineProps, defineEmits, onMounted, onBeforeUnmount } from 'vue';
+import { Motion } from 'motion-v';
 import {
     generateOptimizedRoute,
     calculateFlightMetrics,
@@ -707,19 +716,26 @@ onBeforeUnmount(() => {
     max-width: 1400px;
     height: 80vh;
     max-height: 800px;
-    background: rgb(26 26 26 / 95%);
-    backdrop-filter: var(--backdrop-blur-lg);
-    border: 1px solid var(--color-border);
+    background: linear-gradient(
+        135deg,
+        rgb(15 23 42 / 72%) 0%,
+        rgb(30 41 59 / 68%) 50%,
+        rgb(15 23 42 / 75%) 100%
+    );
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgb(148 163 184 / 15%);
     border-radius: var(--radius-2xl);
-    box-shadow: var(--shadow-2xl), 0 0 0 1px var(--color-primary-alpha-10);
+    box-shadow:
+        0 25px 50px -12px rgb(0 0 0 / 50%),
+        0 0 0 1px rgb(148 163 184 / 10%),
+        inset 0 1px 0 0 rgb(255 255 255 / 10%);
     display: flex;
     flex-direction: column;
     z-index: 999;
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
     pointer-events: none;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
+    will-change: transform, opacity;
 }
 
 .ai-panel-dual.visible {
@@ -734,23 +750,25 @@ onBeforeUnmount(() => {
     right: 16px;
     width: 40px;
     height: 40px;
-    background: var(--color-white-alpha-10);
-    border: 1px solid var(--color-border);
+    background: rgb(255 255 255 / 8%);
+    border: 1px solid rgb(148 163 184 / 20%);
     border-radius: var(--radius-lg);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s ease;
     z-index: 1000;
-    color: var(--color-text-primary);
+    color: rgb(226 232 240 / 90%);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 20%);
+    will-change: transform;
 }
 
 .close-fab:hover {
-    background: var(--color-error);
+    background: rgb(239 68 68 / 90%);
     color: white;
-    border-color: var(--color-error);
-    transform: scale(1.1);
+    border-color: rgb(239 68 68);
 }
 
 .close-fab svg {

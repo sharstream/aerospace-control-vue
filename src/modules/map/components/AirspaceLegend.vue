@@ -166,7 +166,7 @@ export default {
 .legend-panel {
     position: fixed;
     left: 24px;
-    bottom: v-bind(bottomposition);
+    bottom: v-bind(bottomPosition);
     width: 300px;
     background: rgb(26 26 26 / 95%);
     backdrop-filter: blur(12px);
