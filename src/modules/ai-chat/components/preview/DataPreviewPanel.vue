@@ -18,66 +18,38 @@
     </div>
 
     <div class="preview-content">
+      <!-- Specialized Preview Components -->
       <div
         v-if="hasData"
         class="data-display"
       >
-        <!-- Flight Data Preview -->
-        <div
+        <FlightDataPreview
           v-if="previewType === 'flight-data'"
-          class="flight-preview"
-        >
-          <div class="preview-card">
-            <h4>Flight Information</h4>
-            <div class="data-grid">
-              <div class="data-item">
-                <span class="label">Callsign:</span>
-                <span class="value">{{ previewData?.callsign || 'N/A' }}</span>
-              </div>
-              <div class="data-item">
-                <span class="label">Altitude:</span>
-                <span class="value">{{ previewData?.altitude || 'N/A' }} ft</span>
-              </div>
-              <div class="data-item">
-                <span class="label">Speed:</span>
-                <span class="value">{{ previewData?.speed || 'N/A' }} kts</span>
-              </div>
-              <div class="data-item">
-                <span class="label">Heading:</span>
-                <span class="value">{{ previewData?.heading || 'N/A' }}°</span>
-              </div>
-            </div>
-          </div>
-        </div>
+          :data="previewData"
+        />
 
-        <!-- Weather Preview -->
-        <div
+        <WeatherAnalysisPreview
           v-else-if="previewType === 'weather'"
-          class="weather-preview"
-        >
-          <div class="preview-card">
-            <h4>Weather Analysis</h4>
-            <p>Weather data preview will be displayed here</p>
-          </div>
-        </div>
+          :data="previewData"
+        />
 
-        <!-- Route Preview -->
-        <div
+        <RouteOptimizationPreview
           v-else-if="previewType === 'route'"
-          class="route-preview"
-        >
-          <div class="preview-card">
-            <h4>Route Optimization</h4>
-            <p>Route comparison data will be displayed here</p>
-          </div>
-        </div>
+          :data="previewData"
+        />
 
-        <!-- Generic Data Preview -->
+        <SystemStatusPreview
+          v-else-if="previewType === 'system'"
+          :data="previewData"
+        />
+
+        <!-- Generic Data Preview (fallback) -->
         <div
           v-else
           class="generic-preview"
         >
           <div class="preview-card">
+            <h4>Data Preview</h4>
             <pre class="data-json">{{ JSON.stringify(previewData, null, 2) }}</pre>
           </div>
         </div>
@@ -102,7 +74,7 @@
           />
         </svg>
         <p>Select a message with data to preview</p>
-        <span class="empty-hint">Flight data, weather analysis, and route optimization will appear here</span>
+        <span class="empty-hint">Flight data, weather analysis, route optimization, and system status will appear here</span>
       </div>
     </div>
   </div>
@@ -110,6 +82,10 @@
 
 <script setup>
 import { computed, defineProps, defineEmits } from 'vue';
+import FlightDataPreview from './FlightDataPreview.vue';
+import WeatherAnalysisPreview from './WeatherAnalysisPreview.vue';
+import RouteOptimizationPreview from './RouteOptimizationPreview.vue';
+import SystemStatusPreview from './SystemStatusPreview.vue';
 
 const props = defineProps({
   previewType: {
@@ -155,6 +131,7 @@ const previewTitle = computed(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .preview-header h3 {
@@ -192,7 +169,30 @@ const previewTitle = computed(() => {
 .preview-content {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar styling */
+.preview-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.preview-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.preview-content::-webkit-scrollbar-thumb {
+  background: var(--color-text-tertiary);
+  border-radius: var(--radius-base);
+}
+
+.preview-content::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+.data-display {
   padding: var(--spacing-5);
+  animation: fadeIn 0.3s ease;
 }
 
 .empty-state {
@@ -203,6 +203,7 @@ const previewTitle = computed(() => {
   height: 100%;
   text-align: center;
   color: var(--color-text-secondary);
+  padding: var(--spacing-8);
 }
 
 .empty-icon {
@@ -222,19 +223,16 @@ const previewTitle = computed(() => {
 .empty-hint {
   font-size: var(--font-size-sm);
   color: var(--color-text-tertiary);
-  max-width: 300px;
+  max-width: 320px;
+  line-height: var(--line-height-relaxed);
 }
 
-.data-display {
-  animation: fadeIn 0.3s ease;
-}
-
+/* Generic Preview (fallback) */
 .preview-card {
   background: var(--color-bg-primary);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
   padding: var(--spacing-5);
-  margin-bottom: var(--spacing-4);
 }
 
 .preview-card h4 {
@@ -242,31 +240,6 @@ const previewTitle = computed(() => {
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-white);
   margin: 0 0 var(--spacing-4) 0;
-}
-
-.data-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--spacing-3);
-}
-
-.data-item {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.data-item .label {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.data-item .value {
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-white);
 }
 
 .data-json {
