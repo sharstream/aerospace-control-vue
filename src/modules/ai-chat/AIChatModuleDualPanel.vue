@@ -701,7 +701,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .ai-panel-dual {
     position: fixed;
-    bottom: v-bind(bottomposition);
+    bottom: v-bind(bottomPosition);
     right: 20px;
     width: 85vw;
     max-width: 1400px;

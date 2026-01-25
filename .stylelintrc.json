@@ -8,6 +8,13 @@
     "customSyntax": "postcss-html",
     "rules": {
         "@stylistic/indentation": 4,
+        "function-no-unknown": [
+            true,
+            {
+                "ignoreFunctions": ["v-bind", "/^v-bind$/"]
+            }
+        ],
+        "value-keyword-case": null,
         "selector-class-pattern": null,
         "selector-id-pattern": null,
         "custom-property-pattern": null,
