@@ -41,32 +41,11 @@
       </button>
     </div>
 
-    <div
-      ref="messagesArea"
-      class="messages-area"
-    >
-      <!-- Message list will be rendered here -->
-      <div
-        v-for="(message, index) in messages"
-        :key="index"
-        class="message-item"
-        :class="message.type"
-      >
-        <div class="message-icon">
-          <svg
-            fill="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
-          </svg>
-        </div>
-        <div class="message-content">
-          <div class="message-title">{{ message.title }}</div>
-          <div class="message-text">{{ message.content }}</div>
-          <div class="message-time">{{ message.time }}</div>
-        </div>
-      </div>
-    </div>
+    <MessageList
+      :messages="messages"
+      :is-loading="isLoading"
+      @show-preview="$emit('show-preview', $event)"
+    />
 
     <div class="message-input">
       <input
@@ -93,6 +72,7 @@
 
 <script setup>
 import { ref, defineProps, defineEmits } from 'vue';
+import MessageList from './MessageList.vue';
 
 const props = defineProps({
   messages: {
@@ -106,10 +86,14 @@ const props = defineProps({
   mcpStatusText: {
     type: String,
     default: 'MCP: Offline'
+  },
+  isLoading: {
+    type: Boolean,
+    default: false
   }
 });
 
-const emit = defineEmits(['action', 'send-message']);
+const emit = defineEmits(['action', 'send-message', 'show-preview']);
 
 const inputText = ref('');
 
@@ -207,61 +191,7 @@ const handleSend = () => {
   height: 18px;
 }
 
-.messages-area {
-  flex: 1;
-  overflow-y: auto;
-  padding: var(--spacing-4);
-  display: flex;
-  flex-direction: column-reverse;
-  gap: var(--spacing-3);
-}
-
-.message-item {
-  display: flex;
-  gap: var(--spacing-3);
-  padding: var(--spacing-3);
-  background: var(--color-white-alpha-05);
-  border-radius: var(--radius-md);
-  border-left: 3px solid var(--color-primary);
-}
-
-.message-item.alert {
-  border-left-color: var(--color-error);
-}
-
-.message-item.success {
-  border-left-color: var(--color-success);
-}
-
-.message-icon {
-  flex-shrink: 0;
-}
-
-.message-icon svg {
-  width: 20px;
-  height: 20px;
-  color: var(--color-primary);
-}
-
-.message-title {
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-white);
-  margin-bottom: 4px;
-  font-size: var(--font-size-lg);
-}
-
-.message-text {
-  color: var(--color-text-primary);
-  font-size: var(--font-size-md);
-  line-height: var(--line-height-relaxed);
-  white-space: pre-wrap;
-}
-
-.message-time {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-tertiary);
-  margin-top: var(--spacing-2);
-}
+/* MessageList component now handles message area styling */
 
 .message-input {
   padding: var(--spacing-6) var(--spacing-5);

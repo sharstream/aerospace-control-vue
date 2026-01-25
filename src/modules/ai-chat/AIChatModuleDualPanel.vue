@@ -29,8 +29,10 @@
           :messages="messages"
           :mcp-connected="mcpConnected"
           :mcp-status-text="mcpStatusText"
+          :is-loading="isLoading"
           @action="handleAction"
           @send-message="handleSendMessage"
+          @show-preview="handleShowPreview"
         />
       </div>
 
@@ -69,6 +71,11 @@ import {
   calculateFlightMetrics,
   getSystemContext
 } from '@shared/utils/calculations';
+import {
+  createTextMessage,
+  createToolResultMessage,
+  adaptOldMessageToNew
+} from '@shared/utils/messageTransformers';
 
 const props = defineProps({
   visible: {
@@ -106,6 +113,7 @@ const { leftWidth, rightWidth, isDragging, startResize } = usePanelResize(panelC
 // Chat state
 const messages = ref([]);
 const conversationHistory = ref([]);
+const isLoading = ref(false);
 
 // Preview state
 const previewType = ref(null);
@@ -155,20 +163,30 @@ const handleSnap = (adjustment) => {
   }
 };
 
-// Add message to chat
-const addMessage = (title, content, type = '') => {
-  messages.value.unshift({
-    title,
-    content,
-    type,
-    time: new Date().toLocaleTimeString()
-  });
+// Add message to chat (supports both old and new formats)
+const addMessage = (titleOrMessage, content = null, type = '') => {
+  // If passed as new format object
+  if (typeof titleOrMessage === 'object' && titleOrMessage.parts) {
+    messages.value.push(titleOrMessage);
+    return;
+  }
+
+  // Convert old format to new format
+  const role = titleOrMessage === 'You' ? 'user' : 'assistant';
+  const newMessage = createTextMessage(role, content || '');
+  messages.value.push(newMessage);
 };
 
 // Clear preview panel
 const clearPreview = () => {
   previewType.value = null;
   previewData.value = null;
+};
+
+// Handle preview from message parts
+const handleShowPreview = (preview) => {
+  previewType.value = preview.type;
+  previewData.value = preview.data;
 };
 
 // Handle quick action buttons
@@ -187,17 +205,25 @@ const handleAction = (action) => {
 
 // Handle message send
 const handleSendMessage = async (message) => {
-  addMessage('You', message, '');
+  // Add user message
+  const userMessage = createTextMessage('user', message);
+  addMessage(userMessage);
 
   conversationHistory.value.push({
     role: 'user',
     content: message
   });
 
-  if (mcpConnected.value && mcpClient.value) {
-    await sendMessageWithMCP(message);
-  } else {
-    sendMessageSimulated(message);
+  isLoading.value = true;
+
+  try {
+    if (mcpConnected.value && mcpClient.value) {
+      await sendMessageWithMCP(message);
+    } else {
+      await sendMessageSimulated(message);
+    }
+  } finally {
+    isLoading.value = false;
   }
 };
 
@@ -371,24 +397,27 @@ const provideGeneralResponse = () => {
 
 // Simulated responses
 const sendMessageSimulated = (query) => {
-  setTimeout(() => {
-    const lowerQuery = query.toLowerCase();
-    if (lowerQuery.includes('weather') || lowerQuery.includes('storm')) {
-      provideWeatherInsight();
-    } else if (lowerQuery.includes('bottleneck') || lowerQuery.includes('delay')) {
-      identifyBottlenecks();
-    } else if (lowerQuery.includes('optimize') || lowerQuery.includes('route')) {
-      suggestReroute();
-    } else if (lowerQuery.includes('status') || lowerQuery.includes('overview')) {
-      provideSystemOverview();
-    } else {
-      addMessage(
-        'Commander Atlas',
-        'Based on current airspace conditions and historical data, I recommend reviewing the suggested optimizations. Try asking about bottlenecks, route optimization, or weather conditions.',
-        'success'
-      );
-    }
-  }, 1000);
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const lowerQuery = query.toLowerCase();
+      if (lowerQuery.includes('weather') || lowerQuery.includes('storm')) {
+        provideWeatherInsight();
+      } else if (lowerQuery.includes('bottleneck') || lowerQuery.includes('delay')) {
+        identifyBottlenecks();
+      } else if (lowerQuery.includes('optimize') || lowerQuery.includes('route')) {
+        suggestReroute();
+      } else if (lowerQuery.includes('status') || lowerQuery.includes('overview')) {
+        provideSystemOverview();
+      } else {
+        const message = createTextMessage(
+          'assistant',
+          'Based on current airspace conditions and historical data, I recommend reviewing the suggested optimizations. Try asking about bottlenecks, route optimization, or weather conditions.'
+        );
+        addMessage(message);
+      }
+      resolve();
+    }, 1000);
+  });
 };
 
 // Action handlers
