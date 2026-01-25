@@ -74,8 +74,16 @@ import {
 import {
   createTextMessage,
   createToolResultMessage,
+  createMessageWithReasoning,
   adaptOldMessageToNew
 } from '@shared/utils/messageTransformers';
+import {
+  extractPreviewFromToolResult,
+  mapFlightToPreview,
+  mapHazardsToWeather,
+  mapRouteOptimizationToPreview,
+  mapSystemContextToPreview
+} from '@shared/utils/previewDataMappers';
 
 const props = defineProps({
   visible: {
@@ -328,50 +336,79 @@ const determineToolExecution = (query) => {
   return null;
 };
 
-// Display tool result
+// Display tool result with enhanced message format
 const displayToolResult = (toolName, result) => {
-  let title = 'Analysis Result';
-  let content = '';
-  let type = 'success';
+  // Extract preview data using mapper
+  const preview = extractPreviewFromToolResult(toolName, result, {
+    flightContext: props.flights[0],
+    flights: props.flights,
+    airlineData: props.airlines
+  });
+
+  // Set preview panel data
+  if (preview.type) {
+    previewType.value = preview.type;
+    previewData.value = preview.data;
+  }
+
+  // Generate human-readable summary
+  let summaryText = '';
+  let status = 'completed';
 
   switch (toolName) {
     case 'analyze_fuel_consumption':
-      title = 'Fuel Analysis';
-      type = result.fuel_status === 'CRITICAL' ? 'alert' : 'success';
-      content = `Status: ${result.fuel_status}\n`;
-      content += `Remaining: ${result.fuel_remaining} kg (${result.fuel_percentage}%)\n`;
-      content += `Predicted range: ${result.predicted_range} km\n`;
-      content += `Can reach destination: ${result.can_reach_destination ? 'Yes' : 'No'}`;
-
-      // Set preview data
-      previewType.value = 'flight-data';
-      previewData.value = {
-        callsign: result.flight_id || 'Unknown',
-        altitude: `${result.current_altitude || 0}`,
-        speed: '450',
-        heading: '180',
-        fuelStatus: result.fuel_status,
-        fuelRemaining: result.fuel_remaining
-      };
+      summaryText = `Fuel Status: ${result.fuel_status}\n`;
+      summaryText += `Remaining: ${result.fuel_remaining} kg (${result.fuel_percentage}%)\n`;
+      summaryText += `Predicted Range: ${result.predicted_range} km\n`;
+      summaryText += `Can Reach Destination: ${result.can_reach_destination ? 'Yes ✅' : 'No ⚠️'}`;
+      status = result.fuel_status === 'CRITICAL' ? 'warning' : 'completed';
       break;
 
     case 'get_aircraft_status':
-      title = 'Aircraft Systems Status';
-      type = result.overall_status === 'CRITICAL' ? 'alert' : 'success';
-      content = `Overall: ${result.overall_status}\n`;
-      content += `Systems checked: ${result.systems_checked.join(', ')}`;
+      summaryText = `Overall Status: ${result.overall_status}\n`;
+      summaryText += `Systems Checked: ${result.systems_checked.join(', ')}\n`;
+      if (result.alerts && result.alerts.length > 0) {
+        summaryText += `\nActive Alerts: ${result.alerts.length}`;
+      }
+      status = result.overall_status === 'CRITICAL' ? 'warning' : 'completed';
+      break;
 
-      previewType.value = 'system';
-      previewData.value = result;
+    case 'optimize_route':
+      summaryText = 'Route optimization completed. ';
+      if (result.fuelSaved) {
+        summaryText += `Estimated fuel savings: ${result.fuelSaved} kg. `;
+      }
+      if (result.timeSaved) {
+        summaryText += `Time savings: ${result.timeSaved} minutes.`;
+      }
+      break;
+
+    case 'analyze_weather':
+      const severe = result.severe || 0;
+      const moderate = result.moderate || 0;
+      summaryText = `Weather Analysis Complete\n`;
+      summaryText += `Severe Hazards: ${severe}\n`;
+      summaryText += `Moderate Hazards: ${moderate}\n`;
+      summaryText += `Affected Flights: ${result.affected || 0}`;
+      status = severe > 0 ? 'warning' : 'completed';
       break;
 
     default:
-      content = JSON.stringify(result, null, 2);
-      previewData.value = result;
+      summaryText = JSON.stringify(result, null, 2);
       break;
   }
 
-  addMessage(title, content, type);
+  // Create enhanced message with tool result part
+  const message = createToolResultMessage(
+    toolName,
+    result,
+    summaryText,
+    status,
+    preview.type,
+    preview.data
+  );
+
+  addMessage(message);
 };
 
 // Provide general response
@@ -425,45 +462,43 @@ const identifyBottlenecks = () => {
   const bottlenecks = props.flights.filter((f) => f.bottleneck);
 
   if (bottlenecks.length === 0) {
-    addMessage(
-      'Bottleneck Analysis',
-      'No critical bottlenecks detected. All flights are operating within normal parameters.',
-      'success'
+    const message = createTextMessage(
+      'assistant',
+      'No critical bottlenecks detected. All flights are operating within normal parameters. ✅'
     );
+    addMessage(message);
     return;
   }
 
   const bottleneckDetails = bottlenecks
     .map((f) => {
       const airline = props.airlines[f.airline];
-      return `${f.name} (${airline?.name || f.airline}) on route ${f.from} → ${f.to}`;
+      return `- **${f.name}** (${airline?.name || f.airline}) on route ${f.from} → ${f.to}`;
     })
-    .join(', ');
+    .join('\n');
 
-  addMessage(
-    'Bottleneck Analysis',
-    `⚠️ Identified ${bottlenecks.length} bottleneck flight${
-      bottlenecks.length > 1 ? 's' : ''
-    } requiring immediate attention:\n\n${bottleneckDetails}\n\nRecommendation: Consider rerouting these flights to avoid congestion and weather hazards.`,
-    'alert'
-  );
+  const analysisText = `⚠️ Identified ${bottlenecks.length} bottleneck flight${
+    bottlenecks.length > 1 ? 's' : ''
+  } requiring immediate attention:\n\n${bottleneckDetails}\n\n**Recommendation:** Consider rerouting these flights to avoid congestion and weather hazards.`;
 
-  // Set preview to first bottleneck flight
+  // Create enhanced message
+  const message = createTextMessage('assistant', analysisText);
+  addMessage(message);
+
+  // Set preview to first bottleneck flight with full data
   if (bottlenecks.length > 0) {
     const flight = bottlenecks[0];
+    const airline = props.airlines[flight.airline];
+
     previewType.value = 'flight-data';
-    previewData.value = {
-      callsign: flight.name,
-      altitude: `${flight.altitude}`,
-      speed: `${flight.speed || 450}`,
-      heading: `${flight.heading || 0}`
-    };
+    previewData.value = mapFlightToPreview(flight, airline);
   }
 };
 
 const suggestReroute = () => {
   if (props.flights.length === 0) {
-    addMessage('Route Optimization', 'No active flights to optimize.', '');
+    const message = createTextMessage('assistant', 'No active flights to optimize.');
+    addMessage(message);
     return;
   }
 
@@ -472,17 +507,22 @@ const suggestReroute = () => {
     .slice(0, 3);
 
   if (flightsToOptimize.length === 0) {
-    addMessage(
-      'Route Optimization',
-      '✅ All flights are on optimal routes. No rerouting necessary at this time.',
-      'success'
+    const message = createTextMessage(
+      'assistant',
+      '✅ All flights are on optimal routes. No rerouting necessary at this time.'
     );
+    addMessage(message);
     return;
   }
 
   let optimizationReport = `Analyzing ${flightsToOptimize.length} flight${
     flightsToOptimize.length > 1 ? 's' : ''
   } for optimization:\n\n`;
+
+  const routes = [];
+  let totalTimeSaved = 0;
+  let totalFuelSaved = 0;
+  let totalCostSaved = 0;
 
   flightsToOptimize.forEach((flight) => {
     const start = flight.path[0];
@@ -492,7 +532,7 @@ const suggestReroute = () => {
     const routeAnalysis = generateOptimizedRoute(start, end, props.weatherHazards);
     const metrics = calculateFlightMetrics(routeAnalysis, routeAnalysis.directDistance);
 
-    optimizationReport += `📍 ${flight.name} (${airline?.name || flight.airline})\n`;
+    optimizationReport += `📍 **${flight.name}** (${airline?.name || flight.airline})\n`;
     optimizationReport += `   Route: ${flight.from} → ${flight.to}\n`;
 
     if (routeAnalysis.weatherAvoidance) {
@@ -507,75 +547,143 @@ const suggestReroute = () => {
         0
       )} kg (${metrics.fuelSavingsPercent.toFixed(1)}% by avoiding turbulence)\n`;
       optimizationReport += `   ✅ Recommended: Use optimized route with ${routeAnalysis.path.length} waypoints\n\n`;
+
+      // Accumulate savings
+      totalTimeSaved += Math.abs(metrics.timeDifference);
+      totalFuelSaved += metrics.fuelSavings;
+      totalCostSaved += metrics.fuelSavings * 0.8; // Approximate cost per kg
+
+      // Build route data for preview
+      routes.push(
+        {
+          type: 'direct',
+          name: `Direct ${flight.from}-${flight.to}`,
+          from: flight.from,
+          to: flight.to,
+          distance: routeAnalysis.directDistance,
+          time: routeAnalysis.directDistance / 800 * 60, // Approximate time
+          fuel: routeAnalysis.directDistance * 2.5,
+          waypoints: 0,
+          recommended: false
+        },
+        {
+          type: 'optimized',
+          name: `Optimized ${flight.from}-${flight.to}`,
+          from: flight.from,
+          to: flight.to,
+          distance: routeAnalysis.optimizedDistance,
+          time: routeAnalysis.optimizedDistance / 800 * 60,
+          fuel: routeAnalysis.optimizedDistance * 2.5 - metrics.fuelSavings,
+          waypoints: routeAnalysis.path.length - 2,
+          hazardsAvoided: routeAnalysis.hazardsAvoided,
+          advantages: [
+            'Avoids severe weather zones',
+            `Reduces fuel consumption by ${metrics.fuelSavingsPercent.toFixed(1)}%`,
+            'Maintains optimal altitude'
+          ],
+          recommended: true
+        }
+      );
     } else {
       optimizationReport += '   ✅ Direct route is optimal - no weather hazards detected\n\n';
     }
   });
 
-  addMessage('Route Optimization Report', optimizationReport, 'success');
+  // Create enhanced message
+  const message = createTextMessage('assistant', optimizationReport);
+  addMessage(message);
 
-  // Set preview to route optimization
-  previewType.value = 'route';
-  previewData.value = {
-    flights: flightsToOptimize.map((f) => f.name)
-  };
+  // Set preview with full route optimization data
+  if (routes.length > 0) {
+    previewType.value = 'route';
+    previewData.value = mapRouteOptimizationToPreview(
+      {
+        from: flightsToOptimize[0].from,
+        to: flightsToOptimize[0].to,
+        directDistance: routes[0]?.distance,
+        optimizedDistance: routes[1]?.distance,
+        timeSaved: totalTimeSaved,
+        fuelSaved: totalFuelSaved,
+        costSaved: totalCostSaved,
+        hazardsAvoided: routes[1]?.hazardsAvoided || 0,
+        directRoute: routes[0],
+        optimizedRoute: routes[1],
+        recommendations: [
+          'Use optimized route for improved fuel efficiency',
+          'Monitor weather updates during flight',
+          'Maintain communication with air traffic control'
+        ]
+      },
+      flightsToOptimize
+    );
+  }
 };
 
 const provideWeatherInsight = () => {
   if (props.weatherHazards.length === 0) {
-    addMessage(
-      'Weather Analysis',
-      '☀️ Clear skies across all major flight corridors. No significant weather hazards detected.',
-      'success'
+    const message = createTextMessage(
+      'assistant',
+      '☀️ Clear skies across all major flight corridors. No significant weather hazards detected.'
     );
+    addMessage(message);
     return;
   }
 
   const severeHazards = props.weatherHazards.filter((h) => h.severity === 'high').length;
   const moderateHazards = props.weatherHazards.length - severeHazards;
 
-  let weatherReport = 'Current weather conditions:\n\n';
-  weatherReport += `🌩️ ${severeHazards} severe weather zone${severeHazards !== 1 ? 's' : ''}\n`;
-  weatherReport += `⚠️ ${moderateHazards} moderate weather zone${moderateHazards !== 1 ? 's' : ''}\n\n`;
+  let weatherReport = '## Current Weather Conditions\n\n';
+  weatherReport += `🌩️ **${severeHazards}** severe weather zone${severeHazards !== 1 ? 's' : ''}\n`;
+  weatherReport += `⚠️ **${moderateHazards}** moderate weather zone${moderateHazards !== 1 ? 's' : ''}\n\n`;
 
   const affectedFlights = props.flights.filter((f) => f.bottleneck).length;
-  weatherReport += `📊 ${affectedFlights} flight${affectedFlights !== 1 ? 's' : ''} potentially affected\n\n`;
+  weatherReport += `📊 **${affectedFlights}** flight${affectedFlights !== 1 ? 's' : ''} potentially affected\n\n`;
   weatherReport +=
-    'Recommendation: Monitor weather patterns and consider rerouting affected flights for passenger safety and fuel efficiency.';
+    '**Recommendation:** Monitor weather patterns and consider rerouting affected flights for passenger safety and fuel efficiency.';
 
-  addMessage('Weather Analysis', weatherReport, 'alert');
+  // Create enhanced message
+  const message = createTextMessage('assistant', weatherReport);
+  addMessage(message);
 
+  // Set preview with full weather hazard data
   previewType.value = 'weather';
-  previewData.value = {
-    severe: severeHazards,
-    moderate: moderateHazards,
-    affected: affectedFlights
-  };
+  previewData.value = mapHazardsToWeather(props.weatherHazards, {
+    affectedFlights,
+    forecast: 'Conditions expected to improve within 2-3 hours',
+    recommendations: [
+      'Continue monitoring weather patterns',
+      'Maintain safe altitude above weather systems',
+      'Ensure adequate fuel reserves for potential rerouting',
+      'Coordinate with air traffic control for updates'
+    ]
+  });
 };
 
 const provideSystemOverview = () => {
   const context = getSystemContext(props.flights, props.airlines);
 
-  let overview = 'System Status Overview:\n\n';
-  overview += `✈️ Total Flights: ${context.totalFlights}\n`;
-  overview += `✅ On-Time: ${context.onTimeFlights} (${context.onTimePercentage}%)\n`;
-  overview += `⏰ Delayed: ${context.delayedFlights}\n`;
-  overview += `⚠️ Bottlenecks: ${context.bottleneckFlights}\n`;
-  overview += `🏢 Active Airlines: ${context.activeAirlines}\n`;
+  let overview = '## System Status Overview\n\n';
+  overview += `✈️ **Total Flights:** ${context.totalFlights}\n`;
+  overview += `✅ **On-Time:** ${context.onTimeFlights} (${context.onTimePercentage}%)\n`;
+  overview += `⏰ **Delayed:** ${context.delayedFlights}\n`;
+  overview += `⚠️ **Bottlenecks:** ${context.bottleneckFlights}\n`;
+  overview += `🏢 **Active Airlines:** ${context.activeAirlines}\n`;
 
   if (context.bottleneckFlights > 0) {
-    overview += `\n⚠️ Action Required: ${context.bottleneckFlights} flight${
+    overview += `\n⚠️ **Action Required:** ${context.bottleneckFlights} flight${
       context.bottleneckFlights !== 1 ? 's' : ''
     } experiencing congestion.`;
   } else {
-    overview += '\n✅ All systems operating normally.';
+    overview += '\n✅ **All systems operating normally.**';
   }
 
-  addMessage(
-    'System Overview',
-    overview,
-    context.bottleneckFlights > 0 ? 'alert' : 'success'
-  );
+  // Create enhanced message
+  const message = createTextMessage('assistant', overview);
+  addMessage(message);
+
+  // Set preview with full system status data
+  previewType.value = 'system';
+  previewData.value = mapSystemContextToPreview(context);
 };
 
 // Lifecycle hooks
