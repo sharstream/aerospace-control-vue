@@ -1,221 +1,221 @@
 <template>
-  <div class="settings-card full-width">
-    <div class="card-header">
-      <div class="header-content">
-        <h2 class="card-title">{{ $Labels.aiAssistant.title }}</h2>
-        <div class="session-toggle">
-          <label class="toggle-label">
-            <input
-              v-model="sessionEnabled"
-              type="checkbox"
-              class="toggle-input"
-              @change="toggleSession"
-            />
-            <span class="toggle-slider"></span>
-            <span class="toggle-text">{{ sessionEnabled ? $Labels.aiAssistant.enabled : $Labels.aiAssistant.disabled }}</span>
-          </label>
-        </div>
-      </div>
-    </div>
-
-    <div class="settings-content">
-      <p class="section-description">{{ $Labels.aiAssistant.description }}</p>
-
-      <!-- Provider selection - Always visible -->
-      <div class="provider-tabs">
-        <button
-          v-for="provider in providers"
-          :key="provider.id"
-          :class="['provider-tab', { active: activeProvider === provider.id }]"
-          @click="activeProvider = provider.id"
-        >
-          <span class="provider-icon">{{ provider.icon }}</span>
-          <span class="provider-name">{{ $Labels.aiAssistant.providers[provider.id] }}</span>
-        </button>
-      </div>
-
-      <!-- Model Selection Custom Dropdown -->
-      <div class="model-selection">
-        <label class="input-label">Model</label>
-        <div
-          class="model-dropdown-custom"
-          @click="toggleModelDropdown"
-        >
-          <div class="selected-model">
-            <div class="model-icon-wrapper">
-              <component :is="getProviderIcon(activeProvider)" />
-            </div>
-            <div class="model-info">
-              <span class="model-name">{{ selectedModel.name }}</span>
-              <span
-                v-if="selectedModel.description"
-                class="model-description"
-              >{{ selectedModel.description }}</span>
-            </div>
-            <svg
-              class="dropdown-arrow"
-              :class="{ open: modelDropdownOpen }"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </div>
-
-          <transition name="dropdown">
-            <div
-              v-if="modelDropdownOpen"
-              class="model-dropdown-menu"
-            >
-              <button
-                v-for="model in currentProviderModels"
-                :key="model.id"
-                :class="['model-option', { selected: selectedModelId === model.id }]"
-                @click.stop="selectModel(model.id)"
-              >
-                <div class="model-option-content">
-                  <div class="model-icon-wrapper">
-                    <component :is="getProviderIcon(activeProvider)" />
-                  </div>
-                  <div class="model-info">
-                    <span class="model-name">{{ model.name }}</span>
-                    <span
-                      v-if="model.description"
-                      class="model-description"
-                    >{{ model.description }}</span>
-                  </div>
-                  <svg
-                    v-if="selectedModelId === model.id"
-                    class="check-icon"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                  >
-                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                  </svg>
+    <div class="settings-card full-width">
+        <div class="card-header">
+            <div class="header-content">
+                <h2 class="card-title">{{ $Labels.aiAssistant.title }}</h2>
+                <div class="session-toggle">
+                    <label class="toggle-label">
+                        <input
+                            v-model="sessionEnabled"
+                            type="checkbox"
+                            class="toggle-input"
+                            @change="toggleSession"
+                        />
+                        <span class="toggle-slider"></span>
+                        <span class="toggle-text">{{ sessionEnabled ? $Labels.aiAssistant.enabled : $Labels.aiAssistant.disabled }}</span>
+                    </label>
                 </div>
-              </button>
             </div>
-          </transition>
         </div>
-        <p class="input-description">
-          Select the AI model to use for this provider
-        </p>
-      </div>
 
-      <!-- API Key Input - Always visible -->
-      <div class="api-key-section">
-        <label class="input-label">{{ $replacePlaceholders($Labels.aiAssistant.apiKey.label, { provider: providerConfig.name }) }}</label>
-        <div class="api-key-input-wrapper">
-          <input
-            v-model="apiKey"
-            :type="showApiKey ? 'text' : 'password'"
-            :placeholder="$Labels.aiAssistant.apiKey.placeholder"
-            class="api-key-input"
-          />
-          <button
-            class="visibility-toggle"
-            type="button"
-            @click="showApiKey = !showApiKey"
-          >
-            <svg
-              v-if="!showApiKey"
-              viewBox="0 0 24 24"
-              fill="currentColor"
+        <div class="settings-content">
+            <p class="section-description">{{ $Labels.aiAssistant.description }}</p>
+
+            <!-- Provider selection - Always visible -->
+            <div class="provider-tabs">
+                <button
+                    v-for="provider in providers"
+                    :key="provider.id"
+                    :class="['provider-tab', { active: activeProvider === provider.id }]"
+                    @click="activeProvider = provider.id"
+                >
+                    <span class="provider-icon">{{ provider.icon }}</span>
+                    <span class="provider-name">{{ $Labels.aiAssistant.providers[provider.id] }}</span>
+                </button>
+            </div>
+
+            <!-- Model Selection Custom Dropdown -->
+            <div class="model-selection">
+                <label class="input-label">Model</label>
+                <div
+                    class="model-dropdown-custom"
+                    @click="toggleModelDropdown"
+                >
+                    <div class="selected-model">
+                        <div class="model-icon-wrapper">
+                            <component :is="getProviderIcon(activeProvider)" />
+                        </div>
+                        <div class="model-info">
+                            <span class="model-name">{{ selectedModel.name }}</span>
+                            <span
+                                v-if="selectedModel.description"
+                                class="model-description"
+                            >{{ selectedModel.description }}</span>
+                        </div>
+                        <svg
+                            class="dropdown-arrow"
+                            :class="{ open: modelDropdownOpen }"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M19 9l-7 7-7-7"
+                            />
+                        </svg>
+                    </div>
+
+                    <transition name="dropdown">
+                        <div
+                            v-if="modelDropdownOpen"
+                            class="model-dropdown-menu"
+                        >
+                            <button
+                                v-for="model in currentProviderModels"
+                                :key="model.id"
+                                :class="['model-option', { selected: selectedModelId === model.id }]"
+                                @click.stop="selectModel(model.id)"
+                            >
+                                <div class="model-option-content">
+                                    <div class="model-icon-wrapper">
+                                        <component :is="getProviderIcon(activeProvider)" />
+                                    </div>
+                                    <div class="model-info">
+                                        <span class="model-name">{{ model.name }}</span>
+                                        <span
+                                            v-if="model.description"
+                                            class="model-description"
+                                        >{{ model.description }}</span>
+                                    </div>
+                                    <svg
+                                        v-if="selectedModelId === model.id"
+                                        class="check-icon"
+                                        viewBox="0 0 24 24"
+                                        fill="currentColor"
+                                    >
+                                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                                    </svg>
+                                </div>
+                            </button>
+                        </div>
+                    </transition>
+                </div>
+                <p class="input-description">
+                    Select the AI model to use for this provider
+                </p>
+            </div>
+
+            <!-- API Key Input - Always visible -->
+            <div class="api-key-section">
+                <label class="input-label">{{ $replacePlaceholders($Labels.aiAssistant.apiKey.label, { provider: providerConfig.name }) }}</label>
+                <div class="api-key-input-wrapper">
+                    <input
+                        v-model="apiKey"
+                        :type="showApiKey ? 'text' : 'password'"
+                        :placeholder="$Labels.aiAssistant.apiKey.placeholder"
+                        class="api-key-input"
+                    />
+                    <button
+                        class="visibility-toggle"
+                        type="button"
+                        @click="showApiKey = !showApiKey"
+                    >
+                        <svg
+                            v-if="!showApiKey"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                        >
+                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
+                        </svg>
+                        <svg
+                            v-else
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                        >
+                            <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z" />
+                        </svg>
+                    </button>
+                </div>
+                <p class="input-description">{{ $Labels.aiAssistant.apiKey.description }}</p>
+            </div>
+
+            <!-- Button Group - Always visible -->
+            <div class="button-group">
+                <button
+                    class="save-btn"
+                    @click="saveConfiguration"
+                >
+                    {{ $Labels.aiAssistant.buttons.saveConfiguration }}
+                </button>
+                <button
+                    :disabled="testing || !apiKey"
+                    class="test-btn"
+                    @click="testConnection"
+                >
+                    <span v-if="!testing">{{ $Labels.aiAssistant.buttons.testConnection }}</span>
+                    <span
+                        v-else
+                        class="testing-spinner"
+                    >
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                        >
+                            <path
+                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"
+                                opacity=".3"
+                            />
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10v-2c-4.41 0-8-3.59-8-8s3.59-8 8-8V2z" />
+                        </svg>
+                        {{ $Labels.aiAssistant.buttons.testing }}
+                    </span>
+                </button>
+            </div>
+
+            <!-- Test Result removed - now using toast notifications -->
+
+            <!-- Session Info - Only shown when enabled -->
+            <div
+                v-if="sessionEnabled"
+                class="session-info"
             >
-              <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
-            </svg>
-            <svg
-              v-else
-              viewBox="0 0 24 24"
-              fill="currentColor"
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">{{ $Labels.aiAssistant.session.sessionIdLabel }}</span>
+                        <span class="info-value">{{ sessionId || $Labels.aiAssistant.session.notCreated }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">{{ $Labels.aiAssistant.session.mcpStatusLabel }}</span>
+                        <span :class="['status-badge', mcpConnected ? 'status-connected' : 'status-disconnected']">
+                            <span class="status-dot"></span>
+                            {{ mcpConnected ? $Labels.aiAssistant.session.connected : $Labels.aiAssistant.session.disconnected }}
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">{{ $Labels.aiAssistant.session.availableToolsLabel }}</span>
+                        <span class="info-value">{{ $replacePlaceholders($Labels.aiAssistant.session.toolsCount, { count: toolCount }) }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features info - Only shown when disabled -->
+            <div
+                v-if="!sessionEnabled"
+                class="features-info"
             >
-              <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z" />
-            </svg>
-          </button>
+                <p class="features-intro">{{ $Labels.aiAssistant.features.intro }}</p>
+                <ul class="features-list">
+                    <li>{{ $Labels.aiAssistant.features.flightAnalysis }}</li>
+                    <li>{{ $Labels.aiAssistant.features.systemDiagnosis }}</li>
+                    <li>{{ $Labels.aiAssistant.features.trajectoryAnalysis }}</li>
+                    <li>{{ $Labels.aiAssistant.features.multiAgent }}</li>
+                </ul>
+            </div>
         </div>
-        <p class="input-description">{{ $Labels.aiAssistant.apiKey.description }}</p>
-      </div>
-
-      <!-- Button Group - Always visible -->
-      <div class="button-group">
-        <button
-          class="save-btn"
-          @click="saveConfiguration"
-        >
-          {{ $Labels.aiAssistant.buttons.saveConfiguration }}
-        </button>
-        <button
-          :disabled="testing || !apiKey"
-          class="test-btn"
-          @click="testConnection"
-        >
-          <span v-if="!testing">{{ $Labels.aiAssistant.buttons.testConnection }}</span>
-          <span
-            v-else
-            class="testing-spinner"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path
-                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"
-                opacity=".3"
-              />
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10v-2c-4.41 0-8-3.59-8-8s3.59-8 8-8V2z" />
-            </svg>
-            {{ $Labels.aiAssistant.buttons.testing }}
-          </span>
-        </button>
-      </div>
-
-      <!-- Test Result removed - now using toast notifications -->
-
-      <!-- Session Info - Only shown when enabled -->
-      <div
-        v-if="sessionEnabled"
-        class="session-info"
-      >
-        <div class="info-grid">
-          <div class="info-item">
-            <span class="info-label">{{ $Labels.aiAssistant.session.sessionIdLabel }}</span>
-            <span class="info-value">{{ sessionId || $Labels.aiAssistant.session.notCreated }}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ $Labels.aiAssistant.session.mcpStatusLabel }}</span>
-            <span :class="['status-badge', mcpConnected ? 'status-connected' : 'status-disconnected']">
-              <span class="status-dot"></span>
-              {{ mcpConnected ? $Labels.aiAssistant.session.connected : $Labels.aiAssistant.session.disconnected }}
-            </span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">{{ $Labels.aiAssistant.session.availableToolsLabel }}</span>
-            <span class="info-value">{{ $replacePlaceholders($Labels.aiAssistant.session.toolsCount, { count: toolCount }) }}</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Features info - Only shown when disabled -->
-      <div
-        v-if="!sessionEnabled"
-        class="features-info"
-      >
-        <p class="features-intro">{{ $Labels.aiAssistant.features.intro }}</p>
-        <ul class="features-list">
-          <li>{{ $Labels.aiAssistant.features.flightAnalysis }}</li>
-          <li>{{ $Labels.aiAssistant.features.systemDiagnosis }}</li>
-          <li>{{ $Labels.aiAssistant.features.trajectoryAnalysis }}</li>
-          <li>{{ $Labels.aiAssistant.features.multiAgent }}</li>
-        </ul>
-      </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -565,645 +565,646 @@ export default {
 
 <style scoped>
 .settings-card {
-  background: #2a2a2a;
-  border: 1px solid #3a3a3a;
-  border-radius: 16px;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  margin-bottom: 32px;
+    background: #2a2a2a;
+    border: 1px solid #3a3a3a;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    margin-bottom: 32px;
 }
 
 .settings-card.full-width {
-  width: 100%;
+    width: 100%;
 }
 
 .card-header {
-  padding: 24px 32px;
-  border-bottom: 1px solid #3a3a3a;
+    padding: 24px 32px;
+    border-bottom: 1px solid #3a3a3a;
 }
 
 .header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .card-title {
-  font-size: 24px;
-  font-weight: 700;
-  color: #fff;
-  margin: 0;
-  letter-spacing: -0.5px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+    letter-spacing: -0.5px;
 }
 
 .settings-content {
-  padding: 32px;
+    padding: 32px;
 }
 
 .section-description {
-  color: #888;
-  font-size: 14px;
-  margin: 0 0 24px 0;
+    color: #888;
+    font-size: 14px;
+    margin: 0 0 24px;
 }
 
 .session-toggle {
-  flex-shrink: 0;
+    flex-shrink: 0;
 }
 
 .toggle-label {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
 }
 
 .toggle-input {
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
 }
 
 .toggle-slider {
-  position: relative;
-  width: 48px;
-  height: 24px;
-  background: #3a3a3a;
-  border-radius: 12px;
-  transition: background 0.2s ease;
+    position: relative;
+    width: 48px;
+    height: 24px;
+    background: #3a3a3a;
+    border-radius: 12px;
+    transition: background 0.2s ease;
 }
 
 .toggle-slider::before {
-  content: '';
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: #fff;
-  top: 3px;
-  left: 3px;
-  transition: transform 0.2s ease;
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    top: 3px;
+    left: 3px;
+    transition: transform 0.2s ease;
 }
 
 .toggle-input:checked + .toggle-slider {
-  background: #4ade80;
+    background: #4ade80;
 }
 
 .toggle-input:checked + .toggle-slider::before {
-  transform: translateX(24px);
+    transform: translateX(24px);
 }
 
 .toggle-text {
-  font-size: 12px;
-  font-weight: 600;
-  color: #888;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .toggle-input:checked ~ .toggle-text {
-  color: #4ade80;
+    color: #4ade80;
 }
 
 .provider-config {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 }
 
 .provider-tabs {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-top: 24px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 24px;
 }
 
 .provider-tab {
-  padding: 16px;
-  background: #1f1f1f;
-  border: 2px solid #3a3a3a;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #888;
+    padding: 16px;
+    background: #1f1f1f;
+    border: 2px solid #3a3a3a;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #888;
 }
 
 .provider-tab:hover {
-  border-color: #4a7ba7;
+    border-color: #4a7ba7;
 }
 
 .provider-tab.active {
-  border-color: #5b9dd1;
-  background: rgba(91, 157, 209, 0.1);
-  color: #5b9dd1;
+    border-color: #5b9dd1;
+    background: rgb(91 157 209 / 10%);
+    color: #5b9dd1;
 }
 
 .provider-icon {
-  font-size: 20px;
+    font-size: 20px;
 }
 
 .provider-name {
-  font-size: 14px;
-  font-weight: 500;
+    font-size: 14px;
+    font-weight: 500;
 }
 
 .api-key-section {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 24px;
 }
 
 .input-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: #888;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .api-key-input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
+    position: relative;
+    display: flex;
+    align-items: center;
 }
 
 .api-key-input {
-  width: 100%;
-  padding: 14px 48px 14px 16px;
-  background: #1f1f1f;
-  border: 1px solid #3a3a3a;
-  border-radius: 8px;
-  color: #e0e0e0;
-  font-size: 14px;
-  font-family: 'Courier New', monospace;
-  transition: all 0.2s ease;
+    width: 100%;
+    padding: 14px 48px 14px 16px;
+    background: #1f1f1f;
+    border: 1px solid #3a3a3a;
+    border-radius: 8px;
+    color: #e0e0e0;
+    font-size: 14px;
+    font-family: 'Courier New', monospace;
+    transition: all 0.2s ease;
 }
 
 .api-key-input::placeholder {
-  color: #666;
+    color: #666;
 }
 
 .api-key-input:focus {
-  outline: none;
-  border-color: #5b9dd1;
-  background: #252525;
+    outline: none;
+    border-color: #5b9dd1;
+    background: #252525;
 }
 
 .visibility-toggle {
-  position: absolute;
-  right: 12px;
-  background: transparent;
-  border: none;
-  color: #888;
-  cursor: pointer;
-  padding: 4px;
-  display: flex;
-  align-items: center;
-  transition: color 0.2s ease;
+    position: absolute;
+    right: 12px;
+    background: transparent;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s ease;
 }
 
 .visibility-toggle:hover {
-  color: #5b9dd1;
+    color: #5b9dd1;
 }
 
 .visibility-toggle svg {
-  width: 20px;
-  height: 20px;
+    width: 20px;
+    height: 20px;
 }
 
 .input-description {
-  margin: 0;
-  font-size: 12px;
-  color: #888;
+    margin: 0;
+    font-size: 12px;
+    color: #888;
 }
 
 .button-group {
-  display: flex;
-  gap: 12px;
-  margin-top: 24px;
-  align-items: center;
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    align-items: center;
 }
 
 .save-btn {
-  flex: 1;
-  min-width: 140px;
-  padding: 14px 20px;
-  border: 1px solid #3a3a3a;
-  border-radius: 10px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background: transparent;
-  color: #5b9dd1;
+    flex: 1;
+    min-width: 140px;
+    padding: 14px 20px;
+    border: 1px solid #3a3a3a;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: transparent;
+    color: #5b9dd1;
 }
 
 .save-btn:hover {
-  background: rgba(91, 157, 209, 0.1);
-  border-color: #5b9dd1;
-  transform: translateY(-2px);
+    background: rgb(91 157 209 / 10%);
+    border-color: #5b9dd1;
+    transform: translateY(-2px);
 }
 
 .save-btn:active {
-  transform: translateY(0);
+    transform: translateY(0);
 }
 
 .test-btn {
-  flex: 1;
-  min-width: 140px;
-  padding: 14px 20px;
-  border: 1px solid #3a3a3a;
-  border-radius: 10px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background: transparent;
-  color: #5b9dd1;
+    flex: 1;
+    min-width: 140px;
+    padding: 14px 20px;
+    border: 1px solid #3a3a3a;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: transparent;
+    color: #5b9dd1;
 }
 
 .test-btn:hover:not(:disabled) {
-  background: rgba(91, 157, 209, 0.1);
-  border-color: #5b9dd1;
-  transform: translateY(-2px);
+    background: rgb(91 157 209 / 10%);
+    border-color: #5b9dd1;
+    transform: translateY(-2px);
 }
 
 .test-btn:active:not(:disabled) {
-  transform: translateY(0);
+    transform: translateY(0);
 }
 
 .test-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .testing-spinner {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .testing-spinner svg {
-  width: 16px;
-  height: 16px;
-  animation: spin 1s linear infinite;
+    width: 16px;
+    height: 16px;
+    animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 .test-result {
-  padding: 12px 16px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 14px;
-  font-weight: 500;
-  margin-top: 12px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 12px;
 }
 
 .test-result.success {
-  background: rgba(74, 222, 128, 0.1);
-  border: 1px solid rgba(74, 222, 128, 0.3);
-  color: #4ade80;
+    background: rgb(74 222 128 / 10%);
+    border: 1px solid rgb(74 222 128 / 30%);
+    color: #4ade80;
 }
 
 .test-result.error {
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  color: #ef4444;
+    background: rgb(239 68 68 / 10%);
+    border: 1px solid rgb(239 68 68 / 30%);
+    color: #ef4444;
 }
 
 .test-result svg {
-  width: 20px;
-  height: 20px;
+    width: 20px;
+    height: 20px;
 }
 
 .session-info {
-  padding: 20px;
-  background: #1f1f1f;
-  border: 1px solid #3a3a3a;
-  border-radius: 12px;
-  margin-top: 24px;
+    padding: 20px;
+    background: #1f1f1f;
+    border: 1px solid #3a3a3a;
+    border-radius: 12px;
+    margin-top: 24px;
 }
 
 .info-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
 }
 
 .info-item {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-start;
 }
 
 .info-label {
-  font-size: 12px;
-  color: #888;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-weight: 600;
+    font-size: 12px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
 }
 
 .info-value {
-  font-size: 14px;
-  color: #e0e0e0;
-  font-weight: 500;
+    font-size: 14px;
+    color: #e0e0e0;
+    font-weight: 500;
 }
 
 .status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .status-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
 }
 
 .status-connected {
-  background: rgba(74, 222, 128, 0.1);
-  color: #4ade80;
+    background: rgb(74 222 128 / 10%);
+    color: #4ade80;
 }
 
 .status-connected .status-dot {
-  background: #4ade80;
-  animation: pulse 2s infinite;
+    background: #4ade80;
+    animation: pulse 2s infinite;
 }
 
 .status-disconnected {
-  background: rgba(156, 163, 175, 0.1);
-  color: #9ca3af;
+    background: rgb(156 163 175 / 10%);
+    color: #9ca3af;
 }
 
 .status-disconnected .status-dot {
-  background: #9ca3af;
+    background: #9ca3af;
 }
 
 @keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
+    0%, 100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
 }
 
 .features-info {
-  padding: 24px;
-  background: rgba(91, 157, 209, 0.05);
-  border: 1px solid rgba(91, 157, 209, 0.2);
-  border-radius: 12px;
-  margin-top: 24px;
+    padding: 24px;
+    background: rgb(91 157 209 / 5%);
+    border: 1px solid rgb(91 157 209 / 20%);
+    border-radius: 12px;
+    margin-top: 24px;
 }
 
 .features-intro {
-  margin: 0 0 16px 0;
-  font-size: 14px;
-  font-weight: 500;
-  color: #e0e0e0;
+    margin: 0 0 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #e0e0e0;
 }
 
 .features-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .features-list li {
-  font-size: 14px;
-  color: #e0e0e0;
-  padding-left: 8px;
+    font-size: 14px;
+    color: #e0e0e0;
+    padding-left: 8px;
 }
 
 /* Model Selection Custom Dropdown */
 .model-selection {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 24px;
-  position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 24px;
+    position: relative;
 }
 
 .model-dropdown-custom {
-  position: relative;
-  width: 100%;
-  cursor: pointer;
-  user-select: none;
+    position: relative;
+    width: 100%;
+    cursor: pointer;
+    user-select: none;
 }
 
 .selected-model {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
-  background: #1f1f1f;
-  border: 2px solid #3a3a3a;
-  border-radius: 12px;
-  transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: #1f1f1f;
+    border: 2px solid #3a3a3a;
+    border-radius: 12px;
+    transition: all 0.2s ease;
 }
 
 .model-dropdown-custom:hover .selected-model {
-  border-color: #4a7ba7;
-  background: #252525;
+    border-color: #4a7ba7;
+    background: #252525;
 }
 
 .model-icon-wrapper {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  background: rgba(91, 157, 209, 0.1);
-  border-radius: 8px;
-  padding: 6px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: rgb(91 157 209 / 10%);
+    border-radius: 8px;
+    padding: 6px;
 }
 
 .model-icon-wrapper :deep(.provider-logo) {
-  width: 100%;
-  height: 100%;
-  color: #5b9dd1;
+    width: 100%;
+    height: 100%;
+    color: #5b9dd1;
 }
 
 .model-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
 }
 
 .model-name {
-  font-size: 15px;
-  font-weight: 600;
-  color: #e0e0e0;
-  line-height: 1.3;
+    font-size: 15px;
+    font-weight: 600;
+    color: #e0e0e0;
+    line-height: 1.3;
 }
 
 .model-description {
-  font-size: 12px;
-  color: #888;
-  line-height: 1.3;
+    font-size: 12px;
+    color: #888;
+    line-height: 1.3;
 }
 
 .dropdown-arrow {
-  width: 20px;
-  height: 20px;
-  color: #888;
-  flex-shrink: 0;
-  transition: transform 0.2s ease;
+    width: 20px;
+    height: 20px;
+    color: #888;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
 }
 
 .dropdown-arrow.open {
-  transform: rotate(180deg);
+    transform: rotate(180deg);
 }
 
 .model-dropdown-menu {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 0;
-  right: 0;
-  background: #1f1f1f;
-  border: 2px solid #3a3a3a;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-  z-index: 1000;
-  max-height: 300px;
-  overflow-y: auto;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: #1f1f1f;
+    border: 2px solid #3a3a3a;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgb(0 0 0 / 30%);
+    z-index: 1000;
+    max-height: 300px;
+    overflow-y: auto;
 }
 
 .model-dropdown-menu::-webkit-scrollbar {
-  width: 8px;
+    width: 8px;
 }
 
 .model-dropdown-menu::-webkit-scrollbar-track {
-  background: transparent;
+    background: transparent;
 }
 
 .model-dropdown-menu::-webkit-scrollbar-thumb {
-  background: #3a3a3a;
-  border-radius: 4px;
+    background: #3a3a3a;
+    border-radius: 4px;
 }
 
 .model-dropdown-menu::-webkit-scrollbar-thumb:hover {
-  background: #4a4a4a;
+    background: #4a4a4a;
 }
 
 .model-option {
-  width: 100%;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  transition: background 0.15s ease;
-  padding: 0;
-  border-bottom: 1px solid #2a2a2a;
+    width: 100%;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    padding: 0;
+    border-bottom: 1px solid #2a2a2a;
 }
 
 .model-option:last-child {
-  border-bottom: none;
+    border-bottom: none;
 }
 
 .model-option:hover {
-  background: #252525;
+    background: #252525;
 }
 
 .model-option.selected {
-  background: #4a7ba7;
+    background: #4a7ba7;
 }
 
 .model-option.selected:hover {
-  background: #5b9dd1;
+    background: #5b9dd1;
 }
 
 .model-option-content {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
 }
 
 .model-option .model-name {
-  font-size: 15px;
-  font-weight: 600;
-  color: #e0e0e0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #e0e0e0;
 }
 
 .model-option.selected .model-name {
-  color: #ffffff;
+    color: #fff;
 }
 
 .model-option .model-description {
-  font-size: 12px;
-  color: #888;
+    font-size: 12px;
+    color: #888;
 }
 
 .model-option.selected .model-description {
-  color: rgba(255, 255, 255, 0.8);
+    color: rgb(255 255 255 / 80%);
 }
 
 .check-icon {
-  width: 20px;
-  height: 20px;
-  color: #ffffff;
-  flex-shrink: 0;
-  margin-left: auto;
+    width: 20px;
+    height: 20px;
+    color: #fff;
+    flex-shrink: 0;
+    margin-left: auto;
 }
 
 /* Dropdown transition */
 .dropdown-enter-active,
 .dropdown-leave-active {
-  transition: all 0.2s ease;
-  transform-origin: top;
+    transition: all 0.2s ease;
+    transform-origin: top;
 }
 
 .dropdown-enter-from {
-  opacity: 0;
-  transform: scaleY(0.95) translateY(-8px);
+    opacity: 0;
+    transform: scaleY(0.95) translateY(-8px);
 }
 
 .dropdown-leave-to {
-  opacity: 0;
-  transform: scaleY(0.95) translateY(-8px);
+    opacity: 0;
+    transform: scaleY(0.95) translateY(-8px);
 }
 
-@media (max-width: 900px) {
-  .provider-tabs {
-    grid-template-columns: 1fr;
-  }
+@media (width <= 900px) {
+    .provider-tabs {
+        grid-template-columns: 1fr;
+    }
 
-  .info-grid {
-    grid-template-columns: 1fr;
-  }
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
 }
 </style>

@@ -1,123 +1,123 @@
 <template>
-  <div
-    id="app"
-    class="app-container"
-  >
-    <!-- Map Module (always visible as base layer) -->
-    <MapModule
-      ref="mapModule"
-      :flights="flights"
-      :weatherHazards="weatherHazards"
-      :selectedFlight="selectedFlight"
-      @flight-click="handleFlightClick"
-    />
-
-    <!-- Map Controls and Legend (only visible when Live Map tab is active) -->
-    <template v-if="activeView === 'map'">
-      <MapControls
-        key="map-controls"
-        @control-action="handleMapControl"
-      />
-      <AirspaceLegend
-        key="airspace-legend"
-        :airlines="airlines"
-        :flightsTableCollapsed="flightsTableCollapsed"
-        :bottomNavCollapsed="bottomNavCollapsed"
-      />
-      <FlightsDataTable
-        ref="flightsDataTable"
-        key="flights-table"
-        :flights="flights"
-        :airlines="airlines"
-        :bottomNavCollapsed="bottomNavCollapsed"
-        :trackedAircraft="trackedAircraft"
-        @view-all="changeView('flights')"
-        @flight-click="handleFlightTableClick"
-        @track-aircraft="handleTrackAircraft"
-        @untrack-aircraft="handleUntrackAircraft"
-        @collapse-state-change="handleFlightsTableCollapseChange"
-      />
-    </template>
-
-    <!-- Dashboard View Overlay -->
-    <DashboardModule
-      v-if="activeView === 'dashboard'"
-      key="dashboard"
-      :flights="flights"
-      :airlines="airlines"
-      :aircraftModels="aircraftModels"
-      :selectedFlight="selectedFlight"
-    />
-
-    <!-- Flights View Overlay -->
-    <FlightsModule
-      v-if="activeView === 'flights'"
-      key="flights"
-      :flights="flights"
-      :airlines="airlines"
-    />
-
-    <!-- Weather Module -->
-    <WeatherModule
-      v-if="activeView === 'weather'"
-      key="weather"
-      :weatherHazards="weatherHazards"
-      :flights="flights"
-    />
-
-    <!-- Analytics Module -->
-    <AnalyticsModule
-      v-if="activeView === 'analytics'"
-      key="analytics"
-      :flights="flights"
-      :airlines="airlines"
-    />
-
-    <!-- Settings Module -->
-    <SettingsModule
-      v-if="activeView === 'settings'"
-      key="settings"
-    />
-
-    <!-- AI Chat Panel -->
-    <AIChatModule
-      :visible="aiPanelVisible"
-      :flights="flights"
-      :weatherHazards="weatherHazards"
-      :airlines="airlines"
-      :flightsTableCollapsed="flightsTableCollapsed"
-      :bottomNavCollapsed="bottomNavCollapsed"
-      @close="aiPanelVisible = false"
-    />
-
-    <!-- AI FAB Button -->
-    <button
-      class="ai-fab-button"
-      :class="{ active: aiPanelVisible }"
-      :style="{ bottom: aiFabButtonBottom }"
-      title="AI Assistant"
-      @click="toggleAIPanel"
+    <div
+        id="app"
+        class="app-container"
     >
-      <svg
-        fill="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-3 12H7c-.55 0-1-.45-1-1s.45-1 1-1h10c.55 0 1 .45 1 1s-.45 1-1 1zm0-3H7c-.55 0-1-.45-1-1s.45-1 1-1h10c.55 0 1 .45 1 1s-.45 1-1 1zm0-3H7c-.55 0-1-.45-1-1s.45-1 1-1h10c.55 0 1 .45 1 1s-.45 1-1 1z" />
-      </svg>
-    </button>
+        <!-- Map Module (always visible as base layer) -->
+        <MapModule
+            ref="mapModule"
+            :flights="flights"
+            :weatherHazards="weatherHazards"
+            :selectedFlight="selectedFlight"
+            @flight-click="handleFlightClick"
+        />
 
-    <!-- Bottom Navigation -->
-    <BottomNavigation
-      ref="bottomNavigation"
-      :activeView="activeView"
-      :flightCount="flights.length"
-      @change-view="changeView"
-      @collapse-state-change="handleBottomNavCollapseChange"
-    />
+        <!-- Map Controls and Legend (only visible when Live Map tab is active) -->
+        <template v-if="activeView === 'map'">
+            <MapControls
+                key="map-controls"
+                @control-action="handleMapControl"
+            />
+            <AirspaceLegend
+                key="airspace-legend"
+                :airlines="airlines"
+                :flightsTableCollapsed="flightsTableCollapsed"
+                :bottomNavCollapsed="bottomNavCollapsed"
+            />
+            <FlightsDataTable
+                ref="flightsDataTable"
+                key="flights-table"
+                :flights="flights"
+                :airlines="airlines"
+                :bottomNavCollapsed="bottomNavCollapsed"
+                :trackedAircraft="trackedAircraft"
+                @view-all="changeView('flights')"
+                @flight-click="handleFlightTableClick"
+                @track-aircraft="handleTrackAircraft"
+                @untrack-aircraft="handleUntrackAircraft"
+                @collapse-state-change="handleFlightsTableCollapseChange"
+            />
+        </template>
 
-    <!-- Toast Notifications -->
-    <ToastNotification />
-  </div>
+        <!-- Dashboard View Overlay -->
+        <DashboardModule
+            v-if="activeView === 'dashboard'"
+            key="dashboard"
+            :flights="flights"
+            :airlines="airlines"
+            :aircraftModels="aircraftModels"
+            :selectedFlight="selectedFlight"
+        />
+
+        <!-- Flights View Overlay -->
+        <FlightsModule
+            v-if="activeView === 'flights'"
+            key="flights"
+            :flights="flights"
+            :airlines="airlines"
+        />
+
+        <!-- Weather Module -->
+        <WeatherModule
+            v-if="activeView === 'weather'"
+            key="weather"
+            :weatherHazards="weatherHazards"
+            :flights="flights"
+        />
+
+        <!-- Analytics Module -->
+        <AnalyticsModule
+            v-if="activeView === 'analytics'"
+            key="analytics"
+            :flights="flights"
+            :airlines="airlines"
+        />
+
+        <!-- Settings Module -->
+        <SettingsModule
+            v-if="activeView === 'settings'"
+            key="settings"
+        />
+
+        <!-- AI Chat Panel -->
+        <AIChatModule
+            :visible="aiPanelVisible"
+            :flights="flights"
+            :weatherHazards="weatherHazards"
+            :airlines="airlines"
+            :flightsTableCollapsed="flightsTableCollapsed"
+            :bottomNavCollapsed="bottomNavCollapsed"
+            @close="aiPanelVisible = false"
+        />
+
+        <!-- AI FAB Button -->
+        <button
+            class="ai-fab-button"
+            :class="{ active: aiPanelVisible }"
+            :style="{ bottom: aiFabButtonBottom }"
+            title="AI Assistant"
+            @click="toggleAIPanel"
+        >
+            <svg
+                fill="currentColor"
+                viewBox="0 0 24 24"
+            >
+                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-3 12H7c-.55 0-1-.45-1-1s.45-1 1-1h10c.55 0 1 .45 1 1s-.45 1-1 1zm0-3H7c-.55 0-1-.45-1-1s.45-1 1-1h10c.55 0 1 .45 1 1s-.45 1-1 1zm0-3H7c-.55 0-1-.45-1-1s.45-1 1-1h10c.55 0 1 .45 1 1s-.45 1-1 1z" />
+            </svg>
+        </button>
+
+        <!-- Bottom Navigation -->
+        <BottomNavigation
+            ref="bottomNavigation"
+            :activeView="activeView"
+            :flightCount="flights.length"
+            @change-view="changeView"
+            @collapse-state-change="handleBottomNavCollapseChange"
+        />
+
+        <!-- Toast Notifications -->
+        <ToastNotification />
+    </div>
 </template>
 
 <script>
@@ -305,5 +305,5 @@ export default {
 </script>
 
 <style>
-@import './assets/styles/main.css';
+@import url('./assets/styles/main.css');
 </style>

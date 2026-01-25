@@ -8,7 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint --ext .js,.vue src",
-    "lint:fix": "eslint --ext .js,.vue src --fix"
+    "lint:fix": "eslint --ext .js,.vue src --fix",
+    "lint:style": "stylelint \"src/**/*.{vue,css,scss}\"",
+    "lint:style:fix": "stylelint \"src/**/*.{vue,css,scss}\" --fix"
   },
   "dependencies": {
     "chalk": "^4.1.2",
@@ -28,6 +30,7 @@
   },
   "devDependencies": {
     "@babel/eslint-plugin": "^7.27.1",
+    "@stylistic/stylelint-plugin": "^5.0.1",
     "@tailwindcss/postcss": "^4.1.18",
     "@vitejs/plugin-vue": "^5.2.1",
     "autoprefixer": "^10.4.23",
@@ -36,6 +39,9 @@
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-vue": "^9.33.0",
     "postcss": "^8.5.6",
+    "postcss-html": "^1.8.1",
+    "stylelint": "^17.0.0",
+    "stylelint-config-standard": "^40.0.0",
     "tailwindcss": "^4.1.18",
     "vite": "^6.0.7"
   }

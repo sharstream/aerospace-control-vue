@@ -1,8 +1,8 @@
 /* Aerospace Theme - Design Tokens: Typography */
 :root {
   /* Font Family */
-  --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --font-family-mono: 'Courier New', Consolas, Monaco, monospace;
+  --font-family-base: -apple-system, blinkmacsystemfont, 'Segoe UI', roboto, 'Helvetica Neue', arial, sans-serif;
+  --font-family-mono: 'Courier New', consolas, monaco, monospace;
 
   /* Font Sizes */
   --font-size-xs: 10px;

@@ -1,108 +1,108 @@
 <template>
-  <div
-    class="ai-panel"
-    :class="{ visible }"
-  >
-    <div class="ai-header">
-      <div class="ai-title">
-        <h2>Commander Atlas</h2>
-        <p>Aviation Systems Expert | Airfare Engineer | AI Co-Pilot</p>
-        <p
-          class="mcp-status"
-          :class="{ connected: mcpConnected }"
-        >
-          {{ mcpStatusText }}
-        </p>
-      </div>
-      <button
-        class="ai-close-btn"
-        title="Close"
-        @click="$emit('close')"
-      >
-        <svg
-          fill="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-        </svg>
-      </button>
-    </div>
-
-    <div class="ai-actions">
-      <button
-        class="ai-btn"
-        @click="identifyBottlenecks"
-      >
-        <svg
-          fill="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
-        </svg>
-        Identify Bottlenecks
-      </button>
-
-      <button
-        class="ai-btn"
-        @click="suggestReroute"
-      >
-        <svg
-          fill="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z" />
-        </svg>
-        Suggest Reroute
-      </button>
-    </div>
-
     <div
-      ref="messagesContainer"
-      class="ai-messages"
+        class="ai-panel"
+        :class="{ visible }"
     >
-      <div
-        v-for="(message, index) in messages"
-        :key="index"
-        class="ai-message"
-        :class="message.type"
-      >
-        <div class="ai-message-icon">
-          <svg
-            fill="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
-          </svg>
+        <div class="ai-header">
+            <div class="ai-title">
+                <h2>Commander Atlas</h2>
+                <p>Aviation Systems Expert | Airfare Engineer | AI Co-Pilot</p>
+                <p
+                    class="mcp-status"
+                    :class="{ connected: mcpConnected }"
+                >
+                    {{ mcpStatusText }}
+                </p>
+            </div>
+            <button
+                class="ai-close-btn"
+                title="Close"
+                @click="$emit('close')"
+            >
+                <svg
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                </svg>
+            </button>
         </div>
-        <div class="ai-message-content">
-          <div class="ai-message-title">{{ message.title }}</div>
-          <div class="ai-message-text">{{ message.content }}</div>
-          <div class="ai-message-time">{{ message.time }}</div>
-        </div>
-      </div>
-    </div>
 
-    <div class="ai-input">
-      <input
-        v-model="userInput"
-        type="text"
-        placeholder="Ask about flight status, route optimization, or system monitoring..."
-        @keypress.enter="sendMessage"
-      />
-      <button
-        class="ai-send-btn"
-        title="Send message"
-        @click="sendMessage"
-      >
-        <svg
-          fill="currentColor"
-          viewBox="0 0 24 24"
+        <div class="ai-actions">
+            <button
+                class="ai-btn"
+                @click="identifyBottlenecks"
+            >
+                <svg
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                </svg>
+                Identify Bottlenecks
+            </button>
+
+            <button
+                class="ai-btn"
+                @click="suggestReroute"
+            >
+                <svg
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z" />
+                </svg>
+                Suggest Reroute
+            </button>
+        </div>
+
+        <div
+            ref="messagesContainer"
+            class="ai-messages"
         >
-          <path d="M3.4 20.4l17.45-7.48c.81-.35.81-1.49 0-1.84L3.4 3.6c-.66-.29-1.39.2-1.39.91L2 9.12c0 .5.37.93.87.99L17 12 2.87 13.88c-.5.07-.87.5-.87 1l.01 4.61c0 .71.73 1.2 1.39.91z" />
-        </svg>
-      </button>
+            <div
+                v-for="(message, index) in messages"
+                :key="index"
+                class="ai-message"
+                :class="message.type"
+            >
+                <div class="ai-message-icon">
+                    <svg
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+                    </svg>
+                </div>
+                <div class="ai-message-content">
+                    <div class="ai-message-title">{{ message.title }}</div>
+                    <div class="ai-message-text">{{ message.content }}</div>
+                    <div class="ai-message-time">{{ message.time }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ai-input">
+            <input
+                v-model="userInput"
+                type="text"
+                placeholder="Ask about flight status, route optimization, or system monitoring..."
+                @keypress.enter="sendMessage"
+            />
+            <button
+                class="ai-send-btn"
+                title="Send message"
+                @click="sendMessage"
+            >
+                <svg
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path d="M3.4 20.4l17.45-7.48c.81-.35.81-1.49 0-1.84L3.4 3.6c-.66-.29-1.39.2-1.39.91L2 9.12c0 .5.37.93.87.99L17 12 2.87 13.88c-.5.07-.87.5-.87 1l.01 4.61c0 .71.73 1.2 1.39.91z" />
+                </svg>
+            </button>
+        </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -634,237 +634,237 @@ export default {
 
 <style scoped>
 .ai-panel {
-  position: fixed;
-  bottom: v-bind(bottomPosition);
-  right: 100px;
-  width: 420px;
-  max-height: 600px;
-  background: linear-gradient(135deg, rgba(26, 26, 26, 0.98) 0%, rgba(20, 20, 20, 0.98) 100%);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(74, 157, 215, 0.2);
-  border-radius: 16px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(74, 157, 215, 0.1);
-  display: flex;
-  flex-direction: column;
-  z-index: 999;
-  opacity: 0;
-  transform: translateY(20px) scale(0.95);
-  pointer-events: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: fixed;
+    bottom: v-bind(bottomposition);
+    right: 100px;
+    width: 420px;
+    max-height: 600px;
+    background: linear-gradient(135deg, rgb(26 26 26 / 98%) 0%, rgb(20 20 20 / 98%) 100%);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgb(74 157 215 / 20%);
+    border-radius: 16px;
+    box-shadow: 0 12px 40px rgb(0 0 0 / 70%), 0 0 0 1px rgb(74 157 215 / 10%);
+    display: flex;
+    flex-direction: column;
+    z-index: 999;
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .ai-panel.visible {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  pointer-events: all;
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: all;
 }
 
 .ai-header {
-  padding: 20px;
-  border-bottom: 1px solid #3a3a3a;
-  border-radius: 16px 16px 0 0;
-  background: linear-gradient(135deg, rgba(74, 123, 167, 0.15) 0%, rgba(74, 157, 215, 0.1) 100%);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #3a3a3a;
+    border-radius: 16px 16px 0 0;
+    background: linear-gradient(135deg, rgb(74 123 167 / 15%) 0%, rgb(74 157 215 / 10%) 100%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .ai-title h2 {
-  font-size: 18px;
-  color: #fff;
-  margin: 0 0 4px 0;
+    font-size: 18px;
+    color: #fff;
+    margin: 0 0 4px;
 }
 
 .ai-title p {
-  font-size: 12px;
-  color: #999;
-  margin: 0;
+    font-size: 12px;
+    color: #999;
+    margin: 0;
 }
 
 .mcp-status {
-  font-size: 11px;
-  color: #666;
-  margin-top: 4px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+    font-size: 11px;
+    color: #666;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .mcp-status::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #666;
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #666;
 }
 
 .mcp-status.connected {
-  color: #4ade80;
+    color: #4ade80;
 }
 
 .mcp-status.connected::before {
-  background: #4ade80;
-  box-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
+    background: #4ade80;
+    box-shadow: 0 0 8px rgb(74 222 128 / 50%);
 }
 
 .ai-close-btn {
-  width: 32px;
-  height: 32px;
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
+    width: 32px;
+    height: 32px;
+    background: rgb(255 255 255 / 10%);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
 }
 
 .ai-close-btn:hover {
-  background: rgba(239, 68, 68, 0.2);
+    background: rgb(239 68 68 / 20%);
 }
 
 .ai-close-btn svg {
-  width: 20px;
-  height: 20px;
-  color: #e0e0e0;
+    width: 20px;
+    height: 20px;
+    color: #e0e0e0;
 }
 
 .ai-actions {
-  padding: 16px;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  border-bottom: 1px solid #3a3a3a;
+    padding: 16px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    border-bottom: 1px solid #3a3a3a;
 }
 
 .ai-btn {
-  padding: 12px;
-  background: rgba(74, 157, 215, 0.1);
-  border: 1px solid rgba(74, 157, 215, 0.3);
-  border-radius: 8px;
-  color: #4a9dd7;
-  cursor: pointer;
-  font-size: 13px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.2s ease;
+    padding: 12px;
+    background: rgb(74 157 215 / 10%);
+    border: 1px solid rgb(74 157 215 / 30%);
+    border-radius: 8px;
+    color: #4a9dd7;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
 }
 
 .ai-btn:hover {
-  background: rgba(74, 157, 215, 0.2);
-  border-color: #4a9dd7;
+    background: rgb(74 157 215 / 20%);
+    border-color: #4a9dd7;
 }
 
 .ai-btn svg {
-  width: 18px;
-  height: 18px;
+    width: 18px;
+    height: 18px;
 }
 
 .ai-messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 16px;
-  display: flex;
-  flex-direction: column-reverse;
-  gap: 12px;
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 12px;
 }
 
 .ai-message {
-  display: flex;
-  gap: 12px;
-  padding: 12px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  border-left: 3px solid #4a9dd7;
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    background: rgb(255 255 255 / 5%);
+    border-radius: 8px;
+    border-left: 3px solid #4a9dd7;
 }
 
 .ai-message.alert {
-  border-left-color: #ef4444;
+    border-left-color: #ef4444;
 }
 
 .ai-message.success {
-  border-left-color: #4ade80;
+    border-left-color: #4ade80;
 }
 
 .ai-message-icon {
-  flex-shrink: 0;
+    flex-shrink: 0;
 }
 
 .ai-message-icon svg {
-  width: 20px;
-  height: 20px;
-  color: #4a9dd7;
+    width: 20px;
+    height: 20px;
+    color: #4a9dd7;
 }
 
 .ai-message-title {
-  font-weight: 600;
-  color: #fff;
-  margin-bottom: 4px;
-  font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 4px;
+    font-size: 14px;
 }
 
 .ai-message-text {
-  color: #e0e0e0;
-  font-size: 13px;
-  line-height: 1.5;
+    color: #e0e0e0;
+    font-size: 13px;
+    line-height: 1.5;
 }
 
 .ai-message-time {
-  font-size: 11px;
-  color: #666;
-  margin-top: 8px;
+    font-size: 11px;
+    color: #666;
+    margin-top: 8px;
 }
 
 .ai-input {
-  padding: 24px 20px;
-  border-top: 2px solid rgba(74, 157, 215, 0.3);
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.6) 100%);
-  display: flex;
-  gap: 14px;
-  align-items: center;
-  border-radius: 0 0 16px 16px;
+    padding: 24px 20px;
+    border-top: 2px solid rgb(74 157 215 / 30%);
+    background: linear-gradient(180deg, rgb(0 0 0 / 40%) 0%, rgb(0 0 0 / 60%) 100%);
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    border-radius: 0 0 16px 16px;
 }
 
 .ai-input input {
-  flex: 1;
-  padding: 14px 18px;
-  background: linear-gradient(180deg, rgba(26, 26, 26, 0.8) 0%, rgba(15, 15, 15, 0.9) 100%);
-  border: 1px solid rgba(74, 157, 215, 0.3);
-  border-radius: 8px;
-  color: #e0e0e0;
-  font-size: 14px;
+    flex: 1;
+    padding: 14px 18px;
+    background: linear-gradient(180deg, rgb(26 26 26 / 80%) 0%, rgb(15 15 15 / 90%) 100%);
+    border: 1px solid rgb(74 157 215 / 30%);
+    border-radius: 8px;
+    color: #e0e0e0;
+    font-size: 14px;
 }
 
 .ai-input input:focus {
-  outline: none;
-  border-color: #4a9dd7;
-  box-shadow: 0 0 0 3px rgba(74, 157, 215, 0.1);
+    outline: none;
+    border-color: #4a9dd7;
+    box-shadow: 0 0 0 3px rgb(74 157 215 / 10%);
 }
 
 .ai-send-btn {
-  width: 52px;
-  height: 52px;
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-  border: 2px solid rgba(59, 130, 246, 0.5);
-  border-radius: 12px;
-  color: white;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    border: 2px solid rgb(59 130 246 / 50%);
+    border-radius: 12px;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
 }
 
 .ai-send-btn:hover {
-  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
-  transform: translateY(-2px) scale(1.05);
+    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+    transform: translateY(-2px) scale(1.05);
 }
 
 .ai-send-btn svg {
-  width: 24px;
-  height: 24px;
+    width: 24px;
+    height: 24px;
 }
 </style>

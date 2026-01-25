@@ -1,16 +1,16 @@
 /* Aerospace Theme - Design Tokens: Shadows & Effects */
 :root {
   /* Box Shadows */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
-  --shadow-base: 0 4px 16px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 20px rgba(74, 157, 215, 0.4);
-  --shadow-lg: 0 4px 24px rgba(0, 0, 0, 0.4);
-  --shadow-xl: 0 6px 28px rgba(74, 157, 215, 0.6);
-  --shadow-2xl: 0 8px 24px rgba(74, 157, 215, 0.3);
+  --shadow-sm: 0 2px 8px rgb(0 0 0 / 20%);
+  --shadow-base: 0 4px 16px rgb(0 0 0 / 30%);
+  --shadow-md: 0 4px 20px rgb(74 157 215 / 40%);
+  --shadow-lg: 0 4px 24px rgb(0 0 0 / 40%);
+  --shadow-xl: 0 6px 28px rgb(74 157 215 / 60%);
+  --shadow-2xl: 0 8px 24px rgb(74 157 215 / 30%);
 
   /* Text Shadows */
-  --text-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
-  --text-shadow-base: 0 2px 4px rgba(0, 0, 0, 0.8);
+  --text-shadow-sm: 0 1px 2px rgb(0 0 0 / 50%);
+  --text-shadow-base: 0 2px 4px rgb(0 0 0 / 80%);
 
   /* Border Radius */
   --radius-sm: 2px;

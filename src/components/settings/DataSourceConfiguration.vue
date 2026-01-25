@@ -1,40 +1,40 @@
 <template>
-  <div class="settings-card full-width">
-    <div class="card-header">
-      <h2 class="card-title">{{ $Labels.dataSource.title }}</h2>
+    <div class="settings-card full-width">
+        <div class="card-header">
+            <h2 class="card-title">{{ $Labels.dataSource.title }}</h2>
+        </div>
+
+        <div class="settings-content">
+            <p class="section-description">
+                {{ $Labels.dataSource.description }}
+            </p>
+
+            <div class="data-source-controls">
+                <!-- Backend Status Section -->
+                <BackendStatusCard
+                    :apiStatus="apiStatus"
+                    :lastUpdate="lastUpdate"
+                />
+
+                <!-- Rate Limit Status Section (only shown when using real data) -->
+                <RateLimitStatusCard
+                    v-if="useRealData"
+                    :rateLimitInfo="rateLimitInfo"
+                    :countdownSeconds="countdownSeconds"
+                    :apiStatus="apiStatus"
+                    :maxCredits="maxCredits"
+                />
+
+                <!-- Data Source Toggle -->
+                <DataSourceToggle
+                    :useRealData="useRealData"
+                    :isToggling="isToggling"
+                    :error="error"
+                    @toggle="handleToggle"
+                />
+            </div>
+        </div>
     </div>
-
-    <div class="settings-content">
-      <p class="section-description">
-        {{ $Labels.dataSource.description }}
-      </p>
-
-      <div class="data-source-controls">
-        <!-- Backend Status Section -->
-        <BackendStatusCard
-          :apiStatus="apiStatus"
-          :lastUpdate="lastUpdate"
-        />
-
-        <!-- Rate Limit Status Section (only shown when using real data) -->
-        <RateLimitStatusCard
-          v-if="useRealData"
-          :rateLimitInfo="rateLimitInfo"
-          :countdownSeconds="countdownSeconds"
-          :apiStatus="apiStatus"
-          :maxCredits="maxCredits"
-        />
-
-        <!-- Data Source Toggle -->
-        <DataSourceToggle
-          :useRealData="useRealData"
-          :isToggling="isToggling"
-          :error="error"
-          @toggle="handleToggle"
-        />
-      </div>
-    </div>
-  </div>
 </template>
 
 <script>
@@ -106,53 +106,53 @@ export default {
 
 <style scoped>
 .settings-card {
-  background: #2a2a2a;
-  border: 1px solid #3a3a3a;
-  border-radius: 16px;
-  overflow: hidden;
-  transition: all 0.3s ease;
+    background: #2a2a2a;
+    border: 1px solid #3a3a3a;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s ease;
 }
 
 .settings-card.full-width {
-  width: 100%;
+    width: 100%;
 }
 
 .card-header {
-  padding: 24px 32px;
-  border-bottom: 1px solid #3a3a3a;
+    padding: 24px 32px;
+    border-bottom: 1px solid #3a3a3a;
 }
 
 .card-title {
-  font-size: 24px;
-  font-weight: 700;
-  color: #fff;
-  margin: 0;
-  letter-spacing: -0.5px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+    letter-spacing: -0.5px;
 }
 
 .settings-content {
-  padding: 32px;
+    padding: 32px;
 }
 
 .section-description {
-  color: #888;
-  font-size: 14px;
-  margin: 0 0 32px 0;
+    color: #888;
+    font-size: 14px;
+    margin: 0 0 32px;
 }
 
 .data-source-controls {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 }
 
-@media (max-width: 900px) {
-  .settings-content {
-    padding: 24px;
-  }
+@media (width <= 900px) {
+    .settings-content {
+        padding: 24px;
+    }
 
-  .card-header {
-    padding: 20px 24px;
-  }
+    .card-header {
+        padding: 20px 24px;
+    }
 }
 </style>

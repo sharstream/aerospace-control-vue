@@ -1,7 +1,7 @@
 <template>
-  <div class="text-message-part">
-    <MarkdownRenderer :content="part.content" />
-  </div>
+    <div class="text-message-part">
+        <MarkdownRenderer :content="part.content" />
+    </div>
 </template>
 
 <script setup>
@@ -19,6 +19,6 @@ defineProps({
 
 <style scoped>
 .text-message-part {
-  margin-bottom: var(--spacing-2);
+    margin-bottom: var(--spacing-2);
 }
 </style>

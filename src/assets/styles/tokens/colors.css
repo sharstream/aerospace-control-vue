@@ -1,44 +1,40 @@
 /* Aerospace Theme - Design Tokens: Colors */
 :root {
   /* Primary Colors - OKLCH for better perceptual uniformity */
-  --color-primary: oklch(0.65 0.15 240);      /* #4a9dd7 - Aerospace Blue */
-  --color-primary-light: oklch(0.70 0.15 240); /* Lighter variant */
-  --color-primary-dark: oklch(0.55 0.15 240);  /* Darker variant */
+  --color-primary: oklch(65% 0.15 240deg);      /* #4a9dd7 - Aerospace Blue */
+  --color-primary-light: oklch(70% 0.15 240deg); /* Lighter variant */
+  --color-primary-dark: oklch(55.% 0.15 240deg);  /* Darker variant */
 
   /* Semantic Colors */
-  --color-success: oklch(0.70 0.18 150);      /* #4ade80 - Green */
-  --color-warning: oklch(0.70 0.19 80);       /* #f59e0b - Amber */
-  --color-error: oklch(0.60 0.22 25);         /* #ef4444 - Red */
-  --color-info: oklch(0.60 0.20 260);         /* #3b82f6 - Blue */
+  --color-success: oklch(70% 0.18 150deg);      /* #4ade80 - Green */
+  --color-warning: oklch(70% 0.19 80deg);       /* #f59e0b - Amber */
+  --color-error: oklch(60% 0.22 25deg);         /* #ef4444 - Red */
+  --color-info: oklch(60% 0.20 260deg);         /* #3b82f6 - Blue */
 
   /* Background Colors - Dark Theme */
-  --color-bg-primary: oklch(0.12 0.01 240);   /* #1a1a1a - Dark base */
-  --color-bg-secondary: oklch(0.08 0.01 240); /* #0a0a0a - Darker */
-  --color-surface: oklch(0.16 0.01 240);      /* #2a2a2a - Elevated cards */
-  --color-surface-secondary: oklch(0.14 0.01 240); /* #1f1f1f */
-  --color-border: oklch(0.25 0.02 240 / 0.2); /* Subtle borders */
+  --color-bg-primary: oklch(12% 0.01 240deg);   /* #1a1a1a - Dark base */
+  --color-bg-secondary: oklch(8% 0.01 240deg); /* #0a0a0a - Darker */
+  --color-surface: oklch(16% 0.01 240deg);      /* #2a2a2a - Elevated cards */
+  --color-surface-secondary: oklch(14.% 0.01 240deg); /* #1f1f1f */
+  --color-border: oklch(25% 0.02 240deg / 20%); /* Subtle borders */
 
   /* Text Hierarchy */
-  --color-text-primary: oklch(0.90 0 0);      /* #e0e0e0 - Primary text */
-  --color-text-secondary: oklch(0.60 0 0);    /* #999 - Secondary text */
-  --color-text-tertiary: oklch(0.40 0 0);     /* #666 - Tertiary text */
-  --color-text-white: oklch(1.0 0 0);         /* #fff - Pure white */
+  --color-text-primary: oklch(90% 0 0deg);      /* #e0e0e0 - Primary text */
+  --color-text-secondary: oklch(60% 0 0deg);    /* #999 - Secondary text */
+  --color-text-tertiary: oklch(40% 0 0deg);     /* #666 - Tertiary text */
+  --color-text-white: oklch(100% 0 0deg);         /* #fff - Pure white */
 
   /* Alpha Variants */
-  --color-primary-alpha-10: oklch(0.65 0.15 240 / 0.1);
-  --color-primary-alpha-20: oklch(0.65 0.15 240 / 0.2);
-  --color-primary-alpha-30: oklch(0.65 0.15 240 / 0.3);
-  --color-primary-alpha-40: oklch(0.65 0.15 240 / 0.4);
-
-  --color-success-alpha-10: oklch(0.70 0.18 150 / 0.1);
-  --color-success-alpha-20: oklch(0.70 0.18 150 / 0.2);
-
-  --color-warning-alpha-20: oklch(0.70 0.19 80 / 0.2);
-
-  --color-white-alpha-05: rgba(255, 255, 255, 0.05);
-  --color-white-alpha-10: rgba(255, 255, 255, 0.1);
-
-  --color-black-alpha-30: rgba(0, 0, 0, 0.3);
-  --color-black-alpha-40: rgba(0, 0, 0, 0.4);
-  --color-black-alpha-50: rgba(0, 0, 0, 0.5);
+  --color-primary-alpha-10: oklch(65% 0.15 240deg / 10%);
+  --color-primary-alpha-20: oklch(65% 0.15 240deg / 20%);
+  --color-primary-alpha-30: oklch(65% 0.15 240deg / 30%);
+  --color-primary-alpha-40: oklch(65% 0.15 240deg / 40%);
+  --color-success-alpha-10: oklch(70% 0.18 150deg / 10%);
+  --color-success-alpha-20: oklch(70% 0.18 150deg / 20%);
+  --color-warning-alpha-20: oklch(70% 0.19 80deg / 20%);
+  --color-white-alpha-05: rgb(255 255 255 / 5%);
+  --color-white-alpha-10: rgb(255 255 255 / 10%);
+  --color-black-alpha-30: rgb(0 0 0 / 30%);
+  --color-black-alpha-40: rgb(0 0 0 / 40%);
+  --color-black-alpha-50: rgb(0 0 0 / 50%);
 }

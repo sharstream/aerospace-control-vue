@@ -1,61 +1,61 @@
 <template>
-  <div
-    class="ai-panel-dual"
-    :class="{ visible }"
-  >
-    <button
-      class="close-fab"
-      title="Close AI Assistant"
-      @click="$emit('close')"
-    >
-      <svg
-        fill="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-      </svg>
-    </button>
-
     <div
-      ref="panelContainer"
-      class="panel-container"
+        class="ai-panel-dual"
+        :class="{ visible }"
     >
-      <!-- Left Panel: Chat Interface -->
-      <div
-        class="panel-left"
-        :style="{ width: `${leftWidth}%` }"
-      >
-        <ChatInterface
-          :messages="messages"
-          :mcpConnected="mcpConnected"
-          :mcpStatusText="mcpStatusText"
-          :isLoading="isLoading"
-          @action="handleAction"
-          @send-message="handleSendMessage"
-          @show-preview="handleShowPreview"
-        />
-      </div>
+        <button
+            class="close-fab"
+            title="Close AI Assistant"
+            @click="$emit('close')"
+        >
+            <svg
+                fill="currentColor"
+                viewBox="0 0 24 24"
+            >
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+            </svg>
+        </button>
 
-      <!-- Resizable Handle -->
-      <ResizableHandle
-        :isDragging="isDragging"
-        @resize="startResize"
-        @snap="handleSnap"
-      />
+        <div
+            ref="panelContainer"
+            class="panel-container"
+        >
+            <!-- Left Panel: Chat Interface -->
+            <div
+                class="panel-left"
+                :style="{ width: `${leftWidth}%` }"
+            >
+                <ChatInterface
+                    :messages="messages"
+                    :mcpConnected="mcpConnected"
+                    :mcpStatusText="mcpStatusText"
+                    :isLoading="isLoading"
+                    @action="handleAction"
+                    @send-message="handleSendMessage"
+                    @show-preview="handleShowPreview"
+                />
+            </div>
 
-      <!-- Right Panel: Data Preview -->
-      <div
-        class="panel-right"
-        :style="{ width: `${rightWidth}%` }"
-      >
-        <DataPreviewPanel
-          :previewType="previewType"
-          :previewData="previewData"
-          @clear="clearPreview"
-        />
-      </div>
+            <!-- Resizable Handle -->
+            <ResizableHandle
+                :isDragging="isDragging"
+                @resize="startResize"
+                @snap="handleSnap"
+            />
+
+            <!-- Right Panel: Data Preview -->
+            <div
+                class="panel-right"
+                :style="{ width: `${rightWidth}%` }"
+            >
+                <DataPreviewPanel
+                    :previewType="previewType"
+                    :previewData="previewData"
+                    @clear="clearPreview"
+                />
+            </div>
+        </div>
     </div>
-  </div>
 </template>
 
 <script setup>
@@ -700,105 +700,105 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .ai-panel-dual {
-  position: fixed;
-  bottom: v-bind(bottomPosition);
-  right: 20px;
-  width: 85vw;
-  max-width: 1400px;
-  height: 80vh;
-  max-height: 800px;
-  background: rgba(26, 26, 26, 0.95);
-  backdrop-filter: var(--backdrop-blur-lg);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-2xl);
-  box-shadow: var(--shadow-2xl), 0 0 0 1px var(--color-primary-alpha-10);
-  display: flex;
-  flex-direction: column;
-  z-index: 999;
-  opacity: 0;
-  transform: translateY(20px) scale(0.95);
-  pointer-events: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;
+    position: fixed;
+    bottom: v-bind(bottomposition);
+    right: 20px;
+    width: 85vw;
+    max-width: 1400px;
+    height: 80vh;
+    max-height: 800px;
+    background: rgb(26 26 26 / 95%);
+    backdrop-filter: var(--backdrop-blur-lg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--shadow-2xl), 0 0 0 1px var(--color-primary-alpha-10);
+    display: flex;
+    flex-direction: column;
+    z-index: 999;
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
 }
 
 .ai-panel-dual.visible {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  pointer-events: all;
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: all;
 }
 
 .close-fab {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 40px;
-  height: 40px;
-  background: var(--color-white-alpha-10);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  z-index: 1000;
-  color: var(--color-text-primary);
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    background: var(--color-white-alpha-10);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 1000;
+    color: var(--color-text-primary);
 }
 
 .close-fab:hover {
-  background: var(--color-error);
-  color: white;
-  border-color: var(--color-error);
-  transform: scale(1.1);
+    background: var(--color-error);
+    color: white;
+    border-color: var(--color-error);
+    transform: scale(1.1);
 }
 
 .close-fab svg {
-  width: 20px;
-  height: 20px;
+    width: 20px;
+    height: 20px;
 }
 
 .panel-container {
-  display: flex;
-  height: 100%;
-  overflow: hidden;
-  border-radius: var(--radius-2xl);
+    display: flex;
+    height: 100%;
+    overflow: hidden;
+    border-radius: var(--radius-2xl);
 }
 
 .panel-left,
 .panel-right {
-  height: 100%;
-  overflow: hidden;
-  transition: width 0.1s ease;
+    height: 100%;
+    overflow: hidden;
+    transition: width 0.1s ease;
 }
 
 .panel-left {
-  border-right: 1px solid var(--color-border);
+    border-right: 1px solid var(--color-border);
 }
 
 /* Responsive adjustments */
-@media (max-width: 1200px) {
-  .ai-panel-dual {
-    width: 90vw;
-    height: 75vh;
-  }
+@media (width <= 1200px) {
+    .ai-panel-dual {
+        width: 90vw;
+        height: 75vh;
+    }
 }
 
-@media (max-width: 768px) {
-  .ai-panel-dual {
-    width: 95vw;
-    height: 70vh;
-    right: 10px;
-  }
+@media (width <= 768px) {
+    .ai-panel-dual {
+        width: 95vw;
+        height: 70vh;
+        right: 10px;
+    }
 
-  .panel-container {
-    flex-direction: column;
-  }
+    .panel-container {
+        flex-direction: column;
+    }
 
-  .panel-left,
-  .panel-right {
-    width: 100% !important;
-    height: 50%;
-  }
+    .panel-left,
+    .panel-right {
+        width: 100% !important;
+        height: 50%;
+    }
 }
 </style>

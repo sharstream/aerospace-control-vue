@@ -1,10 +1,10 @@
 <template>
-  <div class="map-module">
-    <div
-      ref="mapContainer"
-      class="map-container"
-    ></div>
-  </div>
+    <div class="map-module">
+        <div
+            ref="mapContainer"
+            class="map-container"
+        ></div>
+    </div>
 </template>
 
 <script>
@@ -568,290 +568,285 @@ export default {
 
 <style scoped>
 .map-module {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1;
+    position: absolute;
+    inset: 0;
+    z-index: 1;
 }
 
 .map-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: #0a0a0a;
+    position: absolute;
+    inset: 0;
+    background: #0a0a0a;
 }
 
 /* Aircraft SVG Icon Styles */
 :deep(.aircraft-icon) {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: transform 0.3s ease;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
 }
 
 :deep(.aircraft-icon.bottleneck) {
-  animation: pulse-red 2s infinite;
+    animation: pulse-red 2s infinite;
 }
 
 :deep(.aircraft-marker-container) {
-  background: transparent !important;
-  border: none !important;
+    background: transparent !important;
+    border: none !important;
 }
 
 @keyframes pulse-red {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.2); opacity: 0.8; }
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.2); opacity: 0.8; }
 }
 
 /* Flight Popup Styles */
 :deep(.flight-popup-container .leaflet-popup-content-wrapper) {
-  padding: 0;
-  border-radius: 12px;
-  background: #1a1a1a;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    padding: 0;
+    border-radius: 12px;
+    background: #1a1a1a;
+    box-shadow: 0 8px 24px rgb(0 0 0 / 60%);
 }
 
 :deep(.flight-popup-container .leaflet-popup-content) {
-  margin: 0;
-  width: 100% !important;
+    margin: 0;
+    width: 100% !important;
 }
 
 :deep(.flight-popup) {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  color: #fff;
-  min-width: 280px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #fff;
+    min-width: 280px;
 }
 
 :deep(.popup-header) {
-  padding: 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border-radius: 12px 12px 0 0;
-  font-weight: 700;
-  font-size: 16px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-radius: 12px 12px 0 0;
+    font-weight: 700;
+    font-size: 16px;
 }
 
 :deep(.popup-logo) {
-  font-size: 24px;
+    font-size: 24px;
 }
 
 :deep(.popup-header-info) {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }
 
 :deep(.popup-flight-number) {
-  color: #fff;
-  font-weight: 700;
-  font-size: 16px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 16px;
 }
 
 :deep(.popup-icao24) {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
+    color: rgb(255 255 255 / 80%);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
 }
 
 /* Aircraft Image Section */
 :deep(.popup-aircraft-image) {
-  position: relative;
-  width: 100%;
-  height: 140px;
-  overflow: hidden;
-  background: #0a0a0a;
+    position: relative;
+    width: 100%;
+    height: 140px;
+    overflow: hidden;
+    background: #0a0a0a;
 }
 
 :deep(.popup-aircraft-image img) {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0.9;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.9;
 }
 
 :deep(.aircraft-type-label) {
-  position: absolute;
-  bottom: 8px;
-  left: 8px;
-  background: rgba(0, 0, 0, 0.8);
-  color: #fff;
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  backdrop-filter: blur(4px);
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    background: rgb(0 0 0 / 80%);
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    backdrop-filter: blur(4px);
 }
 
 :deep(.popup-content) {
-  padding: 16px;
+    padding: 16px;
 }
 
 :deep(.popup-route) {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin-bottom: 16px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #3a3a3a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #3a3a3a;
 }
 
 :deep(.popup-airport) {
-  font-size: 18px;
-  font-weight: 700;
-  color: #4a9dd7;
+    font-size: 18px;
+    font-weight: 700;
+    color: #4a9dd7;
 }
 
 :deep(.popup-arrow) {
-  font-size: 20px;
-  color: #666;
+    font-size: 20px;
+    color: #666;
 }
 
 :deep(.popup-details) {
-  display: grid;
-  gap: 12px;
+    display: grid;
+    gap: 12px;
 }
 
 :deep(.popup-detail) {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 :deep(.popup-label) {
-  font-size: 12px;
-  color: #888;
-  text-transform: uppercase;
-  font-weight: 600;
-  letter-spacing: 0.5px;
+    font-size: 12px;
+    color: #888;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
 }
 
 :deep(.popup-value) {
-  font-size: 14px;
-  color: #e0e0e0;
-  font-weight: 600;
+    font-size: 14px;
+    color: #e0e0e0;
+    font-weight: 600;
 }
 
 :deep(.popup-value.status-on-time) {
-  color: #4ade80;
+    color: #4ade80;
 }
 
 :deep(.popup-value.status-delayed) {
-  color: #f59e0b;
+    color: #f59e0b;
 }
 
 :deep(.popup-value.status-boarding) {
-  color: #3b82f6;
+    color: #3b82f6;
 }
 
 :deep(.flight-popup-container .leaflet-popup-tip) {
-  background: #1a1a1a;
+    background: #1a1a1a;
 }
 
 /* Enhanced Popup Sections */
 :deep(.popup-section) {
-  margin-top: 16px;
-  border-top: 1px solid #2a2a2a;
-  padding-top: 12px;
+    margin-top: 16px;
+    border-top: 1px solid #2a2a2a;
+    padding-top: 12px;
 }
 
 :deep(.section-header) {
-  font-size: 10px;
-  font-weight: 700;
-  color: #4a9dd7;
-  letter-spacing: 1px;
-  margin-bottom: 8px;
-  text-transform: uppercase;
+    font-size: 10px;
+    font-weight: 700;
+    color: #4a9dd7;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
 }
 
 :deep(.section-grid) {
-  display: grid;
-  gap: 8px;
+    display: grid;
+    gap: 8px;
 }
 
 :deep(.data-row) {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
 }
 
 :deep(.data-row .label) {
-  color: #888;
-  font-weight: 600;
+    color: #888;
+    font-weight: 600;
 }
 
 :deep(.data-row .value) {
-  color: #e0e0e0;
-  font-weight: 600;
-  text-align: right;
+    color: #e0e0e0;
+    font-weight: 600;
+    text-align: right;
 }
 
 /* Trajectory Path Styles - OpenSky-style solid red line */
 :deep(.trajectory-path) {
-  cursor: pointer;
-  transition: all 0.2s ease;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
 :deep(.trajectory-path:hover) {
-  filter: brightness(1.2);
+    filter: brightness(1.2);
 }
 
 /* Tracked Aircraft Circular Highlight (OpenSky-style) */
 :deep(.aircraft-marker-container.tracked) {
-  position: relative;
+    position: relative;
 }
 
 :deep(.aircraft-marker-container.tracked::before) {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(200, 69, 87, 0.3) 0%, rgba(200, 69, 87, 0.1) 50%, transparent 70%);
-  border: 2px solid rgba(200, 69, 87, 0.6);
-  animation: pulse-tracked 2s ease-in-out infinite;
-  pointer-events: none;
-  z-index: -1;
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgb(200 69 87 / 30%) 0%, rgb(200 69 87 / 10%) 50%, transparent 70%);
+    border: 2px solid rgb(200 69 87 / 60%);
+    animation: pulse-tracked 2s ease-in-out infinite;
+    pointer-events: none;
+    z-index: -1;
 }
 
 @keyframes pulse-tracked {
-  0%, 100% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 0.8;
-  }
-  50% {
-    transform: translate(-50%, -50%) scale(1.15);
-    opacity: 0.5;
-  }
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.15);
+        opacity: 0.5;
+    }
 }
 
 /* Trajectory Tooltip Styles */
 :deep(.trajectory-tooltip) {
-  background: rgba(26, 26, 26, 0.95);
-  border: 1px solid #4a9dd7;
-  border-radius: 6px;
-  color: #fff;
-  font-size: 12px;
-  font-weight: 600;
-  padding: 6px 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    background: rgb(26 26 26 / 95%);
+    border: 1px solid #4a9dd7;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 10px;
+    box-shadow: 0 4px 12px rgb(0 0 0 / 40%);
 }
 
 :deep(.trajectory-tooltip::before) {
-  border-top-color: #4a9dd7;
+    border-top-color: #4a9dd7;
 }
 </style>

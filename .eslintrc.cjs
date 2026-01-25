@@ -49,7 +49,13 @@ module.exports = {
         'import/prefer-default-export': [0],
         'no-async-promise-executor': [0],
         'prefer-rest-params': [0],
-        'vue/html-indent': ['error', 2],
+        'vue/html-indent': ['error', 4, {
+            attribute: 1,
+            baseIndent: 1,
+            closeBracket: 0,
+            alignAttributesVertically: true,
+            ignores: []
+        }],
         'vue/script-indent': ['error', 4, {
             baseIndent: 0,
             switchCase: 1,
