@@ -21,13 +21,13 @@ export function useEventBus() {
     // Emit an event
         emit: eventBus.emit,
 
-    // Listen to an event
+        // Listen to an event
         on: eventBus.on,
 
-    // Remove event listener
+        // Remove event listener
         off: eventBus.off,
 
-    // Listen to an event once
+        // Listen to an event once
         once: (type, handler) => {
             const fn = (...args) => {
                 eventBus.off(type, fn);
@@ -36,12 +36,12 @@ export function useEventBus() {
             eventBus.on(type, fn);
         },
 
-    // Clear all listeners for a specific event type
+        // Clear all listeners for a specific event type
         clearEvent: (type) => {
             eventBus.all.delete(type);
         },
 
-    // Clear all event listeners
+        // Clear all event listeners
         clearAll: () => {
             eventBus.all.clear();
         }

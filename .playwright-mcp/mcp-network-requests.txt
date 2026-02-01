@@ -1,0 +1,4 @@
+[GET] http://localhost:5176/?token=ceeKntysrXdQ => [101] Switching Protocols
+[GET] http://localhost:8000/mcp/tools/list => [200] OK
+[GET] http://localhost:8000/ws/agents/chat-agent => [101] Switching Protocols
+[GET] http://localhost:8000/mcp/tools/list => [200] OK

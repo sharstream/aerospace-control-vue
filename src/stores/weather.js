@@ -10,16 +10,16 @@ export const useWeatherStore = defineStore('weather', {
     // Get hazard by ID
         getHazardById: state => id => state.weatherHazards.find(hazard => hazard.id === id),
 
-    // Get hazards by type
+        // Get hazards by type
         getHazardsByType: state => type => state.weatherHazards.filter(hazard => hazard.type === type),
 
-    // Get hazards by severity
+        // Get hazards by severity
         getHazardsBySeverity: state => severity => state.weatherHazards.filter(hazard => hazard.severity === severity),
 
-    // Get total hazard count
+        // Get total hazard count
         hazardCount: state => state.weatherHazards.length,
 
-    // Get active hazards
+        // Get active hazards
         activeHazards: state => state.weatherHazards.filter(hazard => hazard.active !== false)
     },
 
@@ -29,7 +29,7 @@ export const useWeatherStore = defineStore('weather', {
             this.weatherHazards.push(hazard);
         },
 
-    // Remove weather hazard
+        // Remove weather hazard
         removeHazard(hazardId) {
             const index = this.weatherHazards.findIndex(h => h.id === hazardId);
             if (index !== -1) {
@@ -37,7 +37,7 @@ export const useWeatherStore = defineStore('weather', {
             }
         },
 
-    // Update hazard severity
+        // Update hazard severity
         updateHazardSeverity(hazardId, severity) {
             const hazard = this.weatherHazards.find(h => h.id === hazardId);
             if (hazard) {
@@ -45,7 +45,7 @@ export const useWeatherStore = defineStore('weather', {
             }
         },
 
-    // Toggle hazard active status
+        // Toggle hazard active status
         toggleHazardActive(hazardId) {
             const hazard = this.weatherHazards.find(h => h.id === hazardId);
             if (hazard) {

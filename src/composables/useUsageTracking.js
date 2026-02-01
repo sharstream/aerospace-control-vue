@@ -48,7 +48,7 @@ class UsageTracker {
             const stored = localStorage.getItem(STORAGE_KEY);
             if (stored) {
                 const data = JSON.parse(stored);
-        // Merge with existing structure to maintain reactivity
+                // Merge with existing structure to maintain reactivity
                 Object.assign(this.metrics, {
                     ...data,
                     sessionId: this.generateSessionId(),
@@ -77,7 +77,7 @@ class UsageTracker {
             this.saveMetrics();
         }, 10000);
 
-    // Save on page unload
+        // Save on page unload
         window.addEventListener('beforeunload', () => {
             this.endSession();
             this.saveMetrics();
@@ -105,7 +105,7 @@ class UsageTracker {
             this.updateTimeSpent(this.metrics.currentView);
         }
 
-    // Track new view
+        // Track new view
         if (this.metrics.viewChanges[view] !== undefined) {
             this.metrics.viewChanges[view]++;
         }
@@ -149,7 +149,7 @@ class UsageTracker {
             ...data
         });
 
-    // Keep only last 100 history entries
+        // Keep only last 100 history entries
         if (this.metrics.history.length > 100) {
             this.metrics.history.shift();
         }
@@ -161,7 +161,7 @@ class UsageTracker {
 
     clearMetrics() {
         localStorage.removeItem(STORAGE_KEY);
-    // Reset metrics
+        // Reset metrics
         this.metrics.totalSessions = 0;
         this.metrics.viewChanges = {
             dashboard: 0,
@@ -193,12 +193,12 @@ class UsageTracker {
     exportToCSV() {
         const lines = [];
 
-    // Header
+        // Header
         lines.push('Aerospace Control - Usage Metrics Report');
         lines.push(`Generated: ${new Date().toISOString()}`);
         lines.push('');
 
-    // Session Info
+        // Session Info
         lines.push('Session Information');
         lines.push('Field,Value');
         lines.push(`Session ID,${this.metrics.sessionId}`);
@@ -206,7 +206,7 @@ class UsageTracker {
         lines.push(`Total Sessions,${this.metrics.totalSessions}`);
         lines.push('');
 
-    // View Changes
+        // View Changes
         lines.push('View Changes');
         lines.push('View,Count');
         Object.entries(this.metrics.viewChanges).forEach(([view, count]) => {
@@ -214,7 +214,7 @@ class UsageTracker {
         });
         lines.push('');
 
-    // Time Spent (convert to minutes)
+        // Time Spent (convert to minutes)
         lines.push('Time Spent (minutes)');
         lines.push('View,Minutes');
         Object.entries(this.metrics.timeSpent).forEach(([view, ms]) => {
@@ -222,7 +222,7 @@ class UsageTracker {
         });
         lines.push('');
 
-    // Feature Usage
+        // Feature Usage
         lines.push('Feature Usage');
         lines.push('Feature,Count');
         Object.entries(this.metrics.featureUsage).forEach(([feature, count]) => {
@@ -230,14 +230,14 @@ class UsageTracker {
         });
         lines.push('');
 
-    // Recent History
+        // Recent History
         lines.push('Recent Activity History');
         lines.push('Timestamp,Action,Details');
         this.metrics.history.slice(-20).forEach((entry) => {
             const details = Object.entries(entry)
-        .filter(([key]) => key !== 'timestamp' && key !== 'action')
-        .map(([key, value]) => `${key}:${value}`)
-        .join(';');
+                .filter(([key]) => key !== 'timestamp' && key !== 'action')
+                .map(([key, value]) => `${key}:${value}`)
+                .join(';');
             lines.push(`${entry.timestamp},${entry.action},${details}`);
         });
 
@@ -254,7 +254,7 @@ class UsageTracker {
         lines.push(`Generated: ${new Date().toISOString()}`);
         lines.push('');
 
-    // Session Info
+        // Session Info
         lines.push('SESSION INFORMATION');
         lines.push('-'.repeat(60));
         lines.push(`Session ID: ${this.metrics.sessionId}`);
@@ -262,7 +262,7 @@ class UsageTracker {
         lines.push(`Total Sessions: ${this.metrics.totalSessions}`);
         lines.push('');
 
-    // View Changes
+        // View Changes
         lines.push('VIEW CHANGES');
         lines.push('-'.repeat(60));
         Object.entries(this.metrics.viewChanges).forEach(([view, count]) => {
@@ -270,7 +270,7 @@ class UsageTracker {
         });
         lines.push('');
 
-    // Time Spent
+        // Time Spent
         lines.push('TIME SPENT');
         lines.push('-'.repeat(60));
         Object.entries(this.metrics.timeSpent).forEach(([view, ms]) => {
@@ -279,7 +279,7 @@ class UsageTracker {
         });
         lines.push('');
 
-    // Feature Usage
+        // Feature Usage
         lines.push('FEATURE USAGE');
         lines.push('-'.repeat(60));
         Object.entries(this.metrics.featureUsage).forEach(([feature, count]) => {
@@ -287,14 +287,14 @@ class UsageTracker {
         });
         lines.push('');
 
-    // Recent Activity
+        // Recent Activity
         lines.push('RECENT ACTIVITY (Last 20 events)');
         lines.push('-'.repeat(60));
         this.metrics.history.slice(-20).forEach((entry) => {
             const details = Object.entries(entry)
-        .filter(([key]) => key !== 'timestamp' && key !== 'action')
-        .map(([key, value]) => `${key}:${value}`)
-        .join(', ');
+                .filter(([key]) => key !== 'timestamp' && key !== 'action')
+                .map(([key, value]) => `${key}:${value}`)
+                .join(', ');
             lines.push(`[${entry.timestamp}] ${entry.action}${details ? ` - ${details}` : ''}`);
         });
         lines.push('');
@@ -319,7 +319,7 @@ class UsageTracker {
     exportMetrics(format = 'json') {
         const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
         let content; let filename; let
-mimeType;
+            mimeType;
 
         switch (format) {
             case 'json':
