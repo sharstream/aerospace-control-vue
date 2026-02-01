@@ -318,8 +318,50 @@ const determineToolExecution = (query) => {
                     fuel_capacity: 8000,
                     distance_traveled: 500,
                     distance_remaining: 300,
-                    current_altitude: flight.altitude,
-                    airspeed: flight.speed || 450
+                    current_altitude: Number(flight.altitude) || 35000,
+                    airspeed: Number(flight.speed) || 450
+                }
+            };
+        }
+    }
+
+    if (query.includes('pressure') || query.includes('cabin')) {
+        const flight = props.flights[0];
+        return {
+            toolName: 'detect_pressure_anomaly',
+            params: {
+                cabin_pressure: 11.3,
+                current_altitude: flight ? (Number(flight.altitude) || 35000) : 35000,
+                rate_of_change: 0.1
+            }
+        };
+    }
+
+    if (query.includes('trajectory') || query.includes('path')) {
+        const flight = props.flights[0];
+        if (flight) {
+            // Use flight data if available, fallback to defaults
+            const position = flight.path && flight.path.length > 0
+                ? {
+                    lat: Number(flight.path[0][0]) || 33.7490,
+                    lon: Number(flight.path[0][1]) || -84.3880,
+                    altitude: Number(flight.altitude) || 35000
+                  }
+                : {
+                    lat: 33.7490,
+                    lon: -84.3880,
+                    altitude: Number(flight.altitude) || 35000
+                  };
+
+            return {
+                toolName: 'predict_trajectory',
+                params: {
+                    current_position: position,
+                    velocity: {
+                        groundspeed: Number(flight.speed) || 450,
+                        vertical_rate: 0
+                    },
+                    heading: Number(flight.heading) || 90
                 }
             };
         }
@@ -369,6 +411,27 @@ const displayToolResult = (toolName, result) => {
             summaryText += `Predicted Range: ${result.predicted_range} km\n`;
             summaryText += `Can Reach Destination: ${result.can_reach_destination ? 'Yes ✅' : 'No ⚠️'}`;
             status = result.fuel_status === 'CRITICAL' ? 'warning' : 'completed';
+            break;
+
+        case 'detect_pressure_anomaly':
+            summaryText = `Pressure Status: ${result.status}\n`;
+            summaryText += `Cabin Pressure: ${result.cabin_pressure_psi} PSI\n`;
+            summaryText += `Expected: ${result.expected_pressure_psi} PSI\n`;
+            summaryText += `Rate of Change: ${result.rate_of_change} PSI/min\n`;
+            summaryText += `Severity: ${result.severity}`;
+            if (result.recommendations && result.recommendations.length > 0) {
+                summaryText += `\n\nRecommendations:\n${result.recommendations.join('\n')}`;
+            }
+            status = result.severity === 'EMERGENCY' || result.severity === 'WARNING' ? 'warning' : 'completed';
+            break;
+
+        case 'predict_trajectory':
+            summaryText = `Groundspeed: ${result.groundspeed_knots} knots\n`;
+            summaryText += `Heading: ${result.heading}°\n`;
+            summaryText += `Weather Impact: ${result.weather_impact}\n`;
+            summaryText += `Prediction Confidence: ${result.prediction_confidence}\n`;
+            summaryText += `Predicted Waypoints: ${result.predicted_waypoints ? result.predicted_waypoints.length : 0}`;
+            status = 'completed';
             break;
 
         case 'get_aircraft_status':

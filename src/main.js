@@ -5,6 +5,20 @@ import App from './App.vue';
 // Import Leaflet CSS
 import 'leaflet/dist/leaflet.css';
 
+// Import Radix Colors for professional UI
+import '@radix-ui/colors/blue.css';
+import '@radix-ui/colors/blue-dark.css';
+import '@radix-ui/colors/sky.css';
+import '@radix-ui/colors/sky-dark.css';
+import '@radix-ui/colors/cyan.css';
+import '@radix-ui/colors/cyan-dark.css';
+import '@radix-ui/colors/green.css';
+import '@radix-ui/colors/green-dark.css';
+import '@radix-ui/colors/amber.css';
+import '@radix-ui/colors/amber-dark.css';
+import '@radix-ui/colors/red.css';
+import '@radix-ui/colors/red-dark.css';
+
 // Import global configuration constants
 import { GEORGIA_BBOX, ATLANTA_CENTER, BBOX_AREA } from './config/constants';
 

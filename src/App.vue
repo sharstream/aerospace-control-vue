@@ -24,7 +24,7 @@
                 :flightsTableCollapsed="flightsTableCollapsed"
                 :bottomNavCollapsed="bottomNavCollapsed"
             />
-            <FlightsDataTable
+            <FlightsDataRoot
                 ref="flightsDataTable"
                 key="flights-table"
                 :flights="flights"
@@ -137,7 +137,7 @@ import SettingsModule from './modules/settings/SettingsModule.vue';
 import AIChatModule from './modules/ai-chat/AIChatModuleDualPanel.vue';
 // Original single-panel version available at: './modules/ai-chat/AIChatModule.vue'
 import BottomNavigation from './components/BottomNavigation.vue';
-import FlightsDataTable from './components/FlightsDataTable.vue';
+import FlightsDataRoot from './components/FlightsDataRoot.vue';
 import ToastNotification from './components/common/ToastNotification.vue';
 import { useUsageTracking } from './composables/useUsageTracking';
 import { useFlightsStore } from './stores/flights';
@@ -156,7 +156,7 @@ export default {
         AIChatModule,
         ToastNotification,
         BottomNavigation,
-        FlightsDataTable
+        FlightsDataRoot
     },
     setup() {
         const flightsStore = useFlightsStore();
