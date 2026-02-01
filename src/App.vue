@@ -88,6 +88,8 @@
             :airlines="airlines"
             :flightsTableCollapsed="flightsTableCollapsed"
             :bottomNavCollapsed="bottomNavCollapsed"
+            :trackedAircraft="trackedAircraft"
+            :selectedFlight="selectedFlight"
             @close="aiPanelVisible = false"
         />
 

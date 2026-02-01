@@ -116,6 +116,14 @@ const props = defineProps({
     bottomNavCollapsed: {
         type: Boolean,
         default: false
+    },
+    trackedAircraft: {
+        type: Array,
+        default: () => []
+    },
+    selectedFlight: {
+        type: Object,
+        default: null
     }
 });
 
