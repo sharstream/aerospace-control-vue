@@ -2,27 +2,91 @@
     <Motion
         tag="div"
         class="ai-panel-dual"
-        :class="{ visible }"
+        :class="{ visible, dragging: isPanelDragging, resizing: isResizing }"
+        :style="{
+            left: `${position.x}px`,
+            top: `${position.y}px`,
+            width: `${dimensions.width}px`,
+            height: `${dimensions.height}px`
+        }"
         :initial="{ opacity: 0, y: 20, scale: 0.95 }"
         :animate="visible ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 20, scale: 0.95 }"
         :transition="{ type: 'spring', stiffness: 300, damping: 30 }"
     >
-        <Motion
-            tag="button"
-            class="close-fab"
-            title="Close AI Assistant"
-            :whileHover="{ scale: 1.1, rotate: 90 }"
-            :whileTap="{ scale: 0.95 }"
-            :transition="{ type: 'spring', stiffness: 400, damping: 15 }"
-            @click="$emit('close')"
+        <!-- Draggable Header -->
+        <div
+            class="panel-header"
+            @mousedown="startDrag"
         >
-            <svg
-                fill="currentColor"
-                viewBox="0 0 24 24"
+            <div class="header-content">
+                <svg
+                    class="header-icon"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
+                </svg>
+                <h2 class="header-title">Commander Atlas</h2>
+            </div>
+            <Motion
+                tag="button"
+                class="close-fab"
+                title="Close AI Assistant"
+                :whileHover="{ scale: 1.1, rotate: 90 }"
+                :whileTap="{ scale: 0.95 }"
+                :transition="{ type: 'spring', stiffness: 400, damping: 15 }"
+                @click.stop="$emit('close')"
             >
-                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-            </svg>
-        </Motion>
+                <svg
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                </svg>
+            </Motion>
+        </div>
+
+        <!-- Resize Handles -->
+        <div
+            class="resize-handle resize-n"
+            :style="{ cursor: getCursorForDirection('n') }"
+            @mousedown.stop="startPanelResize('n', $event)"
+        />
+        <div
+            class="resize-handle resize-s"
+            :style="{ cursor: getCursorForDirection('s') }"
+            @mousedown.stop="startPanelResize('s', $event)"
+        />
+        <div
+            class="resize-handle resize-e"
+            :style="{ cursor: getCursorForDirection('e') }"
+            @mousedown.stop="startPanelResize('e', $event)"
+        />
+        <div
+            class="resize-handle resize-w"
+            :style="{ cursor: getCursorForDirection('w') }"
+            @mousedown.stop="startPanelResize('w', $event)"
+        />
+        <div
+            class="resize-handle resize-ne"
+            :style="{ cursor: getCursorForDirection('ne') }"
+            @mousedown.stop="startPanelResize('ne', $event)"
+        />
+        <div
+            class="resize-handle resize-nw"
+            :style="{ cursor: getCursorForDirection('nw') }"
+            @mousedown.stop="startPanelResize('nw', $event)"
+        />
+        <div
+            class="resize-handle resize-se"
+            :style="{ cursor: getCursorForDirection('se') }"
+            @mousedown.stop="startPanelResize('se', $event)"
+        />
+        <div
+            class="resize-handle resize-sw"
+            :style="{ cursor: getCursorForDirection('sw') }"
+            @mousedown.stop="startPanelResize('sw', $event)"
+        />
 
         <div
             ref="panelContainer"
@@ -86,6 +150,8 @@ import {
     mapSystemContextToPreview
 } from '@shared/utils/previewDataMappers';
 import { usePanelResize } from './composables/usePanelResize';
+import { useDraggable } from './composables/useDraggable';
+import { useResizable } from './composables/useResizable';
 import ChatInterface from './components/chat/ChatInterface.vue';
 import DataPreviewPanel from './components/preview/DataPreviewPanel.vue';
 import ResizableHandle from './components/ResizableHandle.vue';
@@ -132,6 +198,24 @@ defineEmits(['close']);
 // Panel resize management
 const panelContainer = ref(null);
 const { leftWidth, rightWidth, isDragging, startResize } = usePanelResize(panelContainer);
+
+// Draggable and resizable functionality
+const { position, isDragging: isPanelDragging, startDrag, resetPosition } = useDraggable('ai-chat-panel-position');
+const {
+    dimensions,
+    isResizing,
+    resizeDirection,
+    startResize: startPanelResize,
+    resetDimensions,
+    getCursorForDirection
+} = useResizable('ai-chat-panel-dimensions', {
+    width: 1400,
+    height: 800,
+    minWidth: 800,
+    minHeight: 500,
+    maxWidth: window.innerWidth - 100,
+    maxHeight: window.innerHeight - 100
+});
 
 // Chat state
 const messages = ref([]);
@@ -781,12 +865,6 @@ onBeforeUnmount(() => {
 <style scoped>
 .ai-panel-dual {
     position: fixed;
-    bottom: v-bind(bottomPosition);
-    right: 20px;
-    width: 85vw;
-    max-width: 1400px;
-    height: 80vh;
-    max-height: 800px;
     background: linear-gradient(
         135deg,
         rgb(15 23 42 / 72%) 0%,
@@ -809,18 +887,57 @@ onBeforeUnmount(() => {
     will-change: transform, opacity;
 }
 
+.ai-panel-dual.dragging {
+    cursor: move;
+    user-select: none;
+}
+
+.ai-panel-dual.resizing {
+    user-select: none;
+}
+
 .ai-panel-dual.visible {
     opacity: 1;
     transform: translateY(0) scale(1);
     pointer-events: all;
 }
 
+.panel-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: rgb(15 23 42 / 50%);
+    border-bottom: 1px solid rgb(148 163 184 / 15%);
+    cursor: move;
+    user-select: none;
+    z-index: 1001;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-icon {
+    width: 24px;
+    height: 24px;
+    color: rgb(96 165 250);
+}
+
+.header-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: rgb(226 232 240);
+    letter-spacing: -0.01em;
+}
+
 .close-fab {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
     background: rgb(255 255 255 / 8%);
     border: 1px solid rgb(148 163 184 / 20%);
     border-radius: var(--radius-lg);
@@ -828,7 +945,6 @@ onBeforeUnmount(() => {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
     color: rgb(226 232 240 / 90%);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
@@ -843,15 +959,83 @@ onBeforeUnmount(() => {
 }
 
 .close-fab svg {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
+}
+
+/* Resize Handles */
+.resize-handle {
+    position: absolute;
+    background: transparent;
+    z-index: 1000;
+}
+
+.resize-handle:hover {
+    background: rgb(96 165 250 / 20%);
+}
+
+.resize-n,
+.resize-s {
+    width: 100%;
+    height: 6px;
+    left: 0;
+}
+
+.resize-n {
+    top: 0;
+}
+
+.resize-s {
+    bottom: 0;
+}
+
+.resize-e,
+.resize-w {
+    width: 6px;
+    height: 100%;
+    top: 0;
+}
+
+.resize-e {
+    right: 0;
+}
+
+.resize-w {
+    left: 0;
+}
+
+.resize-ne,
+.resize-nw,
+.resize-se,
+.resize-sw {
+    width: 16px;
+    height: 16px;
+}
+
+.resize-ne {
+    top: 0;
+    right: 0;
+}
+
+.resize-nw {
+    top: 0;
+    left: 0;
+}
+
+.resize-se {
+    bottom: 0;
+    right: 0;
+}
+
+.resize-sw {
+    bottom: 0;
+    left: 0;
 }
 
 .panel-container {
     display: flex;
-    height: 100%;
+    height: calc(100% - 65px); /* Account for header height */
     overflow: hidden;
-    border-radius: var(--radius-2xl);
 }
 
 .panel-left,
