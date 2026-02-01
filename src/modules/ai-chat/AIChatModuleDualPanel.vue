@@ -399,71 +399,76 @@ const sendMessageWithMCP = async (query) => {
 
 // Determine tool execution based on query
 const determineToolExecution = (query) => {
+    // Get tracked aircraft with priority: selectedFlight > first tracked aircraft > first flight
+    const trackedFlight = props.selectedFlight ||
+                          (props.trackedAircraft && props.trackedAircraft.length > 0
+                              ? props.flights.find(f => f.icao24 === props.trackedAircraft[0])
+                              : null) ||
+                          props.flights[0];
+
+    if (!trackedFlight) {
+        console.warn('No tracked aircraft available for tool execution');
+        return null;
+    }
+
     if (query.includes('fuel') || query.includes('consumption')) {
-        const flight = props.flights[0];
-        if (flight) {
-            return {
-                toolName: 'analyze_fuel_consumption',
-                params: {
-                    flight_id: flight.id,
-                    current_fuel_level: 5000,
-                    fuel_capacity: 8000,
-                    distance_traveled: 500,
-                    distance_remaining: 300,
-                    current_altitude: Number(flight.altitude) || 35000,
-                    airspeed: Number(flight.speed) || 450
-                }
-            };
-        }
+        return {
+            toolName: 'analyze_fuel_consumption',
+            params: {
+                flight_id: trackedFlight.id || trackedFlight.icao24 || 'unknown',
+                current_fuel_level: 5000,
+                fuel_capacity: 8000,
+                distance_traveled: 500,
+                distance_remaining: 300,
+                current_altitude: Number(trackedFlight.altitude) || 35000,
+                airspeed: Number(trackedFlight.speed) || 450
+            }
+        };
     }
 
     if (query.includes('pressure') || query.includes('cabin')) {
-        const flight = props.flights[0];
         return {
             toolName: 'detect_pressure_anomaly',
             params: {
                 cabin_pressure: 11.3,
-                current_altitude: flight ? (Number(flight.altitude) || 35000) : 35000,
+                current_altitude: Number(trackedFlight.altitude) || 35000,
                 rate_of_change: 0.1
             }
         };
     }
 
     if (query.includes('trajectory') || query.includes('path')) {
-        const flight = props.flights[0];
-        if (flight) {
-            // Use flight data if available, fallback to defaults
-            const position = flight.path && flight.path.length > 0
-                ? {
-                    lat: Number(flight.path[0][0]) || 33.7490,
-                    lon: Number(flight.path[0][1]) || -84.3880,
-                    altitude: Number(flight.altitude) || 35000
-                  }
-                : {
-                    lat: 33.7490,
-                    lon: -84.3880,
-                    altitude: Number(flight.altitude) || 35000
-                  };
+        // Use flight data if available, fallback to defaults
+        const position = trackedFlight.path && trackedFlight.path.length > 0
+            ? {
+                lat: Number(trackedFlight.path[0][0]) || trackedFlight.lat || 33.7490,
+                lon: Number(trackedFlight.path[0][1]) || trackedFlight.lon || -84.3880,
+                altitude: Number(trackedFlight.altitude) || 35000
+              }
+            : {
+                lat: Number(trackedFlight.lat) || 33.7490,
+                lon: Number(trackedFlight.lon) || -84.3880,
+                altitude: Number(trackedFlight.altitude) || 35000
+              };
 
-            return {
-                toolName: 'predict_trajectory',
-                params: {
-                    current_position: position,
-                    velocity: {
-                        groundspeed: Number(flight.speed) || 450,
-                        vertical_rate: 0
-                    },
-                    heading: Number(flight.heading) || 90
-                }
-            };
-        }
+        return {
+            toolName: 'predict_trajectory',
+            params: {
+                current_position: position,
+                velocity: {
+                    groundspeed: Number(trackedFlight.speed) || 450,
+                    vertical_rate: Number(trackedFlight.verticalRate) || 0
+                },
+                heading: Number(trackedFlight.heading) || 90
+            }
+        };
     }
 
     if (query.includes('status') || query.includes('systems')) {
         return {
             toolName: 'get_aircraft_status',
             params: {
-                flight_id: 'sample-flight',
+                flight_id: trackedFlight.id || trackedFlight.icao24 || 'unknown',
                 systems_data: {
                     fuel: { percentage: 65 },
                     pressure: { normal: true },
