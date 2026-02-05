@@ -30,7 +30,10 @@ export class MCPClient {
             });
 
             if (!response.ok) {
-                throw new Error(`MCP connection failed: ${response.status}`);
+                const error = await response.json().catch(() => ({}));
+                const err = new Error(error.detail || `MCP connection failed: ${response.status}`);
+                err.status = response.status;
+                throw err;
             }
 
             const data = await response.json();
@@ -77,7 +80,10 @@ export class MCPClient {
             });
 
             if (!response.ok) {
-                throw new Error(`Tool injection failed: ${response.status}`);
+                const error = await response.json().catch(() => ({}));
+                const err = new Error(error.detail || `Tool injection failed: ${response.status}`);
+                err.status = response.status;
+                throw err;
             }
 
             const toolsPayload = await response.json();
@@ -92,7 +98,7 @@ export class MCPClient {
             return toolsPayload; // { tools: [...], skills: [...], metadata: {...} }
         } catch (error) {
             console.error('Tool injection failed:', error);
-            return { tools: [], skills: [], metadata: {} };
+            throw error;
         }
     }
 
@@ -119,8 +125,10 @@ export class MCPClient {
             });
 
             if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.detail || `Tool execution failed: ${response.status}`);
+                const error = await response.json().catch(() => ({}));
+                const err = new Error(error.detail || `Tool execution failed: ${response.status}`);
+                err.status = response.status;
+                throw err;
             }
 
             const result = await response.json();
