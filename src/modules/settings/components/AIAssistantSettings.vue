@@ -185,19 +185,47 @@
                 <div class="info-grid">
                     <div class="info-item">
                         <span class="info-label">{{ $Labels.aiAssistant.session.sessionIdLabel }}</span>
-                        <span class="info-value">{{ sessionId || $Labels.aiAssistant.session.notCreated }}</span>
+                        <span class="info-value session-id-text">{{ sessionId || $Labels.aiAssistant.session.notCreated }}</span>
                     </div>
                     <div class="info-item">
                         <span class="info-label">{{ $Labels.aiAssistant.session.mcpStatusLabel }}</span>
-                        <span :class="['status-badge', mcpConnected ? 'status-connected' : 'status-disconnected']">
-                            <span class="status-dot"></span>
-                            {{ mcpConnected ? $Labels.aiAssistant.session.connected : $Labels.aiAssistant.session.disconnected }}
-                        </span>
+                        <div class="status-group">
+                            <span :class="['status-badge', mcpConnected ? 'status-connected' : 'status-disconnected']">
+                                <span class="status-dot"></span>
+                                {{ mcpConnected ? $Labels.aiAssistant.session.connected : $Labels.aiAssistant.session.disconnected }}
+                            </span>
+                            <button 
+                                v-if="!mcpConnected && sessionId"
+                                class="action-btn small"
+                                @click="createSession"
+                            >
+                                {{ $Labels.common.actions.retry }}
+                            </button>
+                        </div>
                     </div>
                     <div class="info-item">
                         <span class="info-label">{{ $Labels.aiAssistant.session.availableToolsLabel }}</span>
                         <span class="info-value">{{ $replacePlaceholders($Labels.aiAssistant.session.toolsCount, { count: toolCount }) }}</span>
                     </div>
+                </div>
+                
+                <!-- Agile Session Controls -->
+                <div class="session-actions">
+                    <button 
+                        class="action-btn secondary"
+                        @click="createSession"
+                    >
+                        <span class="icon">🔄</span>
+                        Refresh Session
+                    </button>
+                    <button 
+                        class="action-btn danger"
+                        @click="revokeSession"
+                        :disabled="!sessionId"
+                    >
+                        <span class="icon">🗑️</span>
+                        Revoke & Delete
+                    </button>
                 </div>
             </div>
 
@@ -403,6 +431,11 @@ export default {
                 // Store session ID
                 localStorage.setItem('ai_session_id', sessionId.value);
 
+                // Dispatch event for same-tab reactivity
+                window.dispatchEvent(new CustomEvent('ai-session-changed', { 
+                    detail: { sessionId: sessionId.value } 
+                }));
+
                 // Connect to MCP server
                 mcpClient.value = new MCPClient(sessionId.value);
                 const result = await mcpClient.value.connect();
@@ -416,13 +449,35 @@ export default {
                 );
             } catch (error) {
                 console.error('Session creation failed:', error);
-                sessionEnabled.value = false;
+                
+                // Don't immediately disable, stay in "disconnected" state if we had a previous session
+                if (!sessionId.value) {
+                    sessionEnabled.value = false;
+                }
 
                 const message = $replacePlaceholders(
                     $Labels.aiAssistant.validation.sessionCreationFailed,
                     { error: error.message }
                 );
                 showError(message, $Labels.aiAssistant.title);
+            }
+        };
+
+        const revokeSession = async () => {
+            if (!sessionId.value) return;
+            
+            try {
+                // Delete session on backend
+                await fetch(`http://localhost:8000/api/v1/ai-session/${sessionId.value}`, {
+                    method: 'DELETE'
+                });
+                
+                await disableSession();
+                showSuccess('AI session revoked and deleted successfully', 'Session Revoked');
+            } catch (error) {
+                console.error('Revoke failed:', error);
+                showError('Failed to revoke session locally, but disabling UI.', 'Error');
+                await disableSession();
             }
         };
 
@@ -447,6 +502,11 @@ export default {
                 sessionId.value = null;
                 localStorage.removeItem('ai_session_id');
 
+                // Dispatch event for same-tab reactivity
+                window.dispatchEvent(new CustomEvent('ai-session-changed', { 
+                    detail: { sessionId: null } 
+                }));
+
                 showSuccess('AI session disabled successfully', 'Session Disabled');
             } catch (error) {
                 console.error('Session disable failed:', error);
@@ -461,6 +521,11 @@ export default {
                 localStorage.setItem(`ai_key_${activeProvider.value}`, encrypted);
 
                 showSuccess($Labels.aiAssistant.validation.configSaved, 'Success');
+                
+                // Proactively refresh session if already enabled
+                if (sessionEnabled.value) {
+                    await createSession();
+                }
             } catch (error) {
                 console.error('Save failed:', error);
 
@@ -1206,5 +1271,63 @@ export default {
     .info-grid {
         grid-template-columns: 1fr;
     }
+}
+
+.session-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgb(148 163 184 / 15%);
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.action-btn.secondary {
+    background: rgb(148 163 184 / 15%);
+    color: #e0e0e0;
+}
+
+.action-btn.secondary:hover {
+    background: rgb(148 163 184 / 25%);
+}
+
+.action-btn.danger {
+    background: rgb(239 68 68 / 15%);
+    color: #ef4444;
+}
+
+.action-btn.danger:hover {
+    background: rgb(239 68 68 / 25%);
+}
+
+.action-btn.small {
+    padding: 4px 10px;
+    font-size: 11px;
+    border-radius: 4px;
+}
+
+.status-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.session-id-text {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 13px;
+    color: #5b9dd1;
+    word-break: break-all;
 }
 </style>

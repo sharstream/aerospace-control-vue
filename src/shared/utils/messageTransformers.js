@@ -92,29 +92,38 @@ export function createTextMessage(role, content) {
  * Create message with tool invocation and result
  *
  * @param {string} toolName - Name of the tool
- * @param {Object} params - Tool parameters
  * @param {Object} result - Tool result data
- * @param {string} previewType - Type of preview (flight-data, weather, route, system)
+ * @param {string} summary - Optional human-readable summary
+ * @param {string} status - Invocation status (completed, error)
+ * @param {string} previewType - Type of preview
+ * @param {Object} previewData - Data for preview panel
  * @returns {Object} New format message
  */
-export function createToolResultMessage(toolName, params, result, previewType = null) {
+export function createToolResultMessage(
+    toolName,
+    result,
+    summary = null,
+    status = 'completed',
+    previewType = null,
+    previewData = null
+) {
     const parts = [
         {
             type: 'tool-invocation',
             content: {
                 name: toolName,
-                params,
-                status: 'completed'
+                params: result.params || {}, // If params are attached to result or passed separately
+                status
             }
         },
         {
             type: 'tool-result',
             content: {
                 toolName,
-                summary: result.summary || generateSummary(toolName, result),
-                previewType,
-                data: result,
-                error: result.error || null
+                summary: summary || result.summary || generateSummary(toolName, result),
+                previewType: previewType || (result.preview ? result.preview.type : null),
+                data: previewData || result.data || result,
+                error: status === 'error' ? (result.error || result.message || 'Unknown error') : null
             }
         }
     ];

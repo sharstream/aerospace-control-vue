@@ -131,7 +131,7 @@
 </template>
 
 <script setup>
-import { ref, computed, defineProps, defineEmits, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, defineProps, defineEmits, onMounted, onBeforeUnmount, watch } from 'vue';
 import { Motion } from 'motion-v';
 import {
     generateOptimizedRoute,
@@ -335,8 +335,8 @@ const handleSendMessage = async (message) => {
 };
 
 // Initialize MCP client
-const initializeMCPClient = async () => {
-    const sessionId = localStorage.getItem('ai_session_id');
+const initializeMCPClient = async (forceSessionId = null) => {
+    const sessionId = forceSessionId || localStorage.getItem('ai_session_id');
     if (!sessionId) {
         console.log('No active AI session - MCP features disabled');
         return;
@@ -360,11 +360,36 @@ const initializeMCPClient = async () => {
                     'alert'
                 );
             });
+        } else {
+            console.error('MCP connection failed (success=false):', result.error);
+            mcpConnected.value = false;
+            
+            if (result.error && (result.error.includes('401') || result.error.includes('session'))) {
+                handleSessionError();
+            }
         }
     } catch (error) {
         console.error('MCP initialization failed:', error);
         mcpConnected.value = false;
+        
+        if (error.message.includes('401') || error.message.includes('session')) {
+            handleSessionError();
+        }
     }
+};
+
+// Handle session errors (expired or invalid)
+const handleSessionError = () => {
+    console.warn('AI Session is invalid or expired. Clearing local session.');
+    localStorage.removeItem('ai_session_id');
+    mcpConnected.value = false;
+    mcpClient.value = null;
+    
+    addMessage(
+        'Session Expired',
+        'Your AI session has expired or is no longer valid. Please go to Settings to reconnect the AI Assistant.',
+        'alert'
+    );
 };
 
 // Send message with MCP
@@ -393,7 +418,12 @@ const sendMessageWithMCP = async (query) => {
         });
     } catch (error) {
         console.error('MCP message processing failed:', error);
-        addMessage('Error', `Failed to process request: ${error.message}`, 'alert');
+        
+        if (error.message.includes('Invalid or disabled session') || error.status === 401) {
+            handleSessionError();
+        } else {
+            addMessage('Error', `Failed to process request: ${error.message}`, 'alert');
+        }
     }
 };
 
@@ -485,9 +515,10 @@ const determineToolExecution = (query) => {
         return {
             toolName: 'detect_pressure_anomaly',
             params: {
-                cabin_pressure: Math.max(8.0, Math.min(14.7, expectedCabinPressure)).toFixed(2),
+                flight_id: trackedFlight.icao24 || trackedFlight.callsign || trackedFlight.id || 'unknown',
+                cabin_pressure: Number(Math.max(8.0, Math.min(14.7, expectedCabinPressure)).toFixed(2)),
                 current_altitude: estimates.altitudeFeet,
-                rate_of_change: Math.abs(pressureRateOfChange).toFixed(2)
+                rate_of_change: Number(Math.abs(pressureRateOfChange).toFixed(2))
             }
         };
     }
@@ -944,17 +975,58 @@ const provideSystemOverview = () => {
     previewData.value = mapSystemContextToPreview(context);
 };
 
+// Storage change listener for session reactivity
+const handleStorageChange = (e) => {
+    if (e.key === 'ai_session_id') {
+        if (e.newValue) {
+            console.log('⚡ AI Session ID refreshed externally. Reconnecting...');
+            initializeMCPClient(e.newValue);
+        } else {
+            console.log('⚡ AI Session ID cleared externally. Disconnecting...');
+            mcpConnected.value = false;
+            mcpClient.value = null;
+        }
+    }
+};
+
+// Custom event listener for same-tab session changes
+const handleSessionChanged = (e) => {
+    if (e.detail && e.detail.sessionId) {
+        console.log('⚡ AI Session changed (internal). Reconnecting...');
+        initializeMCPClient(e.detail.sessionId);
+    } else {
+        console.log('⚡ AI Session cleared (internal). Disconnecting...');
+        mcpConnected.value = false;
+        mcpClient.value = null;
+    }
+};
+
 // Lifecycle hooks
 onMounted(() => {
     initializeMCPClient();
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('ai-session-changed', handleSessionChanged);
 });
 
 onBeforeUnmount(() => {
+    window.removeEventListener('storage', handleStorageChange);
+    window.removeEventListener('ai-session-changed', handleSessionChanged);
     if (mcpClient.value) {
         mcpClient.value.disconnect();
     }
     if (messageBus.value) {
         messageBus.value.disconnect();
+    }
+});
+
+// Watch for panel becoming visible to ensure we have the latest session
+watch(() => props.visible, (isVisible) => {
+    if (isVisible) {
+        const storedSessionId = localStorage.getItem('ai_session_id');
+        if (storedSessionId && (!mcpClient.value || mcpClient.value.sessionId !== storedSessionId)) {
+            console.log('⚡ AI Panel opened. Refreshing session state...');
+            initializeMCPClient(storedSessionId);
+        }
     }
 });
 </script>
