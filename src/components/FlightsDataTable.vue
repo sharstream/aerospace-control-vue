@@ -57,9 +57,9 @@
               <th>Route</th>
               <th>Aircraft</th>
               <th>Status</th>
+              <th>Tracking</th>
               <th>Altitude</th>
               <th>Systems</th>
-              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -73,13 +73,13 @@
                 <div class="flight-cell-content">
                   <div
                     class="airline-logo"
-                    :style="{ background: airlines[flight.airline].color }"
+                    :style="{ background: airlines[flight.airline]?.color || '#4a9dd7' }"
                   >
-                    {{ airlines[flight.airline].logo }}
+                    {{ airlines[flight.airline]?.logo || '✈️' }}
                   </div>
                   <div class="flight-info">
                     <div class="flight-number">{{ flight.name }}</div>
-                    <div class="airline-name">{{ airlines[flight.airline].name }}</div>
+                    <div class="airline-name">{{ airlines[flight.airline]?.name || 'Unknown' }}</div>
                   </div>
                 </div>
               </td>
@@ -103,6 +103,14 @@
                   {{ flight.status }}
                 </span>
               </td>
+              <td class="tracking-cell">
+                <FlightsTrackingPill
+                  :flight="flight"
+                  :isTracked="isTracked(flight)"
+                  @track="handleTrack"
+                  @untrack="handleUntrack"
+                />
+              </td>
               <td class="altitude-cell">{{ flight.altitude }}</td>
               <td>
                 <span
@@ -115,21 +123,6 @@
                   v-else
                   class="systems-badge operational"
                 >N/A</span>
-              </td>
-              <td class="action-cell">
-                <button
-                  class="action-btn"
-                  @click.stop="$emit('flight-details', flight)"
-                >
-                  <svg
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                    width="18"
-                    height="18"
-                  >
-                    <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
-                  </svg>
-                </button>
               </td>
             </tr>
           </tbody>
@@ -167,8 +160,13 @@
 </template>
 
 <script>
+import FlightsTrackingPill from './FlightsTrackingPill.vue';
+
 export default {
   name: 'FlightsDataTable',
+  components: {
+    FlightsTrackingPill
+  },
   props: {
     flights: {
       type: Array,
@@ -181,12 +179,16 @@ export default {
     bottomNavCollapsed: {
       type: Boolean,
       default: false
+    },
+    trackedAircraft: {
+      type: Array,
+      default: () => []
     }
   },
-  emits: ['view-all', 'flight-details', 'flight-click', 'collapse-state-change'],
+  emits: ['view-all', 'flight-click', 'track-aircraft', 'untrack-aircraft', 'collapse-state-change'],
   data() {
     return {
-      collapsed: true
+      collapsed: true // Default to collapsed
     };
   },
   computed: {
@@ -205,6 +207,15 @@ export default {
   methods: {
     handleFlightClick(flight) {
       this.$emit('flight-click', flight);
+    },
+    isTracked(flight) {
+      return flight.icao24 && this.trackedAircraft.includes(flight.icao24);
+    },
+    handleTrack(flight) {
+      this.$emit('track-aircraft', flight);
+    },
+    handleUntrack(flight) {
+      this.$emit('untrack-aircraft', flight);
     }
   }
 };
@@ -478,28 +489,10 @@ export default {
   border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
-.action-cell {
-  width: 60px;
+/* Tracking Cell */
+.tracking-cell {
+  width: 120px;
   text-align: center;
-}
-
-.action-btn {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #888;
-  padding: 6px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.action-btn:hover {
-  background: rgba(74, 157, 215, 0.2);
-  border-color: rgba(74, 157, 215, 0.3);
-  color: #4a9dd7;
 }
 
 /* Collapsed State */

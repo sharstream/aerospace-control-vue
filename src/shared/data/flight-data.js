@@ -1,15 +1,33 @@
 import { airports } from './airports.js';
 
-// Dynamic flight data with detailed information
+/**
+ * Mock flight data following OpenSky API structure
+ * This matches the structure returned by transformAircraftData() in api.js
+ *
+ * Key OpenSky API fields:
+ * - icao24: 6-character hex identifier (e.g., "abc123")
+ * - callsign: Flight number/callsign
+ * - origin_country: Country of origin
+ * - on_ground: Boolean indicating if aircraft is on ground
+ * - last_contact: Unix timestamp of last contact
+ * - altitude: Altitude in meters
+ * - velocity: Speed in m/s
+ * - heading: Direction in degrees (0-360)
+ * - vertical_rate: Climb/descent rate in m/s
+ * - category: Aircraft category code
+ */
 export const flightData = [
     {
+        // OpenSky API fields (required for tracking)
+        id: 'a12b34-0',
+        icao24: 'a12b34',
         name: 'DL1234',
         airline: 'DL',
-        from: 'SFO',
-        to: 'JFK',
+        from: 'United States',
+        to: 'In Transit',
         path: [airports.SFO.coords, airports.JFK.coords],
         aircraft: 'A320neo',
-        status: 'On Time',
+        status: 'In Flight',
         statusClass: 'on-time',
         departure: '10:30 AM',
         arrival: '07:15 PM',
@@ -18,8 +36,25 @@ export const flightData = [
         bottleneck: false,
         progress: 0.15,
         speed: 0.0008,
-        altitude: '35,000 ft',
+        altitude: '10668m', // 35,000 ft = 10,668 meters
+        velocity: '235 m/s', // ~470 knots
+        heading: '90°', // Eastbound
+        vertical_rate: '0 m/s', // Level flight
         passengers: 156,
+        category: 3, // Category 3: Large aircraft
+        // Raw OpenSky data (used by trajectory tracking)
+        rawData: {
+            icao24: 'a12b34',
+            callsign: 'DL1234',
+            origin_country: 'United States',
+            on_ground: false,
+            last_contact: Math.floor(Date.now() / 1000), // Current Unix timestamp
+            altitude: 10668, // meters
+            velocity: 235, // m/s
+            heading: 90, // degrees
+            vertical_rate: 0, // m/s
+            category: 3
+        },
         systems: {
             overall: { health: 98, statusClass: 'operational', label: 'SYSTEMS OK' },
             electrical: {
@@ -90,6 +125,9 @@ export const flightData = [
         }
     },
     {
+        // OpenSky API fields (required for tracking)
+        id: 'b23c45-1',
+        icao24: 'b23c45',
         name: 'AA2567',
         airline: 'AA',
         from: 'LAX',
@@ -105,8 +143,25 @@ export const flightData = [
         bottleneck: true,
         progress: 0.35,
         speed: 0.0005,
-        altitude: '41,000 ft',
+        altitude: '12497m', // 41,000 ft = 12,497 meters
+        velocity: '250 m/s', // ~485 knots
+        heading: '45°', // Northeast
+        vertical_rate: '0 m/s', // Level flight
         passengers: 312,
+        category: 4, // Category 4: Heavy aircraft
+        // Raw OpenSky data (used by trajectory tracking)
+        rawData: {
+            icao24: 'b23c45',
+            callsign: 'AA2567',
+            origin_country: 'United States',
+            on_ground: false,
+            last_contact: Math.floor(Date.now() / 1000),
+            altitude: 12497, // meters
+            velocity: 250, // m/s
+            heading: 45, // degrees
+            vertical_rate: 0, // m/s
+            category: 4
+        },
         systems: {
             overall: { health: 86, statusClass: 'warning', label: 'SYSTEMS OK' },
             electrical: {
@@ -177,6 +232,9 @@ export const flightData = [
         }
     },
     {
+        // OpenSky API fields (required for tracking)
+        id: 'c34d56-2',
+        icao24: 'c34d56',
         name: 'UA789',
         airline: 'UA',
         from: 'ORD',
@@ -192,8 +250,25 @@ export const flightData = [
         bottleneck: false,
         progress: 0.55,
         speed: 0.0006,
-        altitude: '38,000 ft',
+        altitude: '11582m', // 38,000 ft = 11,582 meters
+        velocity: '240 m/s', // ~466 knots
+        heading: '75°', // East-Northeast
+        vertical_rate: '0 m/s', // Level flight
         passengers: 243,
+        category: 3, // Category 3: Large aircraft
+        // Raw OpenSky data (used by trajectory tracking)
+        rawData: {
+            icao24: 'c34d56',
+            callsign: 'UA789',
+            origin_country: 'United States',
+            on_ground: false,
+            last_contact: Math.floor(Date.now() / 1000),
+            altitude: 11582, // meters
+            velocity: 240, // m/s
+            heading: 75, // degrees
+            vertical_rate: 0, // m/s
+            category: 3
+        },
         systems: {
             overall: { health: 95, statusClass: 'operational', label: 'SYSTEMS OK' },
             electrical: {
@@ -264,6 +339,9 @@ export const flightData = [
         }
     },
     {
+        // OpenSky API fields (required for tracking)
+        id: 'd45e67-3',
+        icao24: 'd45e67',
         name: 'DL8934',
         airline: 'DL',
         from: 'MIA',
@@ -279,10 +357,30 @@ export const flightData = [
         bottleneck: false,
         progress: 0.72,
         speed: 0.001,
-        altitude: '39,000 ft',
-        passengers: 298
+        altitude: '11887m', // 39,000 ft = 11,887 meters
+        velocity: '245 m/s', // ~476 knots
+        heading: '60°', // Northeast
+        vertical_rate: '0 m/s', // Level flight
+        passengers: 298,
+        category: 3, // Category 3: Large aircraft
+        // Raw OpenSky data (used by trajectory tracking)
+        rawData: {
+            icao24: 'd45e67',
+            callsign: 'DL8934',
+            origin_country: 'United States',
+            on_ground: false,
+            last_contact: Math.floor(Date.now() / 1000),
+            altitude: 11887, // meters
+            velocity: 245, // m/s
+            heading: 60, // degrees
+            vertical_rate: 0, // m/s
+            category: 3
+        }
     },
     {
+        // OpenSky API fields (required for tracking)
+        id: 'e56f78-4',
+        icao24: 'e56f78',
         name: 'AA567',
         airline: 'AA',
         from: 'BOS',
@@ -298,10 +396,30 @@ export const flightData = [
         bottleneck: false,
         progress: 0.12,
         speed: 0.0009,
-        altitude: '42,000 ft',
-        passengers: 354
+        altitude: '12802m', // 42,000 ft = 12,802 meters
+        velocity: '255 m/s', // ~495 knots
+        heading: '300°', // Northwest
+        vertical_rate: '0 m/s', // Level flight
+        passengers: 354,
+        category: 4, // Category 4: Heavy aircraft
+        // Raw OpenSky data (used by trajectory tracking)
+        rawData: {
+            icao24: 'e56f78',
+            callsign: 'AA567',
+            origin_country: 'United States',
+            on_ground: false,
+            last_contact: Math.floor(Date.now() / 1000),
+            altitude: 12802, // meters
+            velocity: 255, // m/s
+            heading: 300, // degrees
+            vertical_rate: 0, // m/s
+            category: 4
+        }
     },
     {
+        // OpenSky API fields (required for tracking)
+        id: 'f67g89-5',
+        icao24: 'f67g89',
         name: 'WN1847',
         airline: 'WN',
         from: 'DEN',
@@ -317,10 +435,30 @@ export const flightData = [
         bottleneck: false,
         progress: 0.45,
         speed: 0.001,
-        altitude: '33,000 ft',
-        passengers: 145
+        altitude: '10058m', // 33,000 ft = 10,058 meters
+        velocity: '230 m/s', // ~447 knots
+        heading: '255°', // West-Southwest
+        vertical_rate: '0 m/s', // Level flight
+        passengers: 145,
+        category: 2, // Category 2: Medium aircraft
+        // Raw OpenSky data (used by trajectory tracking)
+        rawData: {
+            icao24: 'f67g89',
+            callsign: 'WN1847',
+            origin_country: 'United States',
+            on_ground: false,
+            last_contact: Math.floor(Date.now() / 1000),
+            altitude: 10058, // meters
+            velocity: 230, // m/s
+            heading: 255, // degrees
+            vertical_rate: 0, // m/s
+            category: 2
+        }
     },
     {
+        // OpenSky API fields (required for tracking)
+        id: 'g78h90-6',
+        icao24: 'g78h90',
         name: 'LH456',
         airline: 'LH',
         from: 'FRA',
@@ -336,10 +474,30 @@ export const flightData = [
         bottleneck: true,
         progress: 0.28,
         speed: 0.0007,
-        altitude: '40,000 ft',
-        passengers: 287
+        altitude: '12192m', // 40,000 ft = 12,192 meters
+        velocity: '248 m/s', // ~482 knots
+        heading: '285°', // West-Northwest
+        vertical_rate: '0 m/s', // Level flight
+        passengers: 287,
+        category: 3, // Category 3: Large aircraft
+        // Raw OpenSky data (used by trajectory tracking)
+        rawData: {
+            icao24: 'g78h90',
+            callsign: 'LH456',
+            origin_country: 'Germany',
+            on_ground: false,
+            last_contact: Math.floor(Date.now() / 1000),
+            altitude: 12192, // meters
+            velocity: 248, // m/s
+            heading: 285, // degrees
+            vertical_rate: 0, // m/s
+            category: 3
+        }
     },
     {
+        // OpenSky API fields (required for tracking)
+        id: 'h89i01-7',
+        icao24: 'h89i01',
         name: 'UA1523',
         airline: 'UA',
         from: 'SEA',
@@ -355,10 +513,30 @@ export const flightData = [
         bottleneck: false,
         progress: 0.65,
         speed: 0.0009,
-        altitude: '36,000 ft',
-        passengers: 152
+        altitude: '10973m', // 36,000 ft = 10,973 meters
+        velocity: '238 m/s', // ~462 knots
+        heading: '105°', // East-Southeast
+        vertical_rate: '0 m/s', // Level flight
+        passengers: 152,
+        category: 2, // Category 2: Medium aircraft
+        // Raw OpenSky data (used by trajectory tracking)
+        rawData: {
+            icao24: 'h89i01',
+            callsign: 'UA1523',
+            origin_country: 'United States',
+            on_ground: false,
+            last_contact: Math.floor(Date.now() / 1000),
+            altitude: 10973, // meters
+            velocity: 238, // m/s
+            heading: 105, // degrees
+            vertical_rate: 0, // m/s
+            category: 2
+        }
     },
     {
+        // OpenSky API fields (required for tracking)
+        id: 'i90j12-8',
+        icao24: 'i90j12',
         name: 'DL2698',
         airline: 'DL',
         from: 'ATL',
@@ -374,10 +552,30 @@ export const flightData = [
         bottleneck: false,
         progress: 0.18,
         speed: 0.0008,
-        altitude: '37,000 ft',
-        passengers: 256
+        altitude: '11278m', // 37,000 ft = 11,278 meters
+        velocity: '242 m/s', // ~470 knots
+        heading: '70°', // East-Northeast
+        vertical_rate: '0 m/s', // Level flight
+        passengers: 256,
+        category: 3, // Category 3: Large aircraft
+        // Raw OpenSky data (used by trajectory tracking)
+        rawData: {
+            icao24: 'i90j12',
+            callsign: 'DL2698',
+            origin_country: 'United States',
+            on_ground: false,
+            last_contact: Math.floor(Date.now() / 1000),
+            altitude: 11278, // meters
+            velocity: 242, // m/s
+            heading: 70, // degrees
+            vertical_rate: 0, // m/s
+            category: 3
+        }
     },
     {
+        // OpenSky API fields (required for tracking)
+        id: 'j01k23-9',
+        icao24: 'j01k23',
         name: 'AA3421',
         airline: 'AA',
         from: 'DFW',
@@ -393,7 +591,24 @@ export const flightData = [
         bottleneck: false,
         progress: 0.52,
         speed: 0.0011,
-        altitude: '34,000 ft',
-        passengers: 148
+        altitude: '10363m', // 34,000 ft = 10,363 meters
+        velocity: '233 m/s', // ~453 knots
+        heading: '120°', // East-Southeast
+        vertical_rate: '0 m/s', // Level flight
+        passengers: 148,
+        category: 2, // Category 2: Medium aircraft
+        // Raw OpenSky data (used by trajectory tracking)
+        rawData: {
+            icao24: 'j01k23',
+            callsign: 'AA3421',
+            origin_country: 'United States',
+            on_ground: false,
+            last_contact: Math.floor(Date.now() / 1000),
+            altitude: 10363, // meters
+            velocity: 233, // m/s
+            heading: 120, // degrees
+            vertical_rate: 0, // m/s
+            category: 2
+        }
     }
 ];

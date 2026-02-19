@@ -130,6 +130,7 @@ export default {
       default: false
     }
   },
+  emits: ['legend-state-change'],
   data() {
     return {
       isCollapsed: true
@@ -151,6 +152,11 @@ export default {
       }
 
       return `${base}px`;
+    }
+  },
+  watch: {
+    isCollapsed(newVal) {
+      this.$emit('legend-state-change', newVal);
     }
   }
 };

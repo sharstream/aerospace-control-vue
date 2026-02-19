@@ -5,27 +5,36 @@
   >
     <!-- Map Module (always visible as base layer) -->
     <MapModule
+      ref="mapModule"
       :flights="flights"
       :weatherHazards="weatherHazards"
+      :selectedFlight="selectedFlight"
       @flight-click="handleFlightClick"
     />
 
     <!-- Map Controls and Legend (only visible when Live Map tab is active) -->
     <template v-if="activeView === 'map'">
-      <MapControls @control-action="handleMapControl" />
+      <MapControls
+        key="map-controls"
+        @control-action="handleMapControl"
+      />
       <AirspaceLegend
+        key="airspace-legend"
         :airlines="airlines"
         :flightsTableCollapsed="flightsTableCollapsed"
         :bottomNavCollapsed="bottomNavCollapsed"
       />
       <FlightsDataTable
         ref="flightsDataTable"
+        key="flights-table"
         :flights="flights"
         :airlines="airlines"
         :bottomNavCollapsed="bottomNavCollapsed"
+        :trackedAircraft="trackedAircraft"
         @view-all="changeView('flights')"
-        @flight-click="handleFlightClick"
-        @flight-details="handleFlightClick"
+        @flight-click="handleFlightTableClick"
+        @track-aircraft="handleTrackAircraft"
+        @untrack-aircraft="handleUntrackAircraft"
         @collapse-state-change="handleFlightsTableCollapseChange"
       />
     </template>
@@ -33,6 +42,7 @@
     <!-- Dashboard View Overlay -->
     <DashboardModule
       v-if="activeView === 'dashboard'"
+      key="dashboard"
       :flights="flights"
       :airlines="airlines"
       :aircraftModels="aircraftModels"
@@ -42,6 +52,7 @@
     <!-- Flights View Overlay -->
     <FlightsModule
       v-if="activeView === 'flights'"
+      key="flights"
       :flights="flights"
       :airlines="airlines"
     />
@@ -49,6 +60,7 @@
     <!-- Weather Module -->
     <WeatherModule
       v-if="activeView === 'weather'"
+      key="weather"
       :weatherHazards="weatherHazards"
       :flights="flights"
     />
@@ -56,6 +68,7 @@
     <!-- Analytics Module -->
     <AnalyticsModule
       v-if="activeView === 'analytics'"
+      key="analytics"
       :flights="flights"
       :airlines="airlines"
     />
@@ -63,6 +76,7 @@
     <!-- Settings Module -->
     <SettingsModule
       v-if="activeView === 'settings'"
+      key="settings"
     />
 
     <!-- AI Chat Panel -->
@@ -105,7 +119,7 @@
 
 <script>
 import {
-  flightData, airlines, aircraftModels, weatherHazards
+  airlines, aircraftModels, weatherHazards
 } from '@shared/data';
 import MapModule from './modules/map/MapModule.vue';
 import MapControls from './modules/map/components/MapControls.vue';
@@ -119,6 +133,7 @@ import AIChatModule from './modules/ai-chat/AIChatModule.vue';
 import BottomNavigation from './components/BottomNavigation.vue';
 import FlightsDataTable from './components/FlightsDataTable.vue';
 import { useUsageTracking } from './composables/useUsageTracking';
+import { useFlightsStore } from './stores/flights';
 
 export default {
   name: 'App',
@@ -135,28 +150,34 @@ export default {
     BottomNavigation,
     FlightsDataTable
   },
+  setup() {
+    const flightsStore = useFlightsStore();
+    return { flightsStore };
+  },
   data() {
     return {
-      flights: [...flightData],
       airlines,
       aircraftModels,
       weatherHazards,
       activeView: 'map',
       selectedFlight: null,
       aiPanelVisible: false,
-      animationInterval: null,
       flightsTableCollapsed: true,
-      bottomNavCollapsed: false
+      bottomNavCollapsed: false,
+      trackedAircraft: [] // Reactive array for tracked aircraft
     };
   },
   computed: {
+    flights() {
+      return this.flightsStore.flights;
+    },
     aiFabButtonBottom() {
-      // Base position when bottom nav is shown
-      let base = 90;
+      // Base position when bottom nav is shown (moved up 70px for better accessibility)
+      let base = 160;
 
       // Adjust for bottom nav collapse
       if (this.bottomNavCollapsed) {
-        base = 20;
+        base = 90;
       }
 
       // Move up when flights table is open
@@ -175,39 +196,54 @@ export default {
     // Track initial view
     this.tracker.trackViewChange('map');
 
-    // Start flight animation loop
-    this.animationInterval = setInterval(() => {
-      this.flights = this.flights.map((flight) => {
-        let newProgress = flight.progress + flight.speed;
-
-        // Reset if completed
-        if (newProgress >= 1) {
-          newProgress = 0;
-        }
-
-        return {
-          ...flight,
-          progress: newProgress
-        };
-      });
-    }, 50);
+    // Start flight animation using store
+    this.flightsStore.startFlightAnimation();
   },
   beforeUnmount() {
-    // Clear animation interval
-    if (this.animationInterval) {
-      clearInterval(this.animationInterval);
-    }
+    // Stop flight animation
+    this.flightsStore.stopFlightAnimation();
+
+    // Cleanup store
+    this.flightsStore.cleanup();
   },
   methods: {
     changeView(view) {
       this.activeView = view;
       this.tracker.trackViewChange(view);
     },
+    /**
+     * Handle flight click from map markers - opens dashboard
+     * @param {Object} flight - Flight object
+     */
     handleFlightClick(flight) {
       this.selectedFlight = flight;
       this.activeView = 'dashboard';
       this.tracker.trackFlightClick(flight.id);
       this.tracker.trackViewChange('dashboard');
+    },
+    /**
+     * Handle flight click from FlightsDataTable - tracks on map and shows details
+     * @param {Object} flight - Flight object
+     */
+    handleFlightTableClick(flight) {
+      this.selectedFlight = flight;
+
+      // Track analytics
+      if (this.tracker && this.tracker.trackFlightClick) {
+        this.tracker.trackFlightClick(flight.id);
+      }
+
+      // Start tracking aircraft on map
+      if (this.$refs.mapModule && flight.icao24) {
+        this.$refs.mapModule.startTrackingAircraft(flight);
+
+        // Pan map to aircraft location if available
+        if (flight.path && flight.path.length > 0) {
+          const currentLat = flight.path[0][0] + (flight.path[1][0] - flight.path[0][0]) * (flight.progress || 0);
+          const currentLng = flight.path[0][1] + (flight.path[1][1] - flight.path[0][1]) * (flight.progress || 0);
+          this.$refs.mapModule.panToAircraft(currentLat, currentLng);
+        }
+      }
     },
     toggleAIPanel() {
       const wasVisible = this.aiPanelVisible;
@@ -216,9 +252,8 @@ export default {
         this.tracker.trackAIPanelOpen();
       }
     },
-    handleMapControl(action) {
+    handleMapControl(_action) {
       // Handle map control actions
-      console.log('Map control action:', action);
       // You can implement specific behaviors here (zoom, pan, etc.)
     },
     handleFlightsTableCollapseChange(collapsed) {
@@ -226,6 +261,37 @@ export default {
     },
     handleBottomNavCollapseChange(collapsed) {
       this.bottomNavCollapsed = collapsed;
+    },
+    /**
+     * Handle track aircraft request from dropdown menu
+     * @param {Object} flight - Flight object
+     */
+    handleTrackAircraft(flight) {
+      // Add to reactive tracked list immediately
+      if (flight.icao24 && !this.trackedAircraft.includes(flight.icao24)) {
+        this.trackedAircraft.push(flight.icao24);
+      }
+
+      // Start tracking on map
+      this.handleFlightTableClick(flight);
+    },
+    /**
+     * Handle untrack aircraft request from dropdown menu
+     * @param {Object} flight - Flight object
+     */
+    handleUntrackAircraft(flight) {
+      // Remove from reactive tracked list immediately
+      if (flight.icao24) {
+        const index = this.trackedAircraft.indexOf(flight.icao24);
+        if (index > -1) {
+          this.trackedAircraft.splice(index, 1);
+        }
+      }
+
+      // Stop tracking on map
+      if (this.$refs.mapModule && flight.icao24) {
+        this.$refs.mapModule.stopTrackingAircraft(flight.icao24);
+      }
     }
   }
 };

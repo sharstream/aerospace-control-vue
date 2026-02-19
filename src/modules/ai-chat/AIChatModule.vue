@@ -140,12 +140,12 @@ export default {
   },
   computed: {
     bottomPosition() {
-      // Base position when bottom nav is shown
-      let base = 90;
+      // Base position when bottom nav is shown (moved up 70px for better accessibility)
+      let base = 160;
 
       // Adjust for bottom nav collapse
       if (this.bottomNavCollapsed) {
-        base = 20;
+        base = 90;
       }
 
       // Move up when flights table is open
